@@ -57,7 +57,7 @@ const UbahPasswordPage = () => {
 
   return (
     <Page sidebar navListSidebar={navListSidebarEditProfile} sidebarWithIcon>
-      <div>
+      <div className="w-full">
         <BreadCrumbs
           links={[
             { path: '/profile', title: 'Edit Profile' },
