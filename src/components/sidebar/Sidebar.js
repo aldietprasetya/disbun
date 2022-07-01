@@ -10,6 +10,7 @@ const NavItem = ({
   iconActive,
   isActive,
   handleChangePath,
+  stickyBot,
   show,
 }) => {
   return (
@@ -35,6 +36,7 @@ const NavItemWithPercentage = ({
   handleChangePath,
   percentage,
   arrowRight,
+  stickyBot,
 }) => {
   return (
     <div
@@ -43,10 +45,10 @@ const NavItemWithPercentage = ({
         isActive
           ? ' border-primary-green bg-[#038575]/10 text-primary-green'
           : 'border-transparent'
-      } mb-2 flex cursor-pointer items-center justify-between border-l-2  py-3 pr-1 pl-[22px] font-medium text-[#9E9E9E]`}
+      } mb-2 flex cursor-pointer items-center justify-between border-l-2  py-3 pr-6 pl-[22px] font-medium text-[#9E9E9E]`}
     >
       <div className="flex items-center gap-4">
-        {order && (
+        {(order && title != 'Konfirmasi') && (
           <div
             className={`${
               isActive ? 'bg-primary-green text-white' : 'bg-[#F5F5F5]'
@@ -55,7 +57,11 @@ const NavItemWithPercentage = ({
             {order}
           </div>
         )}
-        <div className="w-[160px]">{title}</div>
+        <div className={`${
+          isActive
+            ? 'text-primary-green font-semibold'
+            : 'border-transparent'
+        } w-[160px]`}>{title}</div>
       </div>
       {percentage && <div className="text-[9px] text-[#3267E3]">(90%)</div>}
       {arrowRight && (
@@ -82,8 +88,8 @@ const Sidebar = ({
   const { user } = useSelector((state) => state.auth);
 
   return (
-    <div className="fixed flex h-[85vh] w-[280px] mr-[2px] flex-col items-center border-r bg-white py-4">
-      <div className="relative h-full w-full">
+    <div className="flex h-[540px] w-[280px] mr-[2px] flex-col items-center border-r bg-white py-4">
+      <div className="relative h-full w-full flex flex-col">
         {onePage ? (
           <>
             {navList?.map((list, index) => {
@@ -112,6 +118,7 @@ const Sidebar = ({
                       isActive={router.asPath.match(list.path)}
                       handleChangePath={() => router.push(list.path)}
                       iconActive={list.iconActive}
+                      stickyBot={list.stickyBot}
                       show={list.isAdmin ? user?.roleId !== 1 : true}
                     />
                   );
@@ -120,14 +127,19 @@ const Sidebar = ({
             ) : (
               navList?.map((list, index) => {
                 return (
-                  <NavItemWithPercentage
-                    key={index}
-                    title={list.title}
-                    order={index + 1}
-                    isActive={router.asPath.match(list.path)}
-                    handleChangePath={() => router.push(list.path)}
-                    percentage={false}
-                  />
+                  <>
+                    {list.stickyBot && <div className="flex-1"></div>}
+                    <NavItemWithPercentage
+                      key={index}
+                      title={list.title}
+                      order={index + 1}
+                      isActive={router.asPath.match(list.path)}
+                      handleChangePath={() => router.push(list.path)}
+                      percentage={false}
+                      stickyBot={list.stickyBot}
+                      arrowRight={list.arrowRight}
+                    />
+                  </>
                 );
               })
             )}

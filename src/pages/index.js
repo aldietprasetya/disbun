@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { unstable_renderSubtreeIntoContainer } from 'react-dom';
 import CustomLink from '../components/CustomLink';
 import Page from '../components/Page';
@@ -22,22 +23,26 @@ const links = [
 
 const Card = ({ title, title2, icon, bannerImage, href }) => {
   return (
-    <div
-      className={`relative z-10 h-[480px] 2xl:h-[570px] w-[48%] cursor-pointer
-           rounded-lg ${bannerImage} from-black bg-cover shadow-md
-           transition-all before:absolute before:-z-10 before:h-full
-           before:w-full before:rounded-lg before:bg-gradient-to-t before:via-transparent before:content-[''] hover:h-[495px] hover:2xl:h-[585px] hover:w-[49%] hover:shadow-lg`}
-    >
-      <div className="flex h-full flex-col items-center justify-end pb-[54px]">
-        <img src={icon} className="w-15 " />
-        <div className="relative mt-3 w-[60%] text-center text-xl font-semibold">
-          <CustomLink href={href}>
-            <div>{title}</div>
-            <div>{title2}</div>
-          </CustomLink>
+    <Link href={href}>
+      <div
+        className={`relative z-10 h-[480px] 2xl:h-[570px] w-[48%] cursor-pointer
+          rounded-lg ${bannerImage} from-black bg-cover shadow-md
+          transition-all before:absolute before:-z-10 before:h-full
+          before:w-full before:rounded-lg before:bg-gradient-to-t before:via-transparent before:content-[''] hover:h-[495px] hover:2xl:h-[585px] hover:w-[49%] hover:shadow-lg
+        `}
+      >
+        <div className="flex h-full flex-col items-center justify-end pb-[54px]">
+          <img src={icon} className="w-15 " />
+          <div className="relative mt-3 w-[60%] text-center text-xl font-semibold">
+            <CustomLink href={href}>
+              <div>{title}</div>
+              <div>{title2}</div>
+            </CustomLink>
+          </div>
         </div>
       </div>
-    </div>
+    </Link>
+
   );
 };
 const options = {

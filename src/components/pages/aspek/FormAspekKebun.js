@@ -1,1305 +1,1463 @@
-import React, { useState } from 'react';
+import Head from 'next/head'
+import React, { useState, useEffect } from 'react';
+import {useRouter} from 'next/router'
 import InputForm from '../admin/infografis/InputForm';
+import mng from '../../../styles/Managemen.module.scss'
+
+const preventDefault = f => e => {
+  e.preventDefault()
+  f(e)
+}
 
 const FormAspekKebun = () => {
   const [isError, setIserror] = useState(false);
+
+  ////////////////////////// PEMANFAATAN LAHAN HGU ////////////////////////////////
+
+  const [tanaman, setTanaman] = useState([
+    [ {'title':'Jenis Tanaman','type':'text','placeholder':'Jenis Tanaman','value':'','isOpt':false}, {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false}, ]
+  ])
+
+  function handleBtnAddTanaman() {
+    setTanaman([...tanaman,[ {'title':'Jenis Tanaman','type':'text','placeholder':'Jenis Tanaman','value':'','isOpt':false}, {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false}, ]])
+  }
+
+  function tanamanRemoveLabel(i) {
+    setTanaman(tanaman.filter((item, idx) => idx != i))
+  }
+
+  function tanamanChange(e, index, index2) {
+    let stet = tanaman
+    let set = setTanaman
+    const { name, value } = e.target;
+    const list = [...stet];
+    list.forEach((item, i) => {
+      if (i == index) {
+        item.forEach((item2, ii) => {
+          if (ii == index2) {
+            item2.value = value
+          }
+        });
+      }
+    });
+    set(list);
+  }
+
+  ////////////////////////// PEMBIBITAN ////////////////////////////////
+
+  const [bibit, setBibit] = useState([
+    [ {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false}, ]
+  ])
+
+  function handleBtnAddBibit() {
+    setBibit([...bibit,[ {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false}, ]])
+  }
+
+  function bibitRemoveLabel(i) {
+    setBibit(bibit.filter((item, idx) => idx != i))
+  }
+
+  function bibitChange(e, index, index2) {
+    let stet = bibit
+    let set = setBibit
+    const { name, value } = e.target;
+    const list = [...stet];
+    list.forEach((item, i) => {
+      if (i == index) {
+        item.forEach((item2, ii) => {
+          if (ii == index2) {
+            item2.value = value
+          }
+        });
+      }
+    });
+    set(list);
+  }
+
+  ////////////////////////// KEBUN INDUK ENTRES ////////////////////////////////
+
+  const [kebun, setKebun] = useState([
+    [ {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false}, ]
+  ])
+
+  function handleBtnAddKebun() {
+    setKebun([...kebun,[ {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false}, ]])
+  }
+
+  function kebunRemoveLabel(i) {
+    setKebun(kebun.filter((item, idx) => idx != i))
+  }
+
+  function kebunChange(e, index, index2) {
+    let stet = kebun
+    let set = setKebun
+    const { name, value } = e.target;
+    const list = [...stet];
+    list.forEach((item, i) => {
+      if (i == index) {
+        item.forEach((item2, ii) => {
+          if (ii == index2) {
+            item2.value = value
+          }
+        });
+      }
+    });
+    set(list);
+  }
+
+  ////////////////////////// EMPLASMEN ////////////////////////////////
+
+  const [emplasmen, setEmplasmen] = useState([
+    [ {'title':'Jenis Emplasmen','placeholder':'Pilih Jenis Emplasmen','type':'text','value':'','isOpt':true}, {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Masukkan Nilai Biaya','value':'','isOpt':false}, ]
+  ])
+
+  function handleBtnAddEmplasmen() {
+    setEmplasmen([...emplasmen,[ {'title':'Jenis Emplasmen','placeholder':'Pilih Jenis Emplasmen','type':'text','value':'','isOpt':true}, {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Masukkan Nilai Biaya','value':'','isOpt':false}, ]])
+  }
+
+  function emplasmenRemoveLabel(i) {
+    setEmplasmen(emplasmen.filter((item, idx) => idx != i))
+  }
+
+  function emplasmenChange(e, index, index2) {
+    let stet = emplasmen
+    let set = setEmplasmen
+    const { name, value } = e.target;
+    const list = [...stet];
+    list.forEach((item, i) => {
+      if (i == index) {
+        item.forEach((item2, ii) => {
+          if (ii == index2) {
+            item2.value = value
+          }
+        });
+      }
+    });
+    set(list);
+  }
+
+  ////////////////////////// JALAN JEMBATAN ////////////////////////////////
+
+  const [jalanJembatan, setJalanJembatan] = useState([
+    [ {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false}, ]
+  ])
+
+  function handleBtnAddJalanJembatan() {
+    setJalanJembatan([...jalanJembatan,[ {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false}, ]])
+  }
+
+  function jalanJembatanRemoveLabel(i) {
+    setJalanJembatan(jalanJembatan.filter((item, idx) => idx != i))
+  }
+
+  function jalanJembatanChange(e, index, index2) {
+    let stet = jalanJembatan
+    let set = setJalanJembatan
+    const { name, value } = e.target;
+    const list = [...stet];
+    list.forEach((item, i) => {
+      if (i == index) {
+        item.forEach((item2, ii) => {
+          if (ii == index2) {
+            item2.value = value
+          }
+        });
+      }
+    });
+    set(list);
+  }
+
+  ////////////////////////// AREAL CADANGAN ////////////////////////////////
+
+  const [cadangan, setCadangan] = useState([
+    [ {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false}, ]
+  ])
+
+  function handleBtnAddCadangan() {
+    setCadangan([...cadangan,[ {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false}, ]])
+  }
+
+  function cadanganRemoveLabel(i) {
+    setCadangan(cadangan.filter((item, idx) => idx != i))
+  }
+
+  function cadanganChange(e, index, index2) {
+    let stet = cadangan
+    let set = setCadangan
+    const { name, value } = e.target;
+    const list = [...stet];
+    list.forEach((item, i) => {
+      if (i == index) {
+        item.forEach((item2, ii) => {
+          if (ii == index2) {
+            item2.value = value
+          }
+        });
+      }
+    });
+    set(list);
+  }
+
+  ////////////////////////// AREAL KONSERVASI ////////////////////////////////
+
+  const [konservasi, setKonservasi] = useState([
+    [ {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false}, ]
+  ])
+
+  function handleBtnAddKonservasi() {
+    setKonservasi([...konservasi,[ {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false}, ]])
+  }
+
+  function konservasiRemoveLabel(i) {
+    setKonservasi(konservasi.filter((item, idx) => idx != i))
+  }
+
+  function konservasiChange(e, index, index2) {
+    let stet = konservasi
+    let set = setKonservasi
+    const { name, value } = e.target;
+    const list = [...stet];
+    list.forEach((item, i) => {
+      if (i == index) {
+        item.forEach((item2, ii) => {
+          if (ii == index2) {
+            item2.value = value
+          }
+        });
+      }
+    });
+    set(list);
+  }
+
+  ////////////////////////// Areal Tidak Mungkin Ditanami (TMD) ////////////////////////////////
+
+  const [tmd, setTmd] = useState([
+    [ {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false}, ]
+  ])
+
+  function handleBtnAddTmd() {
+    setKonservasi([...konservasi,[ {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false}, ]])
+  }
+
+  function tmdRemoveLabel(i) {
+    setKonservasi(konservasi.filter((item, idx) => idx != i))
+  }
+
+  function tmdChange(e, index, index2) {
+    let stet = tmd
+    let set = setTmd
+    const { name, value } = e.target;
+    const list = [...stet];
+    list.forEach((item, i) => {
+      if (i == index) {
+        item.forEach((item2, ii) => {
+          if (ii == index2) {
+            item2.value = value
+          }
+        });
+      }
+    });
+    set(list);
+  }
+
+  ////////////////////////// Areal Sawah ////////////////////////////////
+
+  const [sawah, setSawah] = useState([
+    [ {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false}, ]
+  ])
+
+  function handleBtnAddSawah() {
+    setSawah([...sawah,[ {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false}, ]])
+  }
+
+  function sawahRemoveLabel(i) {
+    setSawah(sawah.filter((item, idx) => idx != i))
+  }
+
+  function sawahChange(e, index, index2) {
+    let stet = sawah
+    let set = setSawah
+    const { name, value } = e.target;
+    const list = [...stet];
+    list.forEach((item, i) => {
+      if (i == index) {
+        item.forEach((item2, ii) => {
+          if (ii == index2) {
+            item2.value = value
+          }
+        });
+      }
+    });
+    set(list);
+  }
+
+  ////////////////////////// Pihak Ketiga ////////////////////////////////
+
+  const [pihakKetiga, setPihakKetiga] = useState([
+    [ {'title':'Jenis Pihak Ketiga','placeholder':'Pilih Jenis Pihak Ketiga','type':'text','value':'','isOpt':true}, {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Masukkan Nilai Biaya','value':'','isOpt':false}, ]
+  ])
+
+  function handleBtnAddPihakKetiga() {
+    setPihakKetiga([...pihakKetiga,[ {'title':'Jenis Pihak Ketiga','placeholder':'Pilih Jenis Pihak Ketiga','type':'text','value':'','isOpt':true}, {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Masukkan Nilai Biaya','value':'','isOpt':false}, ]])
+  }
+
+  function pihakKetigaRemoveLabel(i) {
+    setPihakKetiga(pihakKetiga.filter((item, idx) => idx != i))
+  }
+
+  function pihakKetigaChange(e, index, index2) {
+    let stet = pihakKetiga
+    let set = setPihakKetiga
+    const { name, value } = e.target;
+    const list = [...stet];
+    list.forEach((item, i) => {
+      if (i == index) {
+        item.forEach((item2, ii) => {
+          if (ii == index2) {
+            item2.value = value
+          }
+        });
+      }
+    });
+    set(list);
+  }
+
+  ////////////////////////// Lain-lain ////////////////////////////////
+
+  const [lainnya, setLainnya] = useState([
+    [ {'title':'Jenis Areal Lain-lain','placeholder':'Jenis Areal','type':'text','value':'','isOpt':false}, {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Masukkan Nilai Biaya','value':'','isOpt':false}, ]
+  ])
+
+  function handleBtnAddLainnya() {
+    setLainnya([...lainnya,[ {'title':'Jenis Areal Lain-lain','placeholder':'Jenis Areal','type':'text','value':'','isOpt':false}, {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Masukkan Nilai Biaya','value':'','isOpt':false}, ]])
+  }
+
+  function lainnyaRemoveLabel(i) {
+    setLainnya(lainnya.filter((item, idx) => idx != i))
+  }
+
+  function lainnyaChange(e, index, index2) {
+    let stet = lainnya
+    let set = setLainnya
+    const { name, value } = e.target;
+    const list = [...stet];
+    list.forEach((item, i) => {
+      if (i == index) {
+        item.forEach((item2, ii) => {
+          if (ii == index2) {
+            item2.value = value
+          }
+        });
+      }
+    });
+    set(list);
+  }
+
+  ////////////////////////// Topografi ////////////////////////////////
+
+  const [topografi, setTopografi] = useState([
+    [ { 'sectionTitle': 'Lereng Datar (0-8 %)', 'sectionData': [{'title':'Luas (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''},{'title':'Persentase (%)','type':'text','placeholder':'Persentase','value':''},{'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''}] }, { 'sectionTitle': 'Lereng Landai (8-15 %)', 'sectionData': [{'title':'Luas (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''},{'title':'Persentase (%)','type':'text','placeholder':'Persentase','value':''},{'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''}] }, { 'sectionTitle': 'Lereng Agak Curam (15-24 %)', 'sectionData': [{'title':'Luas (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''},{'title':'Persentase (%)','type':'text','placeholder':'Persentase','value':''},{'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''}] }, { 'sectionTitle': 'Lereng Curam (24-45 %)', 'sectionData': [{'title':'Luas (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''},{'title':'Persentase (%)','type':'text','placeholder':'Persentase','value':''},{'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''}] }, { 'sectionTitle': 'Lereng Sangat Curam (>45 %)', 'sectionData': [ {'title':'Luas (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''}, {'title':'Persentase (%)','type':'text','placeholder':'Persentase','value':''}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''}, {'title':'Keterangan','Tipe Iklim':'text','placeholder':'Tipe Iklim','value':''}, {'title':'Keterangan','Curah Hujan (mm)':'text','placeholder':'Jumlah','value':''}, {'title':'Keterangan','Waktu Laporan':'text','placeholder':'MM/YYYY','value':''}, ] } ]
+  ])
+
+  function handleBtnAddTopografi() {
+    setTopografi([...topografi,[ { 'sectionTitle': 'Lereng Datar (0-8 %)', 'sectionData': [{'title':'Luas (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''},{'title':'Persentase (%)','type':'text','placeholder':'Persentase','value':''},{'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''}] }, { 'sectionTitle': 'Lereng Landai (8-15 %)', 'sectionData': [{'title':'Luas (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''},{'title':'Persentase (%)','type':'text','placeholder':'Persentase','value':''},{'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''}] }, { 'sectionTitle': 'Lereng Agak Curam (15-24 %)', 'sectionData': [{'title':'Luas (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''},{'title':'Persentase (%)','type':'text','placeholder':'Persentase','value':''},{'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''}] }, { 'sectionTitle': 'Lereng Curam (24-45 %)', 'sectionData': [{'title':'Luas (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''},{'title':'Persentase (%)','type':'text','placeholder':'Persentase','value':''},{'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''}] }, { 'sectionTitle': 'Lereng Sangat Curam (>45 %)', 'sectionData': [ {'title':'Luas (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''}, {'title':'Persentase (%)','type':'text','placeholder':'Persentase','value':''}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''}, {'title':'Keterangan','Tipe Iklim':'text','placeholder':'Tipe Iklim','value':''}, {'title':'Keterangan','Curah Hujan (mm)':'text','placeholder':'Jumlah','value':''}, {'title':'Keterangan','Waktu Laporan':'text','placeholder':'MM/YYYY','value':''}, ] } ]])
+  }
+
+  function topografiRemoveLabel(i) {
+    setTopografi(topografi.filter((item, idx) => idx != i))
+  }
+
+  function topografiChange(e, index, index2, index3) {
+    let stet = topografi
+    let set = setTopografi
+    const { name, value } = e.target;
+    const list = [...stet];
+    list.forEach((item, i) => {
+      if (i == index) {
+        item.forEach((item2, ii) => {
+          if (ii == index2) {
+            item2.sectionData.forEach((item3, iii) => {
+              if (iii == index3) {
+                item3.value = value
+              }
+            });
+          }
+        });
+      }
+    });
+    set(list);
+  }
+
+  ////////////////////////// Penanaman Baru ////////////////////////////////
+
+  const [tanamBaru, setTanamBaru] = useState([
+    [ {'title':'Jenis Tanaman','placeholder':'Jenis Tanaman','type':'text','value':'','isOpt':false}, {'title':'Tahun Tanam','placeholder':'YYYY','type':'text','value':'','isOpt':false}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Jumlah Pohon','type':'text','placeholder':'Jumlah','value':'','isOpt':false} ]
+  ])
+
+  function handleBtnAddTanamBaru() {
+    setTanamBaru([...tanamBaru,[ {'title':'Jenis Tanaman','placeholder':'Jenis Tanaman','type':'text','value':'','isOpt':false}, {'title':'Tahun Tanam','placeholder':'YYYY','type':'text','value':'','isOpt':false}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Jumlah Pohon','type':'text','placeholder':'Jumlah','value':'','isOpt':false} ]])
+  }
+
+  function tanamBaruRemoveLabel(i) {
+    setTanamBaru(tanamBaru.filter((item, idx) => idx != i))
+  }
+
+  function tanamBaruChange(e, index, index2) {
+    let stet = tanamBaru
+    let set = setTanamBaru
+    const { name, value } = e.target;
+    const list = [...stet];
+    list.forEach((item, i) => {
+      if (i == index) {
+        item.forEach((item2, ii) => {
+          if (ii == index2) {
+            item2.value = value
+          }
+        });
+      }
+    });
+    set(list);
+  }
+
+  ////////////////////////// Komposisi Tanaman ////////////////////////////////
+
+  const [komposisi, setKomposisi] = useState([
+    [ {'title':'Jenis Tanaman','placeholder':'Jenis Tanaman','type':'text','value':'','isOpt':false}, {'title':'TBM (Ha)','placeholder':'Luas Lahan dalam Ha','type':'text','value':'','isOpt':false}, {'title':'TM (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'TTR (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false} ]
+  ])
+
+  function handleBtnAddKomposisi() {
+    setKomposisi([...komposisi,[ {'title':'Jenis Tanaman','placeholder':'Jenis Tanaman','type':'text','value':'','isOpt':false}, {'title':'TBM (Ha)','placeholder':'Luas Lahan dalam Ha','type':'text','value':'','isOpt':false}, {'title':'TM (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'TTR (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false} ]])
+  }
+
+  function komposisiRemoveLabel(i) {
+    setKomposisi(komposisi.filter((item, idx) => idx != i))
+  }
+
+  function komposisiChange(e, index, index2) {
+    let stet = komposisi
+    let set = setKomposisi
+    const { name, value } = e.target;
+    const list = [...stet];
+    list.forEach((item, i) => {
+      if (i == index) {
+        item.forEach((item2, ii) => {
+          if (ii == index2) {
+            item2.value = value
+          }
+        });
+      }
+    });
+    set(list);
+  }
+
+  ////////////////////////// Pemupukan ////////////////////////////////
+
+  const [pemupukan, setPemupukan] = useState([
+    [ {'title':'Jenis Tanaman','placeholder':'Jenis Tanaman','type':'text','value':'','isOpt':false}, {'title':'Luas yang Dipupuk (Ha)','placeholder':'Luas Lahan dalam Ha','type':'text','value':'','isOpt':false}, {'title':'Jenis pupuk','type':'text','placeholder':'Jenis Pupuk','value':'','isOpt':false}, {'title':'Dosis (kg/Ha)','type':'text','placeholder':'Jumlah Dosis','value':'','isOpt':false}, {'title':'Jumlah pupuk (Kg)','type':'text','placeholder':'Jumlah Pupuk','value':'','isOpt':false} ]
+  ])
+
+  function handleBtnAddPemupukan() {
+    setPemupukan([...pemupukan,[ {'title':'Jenis Tanaman','placeholder':'Jenis Tanaman','type':'text','value':'','isOpt':false}, {'title':'Luas yang Dipupuk (Ha)','placeholder':'Luas Lahan dalam Ha','type':'text','value':'','isOpt':false}, {'title':'Jenis pupuk','type':'text','placeholder':'Jenis Pupuk','value':'','isOpt':false}, {'title':'Dosis (kg/Ha)','type':'text','placeholder':'Jumlah Dosis','value':'','isOpt':false}, {'title':'Jumlah pupuk (Kg)','type':'text','placeholder':'Jumlah Pupuk','value':'','isOpt':false} ]])
+  }
+
+  function pemupukanRemoveLabel(i) {
+    setPemupukan(pemupukan.filter((item, idx) => idx != i))
+  }
+
+  function pemupukanChange(e, index, index2) {
+    let stet = pemupukan
+    let set = setPemupukan
+    const { name, value } = e.target;
+    const list = [...stet];
+    list.forEach((item, i) => {
+      if (i == index) {
+        item.forEach((item2, ii) => {
+          if (ii == index2) {
+            item2.value = value
+          }
+        });
+      }
+    });
+    set(list);
+  }
+
+  ////////////////////////// Pengendalian Hama Penyakit ////////////////////////////////
+
+  const [hamaKendali, setHamaKendali] = useState([
+    [ { 'sectionTitle': '', 'sectionData': [ {'title':'Jenis Tanaman','type':'text','placeholder':'Jenis Tanaman','value':''}, {'title':'Jenis Hama Penyakit','type':'text','placeholder':'Jenis Hama Penyakit','value':''}, {'title':'Luas Serangan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''}, {'title':'Luas yang dikendalikan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''}, ] }, { 'sectionTitle': 'Luas Cara Pengendalian', 'sectionData': [ {'title':'Chemical (ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''}, {'title':'Hayati (ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''}, {'title':'Mekanis (ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''} ] } ]
+  ])
+
+  function handleBtnAddHamaKendali() {
+    setHamaKendali([...hamaKendali,[ { 'sectionTitle': '', 'sectionData': [ {'title':'Jenis Tanaman','type':'text','placeholder':'Jenis Tanaman','value':''}, {'title':'Jenis Hama Penyakit','type':'text','placeholder':'Jenis Hama Penyakit','value':''}, {'title':'Luas Serangan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''}, {'title':'Luas yang dikendalikan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''}, ] }, { 'sectionTitle': 'Luas Cara Pengendalian', 'sectionData': [ {'title':'Chemical (ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''}, {'title':'Hayati (ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''}, {'title':'Mekanis (ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''} ] } ]])
+  }
+
+  function hamaKendaliRemoveLabel(i) {
+    setHamaKendali(hamaKendali.filter((item, idx) => idx != i))
+  }
+
+  function hamaKendaliChange(e, index, index2, index3) {
+    let stet = hamaKendali
+    let set = setHamaKendali
+    const { name, value } = e.target;
+    const list = [...stet];
+    list.forEach((item, i) => {
+      if (i == index) {
+        item.forEach((item2, ii) => {
+          if (ii == index2) {
+            item2.sectionData.forEach((item3, iii) => {
+              if (iii == index3) {
+                item3.value = value
+              }
+            });
+          }
+        });
+      }
+    });
+    set(list);
+  }
+
+  ////////////////////////// Diversifikasi Usaha Tani ////////////////////////////////
+
+  const [disertifikasi, setDisertifikasi] = useState([
+    [ {'title':'Cabang Diversifikasi','placeholder':'Jenis Diversifikasi','type':'text','value':'','isOpt':false}, {'title':'Luas/volume','placeholder':'Luas/Volume','type':'text','value':'','isOpt':false}, {'title':'Produksi (Ton)','type':'text','placeholder':'Jumlah Produksi','value':'','isOpt':false}, {'title':'Nilai (Rp)','type':'text','placeholder':'Nilai dalam Rupiah','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false} ]
+  ])
+
+  function handleBtnAddDisertifikasi() {
+    setDisertifikasi([...disertifikasi,[ {'title':'Cabang Diversifikasi','placeholder':'Jenis Diversifikasi','type':'text','value':'','isOpt':false}, {'title':'Luas/volume','placeholder':'Luas/Volume','type':'text','value':'','isOpt':false}, {'title':'Produksi (Ton)','type':'text','placeholder':'Jumlah Produksi','value':'','isOpt':false}, {'title':'Nilai (Rp)','type':'text','placeholder':'Nilai dalam Rupiah','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false} ]])
+  }
+
+  function disertifikasiRemoveLabel(i) {
+    setDisertifikasi(disertifikasi.filter((item, idx) => idx != i))
+  }
+
+  function disertifikasiChange(e, index, index2) {
+    let stet = disertifikasi
+    let set = setDisertifikasi
+    const { name, value } = e.target;
+    const list = [...stet];
+    list.forEach((item, i) => {
+      if (i == index) {
+        item.forEach((item2, ii) => {
+          if (ii == index2) {
+            item2.value = value
+          }
+        });
+      }
+    });
+    set(list);
+  }
+
+  ////////////////////////// Produksi dan Produktivitas ////////////////////////////////
+
+  const [produksiProduktivitas, setProduksiProduktivitas] = useState([
+    [ {'title':'Jenis Tanaman','placeholder':'Jenis Tanaman','type':'text','value':'','isOpt':false}, {'title':'Luas TM (ha)','placeholder':'Luas Lahan dalam Ha','type':'text','value':'','isOpt':false}, {'title':'Luas yang dipanen (ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Produksi mentah (kg)','type':'text','placeholder':'Jumlah Produksi','value':'','isOpt':false}, {'title':'produksi kering (kg)','type':'text','placeholder':'Jumlah Produksi','value':'','isOpt':false}, {'title':'Produktivitas (kg/ha/tahun)','type':'text','placeholder':'Nilai Produktivitas','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false} ]
+  ])
+
+  function handleBtnAddProduksiProduktivitas() {
+    setProduksiProduktivitas([...produksiProduktivitas,[ {'title':'Jenis Tanaman','placeholder':'Jenis Tanaman','type':'text','value':'','isOpt':false}, {'title':'Luas TM (ha)','placeholder':'Luas Lahan dalam Ha','type':'text','value':'','isOpt':false}, {'title':'Luas yang dipanen (ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Produksi mentah (kg)','type':'text','placeholder':'Jumlah Produksi','value':'','isOpt':false}, {'title':'produksi kering (kg)','type':'text','placeholder':'Jumlah Produksi','value':'','isOpt':false}, {'title':'Produktivitas (kg/ha/tahun)','type':'text','placeholder':'Nilai Produktivitas','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false} ]])
+  }
+
+  function produksiProduktivitasRemoveLabel(i) {
+    setProduksiProduktivitas(produksiProduktivitas.filter((item, idx) => idx != i))
+  }
+
+  function produksiProduktivitasChange(e, index, index2) {
+    let stet = produksiProduktivitas
+    let set = setProduksiProduktivitas
+    const { name, value } = e.target;
+    const list = [...stet];
+    list.forEach((item, i) => {
+      if (i == index) {
+        item.forEach((item2, ii) => {
+          if (ii == index2) {
+            item2.value = value
+          }
+        });
+      }
+    });
+    set(list);
+  }
+
+  ////////////////////////// OTHER FUNCTION ////////////////////////////////
+
+  const [btnValid, setBtnValid] = useState(false)
+
+  const router = useRouter()
+
+  const storeData = preventDefault(() => {
+    localStorage.setItem("dataSubmit", JSON.stringify(dataSubmit));
+    router.push({
+      pathname: "/beranda/laporan/konfirmasi"
+    })
+  })
+
+
   return (
     <>
-      {/* Lahan GHU */}
-      <div className="mt-6 text-base text-blue-600">
-        <a href="/admin/infografis">Pemanfaatan Lahan GHU</a>
-      </div>
-      {/* Tanaman */}
-      <div className="border-b border-primary-gray-2 pb-6">
-        <div className="mt-4 text-base text-primary-black-2">Tanaman</div>
-        <div className="mt-4 grid w-full grid-cols-2 gap-4">
-          <InputForm
-            titleForm="Jenis Tanaman"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Jenis Tanaman"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-          <InputForm
-            titleForm="Kec/Desa"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Pilih Kec/Desa"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            selectionArea={true}
-          />
-          <InputForm
-            titleForm="Luas yang Digunakan (Ha)"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Luas Lahan dalam Ha"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-          <InputForm
-            titleForm="Keterangan"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Keterangan"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-        </div>
-        <button className="mt-6 w-[100%] rounded-md bg-white p-4 text-sm font-bold text-primary-green outline outline-1">
-          + Tambah Areal Pemanfaatan
-        </button>
-      </div>
+      <Head>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+      </Head>
+      <form>
+        <div className={mng.base__formsection}>
 
-      {/* Pembibitan */}
-      <div className="border-b border-primary-gray-2 pb-6">
-        <div className="mt-4 text-base text-primary-black-2">Pembibitan</div>
-        <div className="mt-4 grid w-full grid-cols-3 gap-4">
-          <InputForm
-            titleForm="Kec/Desa"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Pilih Kec/Desa"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            selectionArea={true}
-          />
-          <InputForm
-            titleForm="Luas yang Digunakan (Ha)"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Luas Lahan dalam Ha"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-          <InputForm
-            titleForm="Keterangan"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Keterangan"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-        </div>
-        <button className="mt-6 w-[100%] rounded-md bg-white p-4 text-sm font-bold text-primary-green outline outline-1">
-          + Tambah Areal Pemanfaatan
-        </button>
-      </div>
+          <span className={mng.base__subtitle}>Pemanfaatan Lahan HGU</span>
+          <p className={`${mng["base__formtitle"]} ${'mt-4'}`}>Tanaman</p>
 
-      {/* Kebun Induk Entres */}
-      <div className="border-b border-primary-gray-2 pb-6">
-        <div className="mt-4 text-base text-primary-black-2">
-          Kebun Induk Entres
-        </div>
-        <div className="mt-4 grid w-full grid-cols-3 gap-4">
-          <InputForm
-            titleForm="Kec/Desa"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Pilih Kec/Desa"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            selectionArea={true}
-          />
-          <InputForm
-            titleForm="Luas yang Digunakan (Ha)"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Luas Lahan dalam Ha"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-          <InputForm
-            titleForm="Keterangan"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Keterangan"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-        </div>
-        <button className="mt-6 w-[100%] rounded-md bg-white p-4 text-sm font-bold text-primary-green outline outline-1">
-          + Tambah Areal Pemanfaatan
-        </button>
-      </div>
-
-      {/* Emplasmen */}
-      <div className="border-b border-primary-gray-2 pb-6">
-        <div className="mt-4 text-base text-primary-black-2">Emplasmen</div>
-        <div className="mt-4 grid w-full grid-cols-2 gap-4">
-          <InputForm
-            titleForm="Jenis Emplasmen"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Pilih Jenis Emplasmen"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            selectionArea={true}
-          />
-          <InputForm
-            titleForm="Kec/Desa"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Pilih Kec/Desa"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            selectionArea={true}
-          />
-          <InputForm
-            titleForm="Luas yang Digunakan (Ha)"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Luas Lahan dalam Ha"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-          <InputForm
-            titleForm="Keterangan"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Keterangan"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-        </div>
-        <button className="mt-6 w-[100%] rounded-md bg-white p-4 text-sm font-bold text-primary-green outline outline-1">
-          + Tambah Areal Pemanfaatan
-        </button>
-      </div>
-
-      {/* Jalan/Jembatan */}
-      <div className="border-b border-primary-gray-2 pb-6">
-        <div className="mt-4 text-base text-primary-black-2">
-          Jalan/Jembatan
-        </div>
-        <div className="mt-4 grid w-full grid-cols-3 gap-4">
-          <InputForm
-            titleForm="Kec/Desa"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Pilih Kec/Desa"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            selectionArea={true}
-          />
-          <InputForm
-            titleForm="Luas yang Digunakan (Ha)"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Luas Lahan dalam Ha"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-          <InputForm
-            titleForm="Keterangan"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Keterangan"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-        </div>
-        <button className="mt-6 w-[100%] rounded-md bg-white p-4 text-sm font-bold text-primary-green outline outline-1">
-          + Tambah Areal Pemanfaatan
-        </button>
-      </div>
-
-      {/* Areal Cadangan */}
-      <div className="border-b border-primary-gray-2 pb-6">
-        <div className="mt-4 text-base text-primary-black-2">
-          Areal Cadangan
-        </div>
-        <div className="mt-4 grid w-full grid-cols-3 gap-4">
-          <InputForm
-            titleForm="Kec/Desa"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Pilih Kec/Desa"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            selectionArea={true}
-          />
-          <InputForm
-            titleForm="Luas yang Digunakan (Ha)"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Luas Lahan dalam Ha"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-          <InputForm
-            titleForm="Keterangan"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Keterangan"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-        </div>
-        <button className="mt-6 w-[100%] rounded-md bg-white p-4 text-sm font-bold text-primary-green outline outline-1">
-          + Tambah Areal Pemanfaatan
-        </button>
-      </div>
-
-      {/* Areal Konservasi */}
-      <div className="border-b border-primary-gray-2 pb-6">
-        <div className="mt-4 text-base text-primary-black-2">
-          Areal Konservasi
-        </div>
-        <div className="mt-4 grid w-full grid-cols-3 gap-4">
-          <InputForm
-            titleForm="Kec/Desa"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Pilih Kec/Desa"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            selectionArea={true}
-          />
-          <InputForm
-            titleForm="Luas yang Digunakan (Ha)"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Luas Lahan dalam Ha"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-          <InputForm
-            titleForm="Keterangan"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Keterangan"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-        </div>
-        <button className="mt-6 w-[100%] rounded-md bg-white p-4 text-sm font-bold text-primary-green outline outline-1">
-          + Tambah Areal Pemanfaatan
-        </button>
-      </div>
-
-      {/* Areal Tidak Mungkin Ditanami (TMD) */}
-      <div className="border-b border-primary-gray-2 pb-6">
-        <div className="mt-4 text-base text-primary-black-2">
-          Areal Tidak Mungkin Ditanami (TMD)
-        </div>
-        <div className="mt-4 grid w-full grid-cols-3 gap-4">
-          <InputForm
-            titleForm="Kec/Desa"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Pilih Kec/Desa"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            selectionArea={true}
-          />
-          <InputForm
-            titleForm="Luas yang Digunakan (Ha)"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Luas Lahan dalam Ha"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-          <InputForm
-            titleForm="Keterangan"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Keterangan"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-        </div>
-        <button className="mt-6 w-[100%] rounded-md bg-white p-4 text-sm font-bold text-primary-green outline outline-1">
-          + Tambah Areal Pemanfaatan
-        </button>
-      </div>
-
-      {/* Areal Sawah */}
-      <div className="border-b border-primary-gray-2 pb-6">
-        <div className="mt-4 text-base text-primary-black-2">Areal Sawah</div>
-        <div className="mt-4 grid w-full grid-cols-3 gap-4">
-          <InputForm
-            titleForm="Kec/Desa"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Pilih Kec/Desa"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            selectionArea={true}
-          />
-          <InputForm
-            titleForm="Luas yang Digunakan (Ha)"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Luas Lahan dalam Ha"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-          <InputForm
-            titleForm="Keterangan"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Keterangan"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-        </div>
-        <button className="mt-6 w-[100%] rounded-md bg-white p-4 text-sm font-bold text-primary-green outline outline-1">
-          + Tambah Areal Pemanfaatan
-        </button>
-      </div>
-
-      {/* Pihak Ketiga */}
-      <div className="border-b border-primary-gray-2 pb-6">
-        <div className="mt-4 text-base text-primary-black-2">Pihak Ketiga</div>
-        <div className="mt-4 grid w-full grid-cols-2 gap-4">
-          <InputForm
-            titleForm="Jenis Pihak Ketiga"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Pilih Jenis Pihak Ketiga"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            selectionArea={true}
-          />
-          <InputForm
-            titleForm="Kec/Desa"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Pilih Kec/Desa"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            selectionArea={true}
-          />
-          <InputForm
-            titleForm="Luas yang Digunakan (Ha)"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Luas Lahan dalam Ha"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-          <InputForm
-            titleForm="Keterangan"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Keterangan"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-        </div>
-        <button className="mt-6 w-[100%] rounded-md bg-white p-4 text-sm font-bold text-primary-green outline outline-1">
-          + Tambah Areal Pemanfaatan
-        </button>
-      </div>
-
-      {/* lain lain */}
-      <div className="border-b border-primary-gray-2 pb-6">
-        <div className="mt-4 text-base text-primary-black-2">Lain-lain</div>
-        <div className="mt-4 grid w-full grid-cols-2 gap-4">
-          <InputForm
-            titleForm="Jenis Areal Lain-lain"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Jenis Areal"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-          <InputForm
-            titleForm="Kec/Desa"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Pilih Kec/Desa"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            selectionArea={true}
-          />
-          <InputForm
-            titleForm="Luas yang Digunakan (Ha)"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Luas Lahan dalam Ha"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-          <InputForm
-            titleForm="Keterangan"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Keterangan"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-        </div>
-        <button className="mt-6 w-[100%] rounded-md bg-white p-4 text-sm font-bold text-primary-green outline outline-1">
-          + Tambah Areal Pemanfaatan
-        </button>
-      </div>
-
-      {/* Topografi */}
-      <div className="mt-6 text-base text-blue-600">
-        <a href="/admin/infografis">Topografi</a>
-      </div>
-      <div className="border-b border-primary-gray-2 pb-6">
-        <div className="mt-4 text-base text-primary-black-2">
-          Lereng Datar (0-8 %)
-        </div>
-        <div className="mt-4 grid w-full grid-cols-3 gap-4">
-          <InputForm
-            titleForm="Luas (Ha)"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Luas Lahan dalam Ha"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-          <InputForm
-            titleForm="Persentase (%)"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Persentase"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-          <InputForm
-            titleForm="Keterangan"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Keterangan"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-        </div>
-        <div className="mt-4 text-base text-primary-black-2">
-          Lereng Landai (8-15 %)
-        </div>
-        <div className="mt-4 grid w-full grid-cols-3 gap-4">
-          <InputForm
-            titleForm="Luas (Ha)"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Luas Lahan dalam Ha"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-          <InputForm
-            titleForm="Persentase (%)"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Persentase"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-          <InputForm
-            titleForm="Keterangan"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Keterangan"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-        </div>
-        <div className="mt-4 text-base text-primary-black-2">
-          Lereng Agak Curam (15-24 %)
-        </div>
-        <div className="mt-4 grid w-full grid-cols-3 gap-4">
-          <InputForm
-            titleForm="Luas (Ha)"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Luas Lahan dalam Ha"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-          <InputForm
-            titleForm="Persentase (%)"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Persentase"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-          <InputForm
-            titleForm="Keterangan"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Keterangan"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-        </div>
-        <div className="mt-4 text-base text-primary-black-2">
-          Lereng Curam (24-45 %)
-        </div>
-        <div className="mt-4 grid w-full grid-cols-3 gap-4">
-          <InputForm
-            titleForm="Luas (Ha)"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Luas Lahan dalam Ha"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-          <InputForm
-            titleForm="Persentase (%)"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Persentase"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-          <InputForm
-            titleForm="Keterangan"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Keterangan"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-        </div>
-        <div className="mt-4 text-base text-primary-black-2">
-          {`Lereng Sangat Curam (>45 %)`}
-        </div>
-        <div className="mt-4 grid w-full grid-cols-3 gap-4">
-          <InputForm
-            titleForm="Luas (Ha)"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Luas Lahan dalam Ha"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-          <InputForm
-            titleForm="Persentase (%)"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Persentase"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-          <InputForm
-            titleForm="Keterangan"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Keterangan"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-          <InputForm
-            titleForm="Tipe Iklim"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Tipe Iklim"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-          <InputForm
-            titleForm="Curah Hujan (mm)"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Jumlah"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-          <InputForm
-            titleForm="Waktu Laporan"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="MM/YY"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-        </div>
-      </div>
-
-      {/* Penanaman Baru */}
-      <div className="mt-6 text-base text-blue-600">
-        <a href="/admin/infografis">Penanaman Baru</a>
-      </div>
-      <div className="border-b border-primary-gray-2 pb-6">
-        <div className="mt-4 grid w-full grid-cols-2 gap-4">
-          <InputForm
-            titleForm="Jenis Tanaman"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Jenis Areal"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-          <InputForm
-            titleForm="Tahun Tanam"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="YYYY"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-          <InputForm
-            titleForm="Luas yang Digunakan (Ha)"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Luas Lahan dalam Ha"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-          <InputForm
-            titleForm="Jumlah Pohon"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Jumlah"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-        </div>
-        <button className="mt-6 w-[100%] rounded-md bg-white p-4 text-sm font-bold text-primary-green outline outline-1">
-          + Tambah Jenis Penanaman Baru
-        </button>
-      </div>
-
-      {/* Komposisi tanaman */}
-      <div className="mt-6 text-base text-blue-600">
-        <a href="/admin/infografis">Komposisi Tanaman</a>
-      </div>
-      <div className="border-b border-primary-gray-2 pb-6">
-        <div className="mt-4 grid w-full grid-cols-3 gap-4">
-          <div className="col-span-3">
-            <InputForm
-              titleForm="Jenis Tanaman"
-              titleName="email"
-              // onChange={handleChange}
-              type="text"
-              // values={values.email}
-              placeholder="Jenis Tanaman"
-              className={`${
-                isError && 'border-primary-red-1 bg-primary-red-2'
-              } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-              iconEmail={true}
-            />
+          <div className="flex flex-col">
+            {
+              tanaman.map((items, i) => (
+                <div className={`${mng["base__formlabel_twin"]}`} key={i}>
+                {
+                  i > 0 ?
+                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => tanamanRemoveLabel(i)}>
+                    do_not_disturb_on
+                  </span>
+                  :
+                  <></>
+                }
+                {
+                  items.map((item,ii) => (
+                    <>
+                      {
+                        item.isOpt ? (
+                          <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
+                            <InputForm
+                              titleForm={item.title}
+                              titleName={item.title}
+                              onChange={(e) => tanamanChange(e, i, ii)}
+                              type="text"
+                              placeholder={item.placeholder}
+                              className={`${
+                                isError && 'border-primary-red-1 bg-primary-red-2'
+                              }`}
+                              selectionArea={true}
+                            />
+                          </label>
+                        ) : (
+                          <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
+                            <span className={mng.base__inputtitle}>{item.title}</span>
+                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => tanamanChange(e, i, ii)}/>
+                          </label>
+                        )
+                      }
+                    </>
+                  ))
+                }
+                </div>
+              ))
+            }
           </div>
-          <InputForm
-            titleForm="TBM (Ha)"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Luas Lahan dalam Ha"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-          <InputForm
-            titleForm="TM (Ha)"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Luas Lahan dalam Ha"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-          <InputForm
-            titleForm="TTR (Ha)"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Luas Lahan dalam Ha"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-        </div>
-        <button className="mt-6 w-[100%] rounded-md bg-white p-4 text-sm font-bold text-primary-green outline outline-1">
-          + Tambah Jenis Komposisi Tanaman
-        </button>
-      </div>
 
-      {/* Pemupukan */}
-      <div className="mt-6 text-base text-blue-600">
-        <a href="/admin/infografis">Pemupukan</a>
-      </div>
-      <div className="border-b border-primary-gray-2 pb-6">
-        <div className="mt-4 grid w-full grid-cols-2 gap-4">
-          <div className="col-span-2">
-            <InputForm
-              titleForm="Jenis Tanaman"
-              titleName="email"
-              // onChange={handleChange}
-              type="text"
-              // values={values.email}
-              placeholder="Jenis Tanaman"
-              className={`${
-                isError && 'border-primary-red-1 bg-primary-red-2'
-              } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-              iconEmail={true}
-            />
+          <div className={`${mng["base__btn"]}`} onClick={handleBtnAddTanaman}>
+            + Tambah Data Komoditas
           </div>
-          <InputForm
-            titleForm="Luas Yang Dipupuk (Ha)"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Luas Lahan dalam Ha"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-          <InputForm
-            titleForm="Jenis Pupuk"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Jenis Pupuk"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-          <InputForm
-            titleForm="Dosis (Kg/Ha)"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Jumlah Dosis"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-          <InputForm
-            titleForm="Jumlah Pupuk (Kg)"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Jumlah Pupuk"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-        </div>
-        <button className="mt-6 w-[100%] rounded-md bg-white p-4 text-sm font-bold text-primary-green outline outline-1">
-          + Tambah Jenis Pemupukan
-        </button>
-      </div>
 
-      {/* Pengendalian Hama */}
-      <div className="mt-6 text-base text-blue-600">
-        <a href="/admin/infografis">Pengendalian Hama Penyakit</a>
-      </div>
-      <div className="border-b border-primary-gray-2 pb-6">
-        <div className="mt-4 grid w-full grid-cols-3 gap-4">
-          <div className="col-span-3">
-            <InputForm
-              titleForm="Jenis Tanaman"
-              titleName="email"
-              // onChange={handleChange}
-              type="text"
-              // values={values.email}
-              placeholder="Jenis Tanaman"
-              className={`${
-                isError && 'border-primary-red-1 bg-primary-red-2'
-              } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-              iconEmail={true}
-            />
+        </div>
+
+        <div className={mng.base__formsection}>
+          <p className={`${mng["base__formtitle"]} ${'mt-4'}`}>Pembibitan</p>
+          <div className="flex flex-col mt-3">
+            {
+              bibit.map((items, i) => (
+                <div className={`${mng["base__formlabel_unique3"]}`} key={i}>
+                {
+                  i > 0 ?
+                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => bibitRemoveLabel(i)}>
+                    do_not_disturb_on
+                  </span>
+                  :
+                  <></>
+                }
+                {
+                  items.map((item,ii) => (
+                    <>
+                      {
+                        item.isOpt ? (
+                          <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
+                            <InputForm
+                              titleForm={item.title}
+                              titleName={item.title}
+                              onChange={(e) => bibitChange(e, i, ii)}
+                              type="text"
+                              placeholder={item.placeholder}
+                              className={`${
+                                isError && 'border-primary-red-1 bg-primary-red-2'
+                              }`}
+                              selectionArea={true}
+                            />
+                          </label>
+                        ) : (
+                          <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
+                            <span className={mng.base__inputtitle}>{item.title}</span>
+                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => bibitChange(e, i, ii)}/>
+                          </label>
+                        )
+                      }
+                    </>
+
+                  ))
+                }
+                </div>
+              ))
+            }
           </div>
-          <InputForm
-            titleForm="Jenis Hama Penyakit"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Jenis Hama Penyakit"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-          <InputForm
-            titleForm="Luas Serangan (Ha)"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Luas Lahan dalam Ha"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-          <InputForm
-            titleForm="Luas Yang Dikendalikan (Ha)"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Luas Lahan dalam Ha"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-        </div>
-        <div className="mt-4 text-base text-primary-black-2">
-          Luas Cara Pengendalian
-        </div>
-        <div className="mt-4 grid w-full grid-cols-3 gap-4">
-          <InputForm
-            titleForm="Chemical (Ha)"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Luas Lahan dalam Ha"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-          <InputForm
-            titleForm="Hayati (Ha)"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Luas Lahan dalam Ha"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-          <InputForm
-            titleForm="Mekanisme (Ha)"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Luas Lahan dalam Ha"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-        </div>
-        <button className="mt-6 w-[100%] rounded-md bg-white p-4 text-sm font-bold text-primary-green outline outline-1">
-          + Tambah Jenis Hama Penyakit
-        </button>
-      </div>
 
-      {/* Diversifikasi Usaha Tani */}
-      <div className="mt-6 text-base text-blue-600">
-        <a href="/admin/infografis">Diversifikasi Usaha Tani</a>
-      </div>
-      <div className="border-b border-primary-gray-2 pb-6">
-        <div className="mt-4 grid w-full grid-cols-2 gap-4">
-          <div className="col-span-2">
-            <InputForm
-              titleForm="Cabang Diserfisikasi"
-              titleName="email"
-              // onChange={handleChange}
-              type="text"
-              // values={values.email}
-              placeholder="Jenis Diserfisikasi"
-              className={`${
-                isError && 'border-primary-red-1 bg-primary-red-2'
-              } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-              iconEmail={true}
-            />
+          <div className={mng.base__btn} onClick={handleBtnAddBibit}>
+            + Tambah Data Jenis Tanaman
           </div>
-          <InputForm
-            titleForm="Luas/Volume"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Luas/Volume"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-          <InputForm
-            titleForm="Produksi (Ton)"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Jumlah Produksi"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-          <InputForm
-            titleForm="Nilai (Rp)"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Nilai dalam Rupiah"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-          <InputForm
-            titleForm="Keterangan"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Keterangan"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-        </div>
-        <button className="mt-6 w-[100%] rounded-md bg-white p-4 text-sm font-bold text-primary-green outline outline-1">
-          + Tambah Cabang Diserfisikasi lainnya
-        </button>
-      </div>
 
-      {/* Produksi dan Produktivitas */}
-      <div className="mt-6 text-base text-blue-600">
-        <a href="/admin/infografis">Produksi dan Produktivitas</a>
-      </div>
-      <div className="mt-4">
-        <div className="grid w-full grid-cols-2 gap-4">
-          <div className="col-span-2">
-            <InputForm
-              titleForm="Jenis Tanaman"
-              titleName="email"
-              // onChange={handleChange}
-              type="text"
-              // values={values.email}
-              placeholder="Jenis Tanaman"
-              className={`${
-                isError && 'border-primary-red-1 bg-primary-red-2'
-              } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-              iconEmail={true}
-            />
+        </div>
+
+        <div className={mng.base__formsection}>
+          <p className={`${mng["base__formtitle"]} ${'mt-4'}`}>Kebun Induk Entres</p>
+          <div className="flex flex-col mt-3">
+            {
+              kebun.map((items, i) => (
+                <div className={`${mng["base__formlabel_unique3"]}`} key={i}>
+                {
+                  i > 0 ?
+                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => kebunRemoveLabel(i)}>
+                    do_not_disturb_on
+                  </span>
+                  :
+                  <></>
+                }
+                {
+                  items.map((item,ii) => (
+                    <>
+                      {
+                        item.isOpt ? (
+                          <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
+                            <InputForm
+                              titleForm={item.title}
+                              titleName={item.title}
+                              onChange={(e) => kebunChange(e, i, ii)}
+                              type="text"
+                              placeholder={item.placeholder}
+                              className={`${
+                                isError && 'border-primary-red-1 bg-primary-red-2'
+                              }`}
+                              selectionArea={true}
+                            />
+                          </label>
+                        ) : (
+                          <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
+                            <span className={mng.base__inputtitle}>{item.title}</span>
+                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => kebunChange(e, i, ii)}/>
+                          </label>
+                        )
+                      }
+                    </>
+
+                  ))
+                }
+                </div>
+              ))
+            }
           </div>
-          <InputForm
-            titleForm="Luas TM (Ha)"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Luas Lahan dalam Ha"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-          <InputForm
-            titleForm="Luas Yang Dipanen (Ha)"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Luas Lahan dalam Ha"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-          <InputForm
-            titleForm="Produksi Mentah (Kg)"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Jumlah Produksi"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-          <InputForm
-            titleForm="Produksi Kering (Kg)"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Jumlah Produksi"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-          <InputForm
-            titleForm="Produktivitas (kg/ha/tahun)"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Nilai Produktivitas"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-          <InputForm
-            titleForm="Keterangan"
-            titleName="email"
-            // onChange={handleChange}
-            type="text"
-            // values={values.email}
-            placeholder="Keterangan"
-            className={`${
-              isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
-            iconEmail={true}
-          />
-        </div>
-        <button className="mt-6 w-[100%] rounded-md bg-white p-4 text-sm font-bold text-primary-green outline outline-1">
-          + Tambah Jenis Tanaman
-        </button>
-      </div>
 
-      <div className="flex w-[100%] justify-end">
-        <button
-          className="mt-12 w-[40%] items-end rounded-md bg-primary-green p-4 text-sm font-bold text-white disabled:bg-[#D5DBDA]"
-          disabled
-        >
-          Simpan dan Lanjutkan
-        </button>
-      </div>
+          <div className={mng.base__btn} onClick={handleBtnAddKebun}>
+            + Tambah Data Jenis Tanaman
+          </div>
+
+        </div>
+
+        <div className={mng.base__formsection}>
+          <p className={`${mng["base__formtitle"]} ${'mt-4'}`}>Emplasmen</p>
+
+          <div className="flex flex-col">
+            {
+              emplasmen.map((items, i) => (
+                <div className={`${mng["base__formlabel_twin"]}`} key={i}>
+                {
+                  i > 0 ?
+                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => emplasmenRemoveLabel(i)}>
+                    do_not_disturb_on
+                  </span>
+                  :
+                  <></>
+                }
+                {
+                  items.map((item,ii) => (
+                    <>
+                      {
+                        item.isOpt ? (
+                          <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
+                            <InputForm
+                              titleForm={item.title}
+                              titleName={item.title}
+                              onChange={(e) => emplasmenChange(e, i, ii)}
+                              type="text"
+                              placeholder={item.placeholder}
+                              className={`${
+                                isError && 'border-primary-red-1 bg-primary-red-2'
+                              }`}
+                              selectionArea={true}
+                            />
+                          </label>
+                        ) : (
+                          <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
+                            <span className={mng.base__inputtitle}>{item.title}</span>
+                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => emplasmenChange(e, i, ii)}/>
+                          </label>
+                        )
+                      }
+                    </>
+                  ))
+                }
+                </div>
+              ))
+            }
+          </div>
+
+          <div className={`${mng["base__btn"]}`} onClick={handleBtnAddEmplasmen}>
+            + Tambah Areal Pemanfaatan
+          </div>
+
+        </div>
+
+        <div className={mng.base__formsection}>
+          <p className={`${mng["base__formtitle"]} ${'mt-4'}`}>Jalan/Jembatan</p>
+          <div className="flex flex-col mt-3">
+            {
+              jalanJembatan.map((items, i) => (
+                <div className={`${mng["base__formlabel_unique3"]}`} key={i}>
+                {
+                  i > 0 ?
+                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => jalanJembatanRemoveLabel(i)}>
+                    do_not_disturb_on
+                  </span>
+                  :
+                  <></>
+                }
+                {
+                  items.map((item,ii) => (
+                    <>
+                      {
+                        item.isOpt ? (
+                          <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
+                            <InputForm
+                              titleForm={item.title}
+                              titleName={item.title}
+                              onChange={(e) => jalanJembatanChange(e, i, ii)}
+                              type="text"
+                              placeholder={item.placeholder}
+                              className={`${
+                                isError && 'border-primary-red-1 bg-primary-red-2'
+                              }`}
+                              selectionArea={true}
+                            />
+                          </label>
+                        ) : (
+                          <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
+                            <span className={mng.base__inputtitle}>{item.title}</span>
+                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => jalanJembatanChange(e, i, ii)}/>
+                          </label>
+                        )
+                      }
+                    </>
+
+                  ))
+                }
+                </div>
+              ))
+            }
+          </div>
+
+          <div className={mng.base__btn} onClick={handleBtnAddJalanJembatan}>
+            + Tambah Areal Pemanfaatan
+          </div>
+
+        </div>
+
+        <div className={mng.base__formsection}>
+          <p className={`${mng["base__formtitle"]} ${'mt-4'}`}>Areal Cadangan</p>
+          <div className="flex flex-col mt-3">
+            {
+              cadangan.map((items, i) => (
+                <div className={`${mng["base__formlabel_unique3"]}`} key={i}>
+                {
+                  i > 0 ?
+                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => cadanganRemoveLabel(i)}>
+                    do_not_disturb_on
+                  </span>
+                  :
+                  <></>
+                }
+                {
+                  items.map((item,ii) => (
+                    <>
+                      {
+                        item.isOpt ? (
+                          <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
+                            <InputForm
+                              titleForm={item.title}
+                              titleName={item.title}
+                              onChange={(e) => cadanganChange(e, i, ii)}
+                              type="text"
+                              placeholder={item.placeholder}
+                              className={`${
+                                isError && 'border-primary-red-1 bg-primary-red-2'
+                              }`}
+                              selectionArea={true}
+                            />
+                          </label>
+                        ) : (
+                          <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
+                            <span className={mng.base__inputtitle}>{item.title}</span>
+                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => cadanganChange(e, i, ii)}/>
+                          </label>
+                        )
+                      }
+                    </>
+
+                  ))
+                }
+                </div>
+              ))
+            }
+          </div>
+
+          <div className={mng.base__btn} onClick={handleBtnAddCadangan}>
+            + Tambah Areal Pemanfaatan
+          </div>
+
+        </div>
+
+        <div className={mng.base__formsection}>
+          <p className={`${mng["base__formtitle"]} ${'mt-4'}`}>Areal Konservasi</p>
+          <div className="flex flex-col mt-3">
+            {
+              konservasi.map((items, i) => (
+                <div className={`${mng["base__formlabel_unique3"]}`} key={i}>
+                {
+                  i > 0 ?
+                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => konservasiRemoveLabel(i)}>
+                    do_not_disturb_on
+                  </span>
+                  :
+                  <></>
+                }
+                {
+                  items.map((item,ii) => (
+                    <>
+                      {
+                        item.isOpt ? (
+                          <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
+                            <InputForm
+                              titleForm={item.title}
+                              titleName={item.title}
+                              onChange={(e) => konservasiChange(e, i, ii)}
+                              type="text"
+                              placeholder={item.placeholder}
+                              className={`${
+                                isError && 'border-primary-red-1 bg-primary-red-2'
+                              }`}
+                              selectionArea={true}
+                            />
+                          </label>
+                        ) : (
+                          <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
+                            <span className={mng.base__inputtitle}>{item.title}</span>
+                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => konservasiChange(e, i, ii)}/>
+                          </label>
+                        )
+                      }
+                    </>
+
+                  ))
+                }
+                </div>
+              ))
+            }
+          </div>
+
+          <div className={mng.base__btn} onClick={handleBtnAddKonservasi}>
+            + Tambah Areal Pemanfaatan
+          </div>
+
+        </div>
+
+        <div className={mng.base__formsection}>
+          <p className={`${mng["base__formtitle"]} ${'mt-4'}`}>Areal Tidak Mungkin Ditanami (TMD)</p>
+          <div className="flex flex-col mt-3">
+            {
+              tmd.map((items, i) => (
+                <div className={`${mng["base__formlabel_unique3"]}`} key={i}>
+                {
+                  i > 0 ?
+                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => tmdRemoveLabel(i)}>
+                    do_not_disturb_on
+                  </span>
+                  :
+                  <></>
+                }
+                {
+                  items.map((item,ii) => (
+                    <>
+                      {
+                        item.isOpt ? (
+                          <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
+                            <InputForm
+                              titleForm={item.title}
+                              titleName={item.title}
+                              onChange={(e) => tmdChange(e, i, ii)}
+                              type="text"
+                              placeholder={item.placeholder}
+                              className={`${
+                                isError && 'border-primary-red-1 bg-primary-red-2'
+                              }`}
+                              selectionArea={true}
+                            />
+                          </label>
+                        ) : (
+                          <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
+                            <span className={mng.base__inputtitle}>{item.title}</span>
+                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => tmdChange(e, i, ii)}/>
+                          </label>
+                        )
+                      }
+                    </>
+
+                  ))
+                }
+                </div>
+              ))
+            }
+          </div>
+
+          <div className={mng.base__btn} onClick={handleBtnAddTmd}>
+            + Tambah Areal Pemanfaatan
+          </div>
+
+        </div>
+
+        <div className={mng.base__formsection}>
+          <p className={`${mng["base__formtitle"]} ${'mt-4'}`}>Areal Sawah</p>
+          <div className="flex flex-col mt-3">
+            {
+              sawah.map((items, i) => (
+                <div className={`${mng["base__formlabel_unique3"]}`} key={i}>
+                {
+                  i > 0 ?
+                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => sawahRemoveLabel(i)}>
+                    do_not_disturb_on
+                  </span>
+                  :
+                  <></>
+                }
+                {
+                  items.map((item,ii) => (
+                    <>
+                      {
+                        item.isOpt ? (
+                          <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
+                            <InputForm
+                              titleForm={item.title}
+                              titleName={item.title}
+                              onChange={(e) => sawahChange(e, i, ii)}
+                              type="text"
+                              placeholder={item.placeholder}
+                              className={`${
+                                isError && 'border-primary-red-1 bg-primary-red-2'
+                              }`}
+                              selectionArea={true}
+                            />
+                          </label>
+                        ) : (
+                          <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
+                            <span className={mng.base__inputtitle}>{item.title}</span>
+                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => sawahChange(e, i, ii)}/>
+                          </label>
+                        )
+                      }
+                    </>
+
+                  ))
+                }
+                </div>
+              ))
+            }
+          </div>
+
+          <div className={mng.base__btn} onClick={handleBtnAddSawah}>
+            + Tambah Areal Pemanfaatan
+          </div>
+
+        </div>
+
+        <div className={mng.base__formsection}>
+          <p className={`${mng["base__formtitle"]} ${'mt-4'}`}>Pihak Ketiga</p>
+
+          <div className="flex flex-col">
+            {
+              pihakKetiga.map((items, i) => (
+                <div className={`${mng["base__formlabel_twin"]}`} key={i}>
+                {
+                  i > 0 ?
+                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => pihakKetigaRemoveLabel(i)}>
+                    do_not_disturb_on
+                  </span>
+                  :
+                  <></>
+                }
+                {
+                  items.map((item,ii) => (
+                    <>
+                      {
+                        item.isOpt ? (
+                          <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
+                            <InputForm
+                              titleForm={item.title}
+                              titleName={item.title}
+                              onChange={(e) => pihakKetigaChange(e, i, ii)}
+                              type="text"
+                              placeholder={item.placeholder}
+                              className={`${
+                                isError && 'border-primary-red-1 bg-primary-red-2'
+                              }`}
+                              selectionArea={true}
+                            />
+                          </label>
+                        ) : (
+                          <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
+                            <span className={mng.base__inputtitle}>{item.title}</span>
+                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => pihakKetigaChange(e, i, ii)}/>
+                          </label>
+                        )
+                      }
+                    </>
+                  ))
+                }
+                </div>
+              ))
+            }
+          </div>
+
+          <div className={`${mng["base__btn"]}`} onClick={handleBtnAddPihakKetiga}>
+            + Tambah Areal Pemanfaatan
+          </div>
+
+        </div>
+
+        <div className={mng.base__formsection}>
+          <p className={`${mng["base__formtitle"]} ${'mt-4'}`}>Lain-lain</p>
+
+          <div className="flex flex-col">
+            {
+              lainnya.map((items, i) => (
+                <div className={`${mng["base__formlabel_twin"]}`} key={i}>
+                {
+                  i > 0 ?
+                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => lainnyaRemoveLabel(i)}>
+                    do_not_disturb_on
+                  </span>
+                  :
+                  <></>
+                }
+                {
+                  items.map((item,ii) => (
+                    <>
+                      {
+                        item.isOpt ? (
+                          <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
+                            <InputForm
+                              titleForm={item.title}
+                              titleName={item.title}
+                              onChange={(e) => lainnyaChange(e, i, ii)}
+                              type="text"
+                              placeholder={item.placeholder}
+                              className={`${
+                                isError && 'border-primary-red-1 bg-primary-red-2'
+                              }`}
+                              selectionArea={true}
+                            />
+                          </label>
+                        ) : (
+                          <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
+                            <span className={mng.base__inputtitle}>{item.title}</span>
+                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => lainnyaChange(e, i, ii)}/>
+                          </label>
+                        )
+                      }
+                    </>
+                  ))
+                }
+                </div>
+              ))
+            }
+          </div>
+
+          <div className={`${mng["base__btn"]}`} onClick={handleBtnAddLainnya}>
+            + Tambah Areal Pemanfaatan
+          </div>
+
+        </div>
+
+        <div className={mng.base__formsection}>
+          <span className={mng.base__subtitle}>Topografi</span>
+          <div className="flex flex-col">
+            {
+              topografi.map((items, i) => (
+                <div className={`${mng["base__formlabel_unique3"]}`} key={i}>
+                  {
+                    i > 0 ?
+                    <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => topografiRemoveLabel(i)}>
+                      do_not_disturb_on
+                    </span>
+                    :
+                    <></>
+                  }
+                  {
+                    items.map((item,ii) => (
+                      <div key={ii}>
+                        <p className={`${mng["base__formtitle"]} ${"mt-0"}`}>{item.sectionTitle}</p>
+                        <div className={`flex flex-wrap`}>
+                        {
+                          item.sectionData.map((child,iii) => (
+                            <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={iii}>
+                              <span className={mng.base__inputtitle}>{child.title}</span>
+                              <input className={mng.base__inputbase} type={child.type} min='0' placeholder={child.placeholder} value={child.value} onChange={(e) => topografiChange(e, i, ii, iii)}/>
+                            </label>
+                          ))
+                        }
+                        </div>
+                      </div>
+                    ))
+                  }
+                </div>
+              ))
+            }
+
+          </div>
+
+          <div className={mng.base__btn} onClick={handleBtnAddTopografi}>
+            + Tambah Data Jenis Cabang Usaha Tani
+          </div>
+
+        </div>
+
+        <div className={mng.base__formsection}>
+          <p className={`${mng["base__formtitle"]} ${'mt-4'}`}>Penanaman Baru</p>
+
+          <div className="flex flex-col">
+            {
+              tanamBaru.map((items, i) => (
+                <div className={`${mng["base__formlabel_twin"]}`} key={i}>
+                {
+                  i > 0 ?
+                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => tanamBaruRemoveLabel(i)}>
+                    do_not_disturb_on
+                  </span>
+                  :
+                  <></>
+                }
+                {
+                  items.map((item,ii) => (
+                    <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
+                      <span className={mng.base__inputtitle}>{item.title}</span>
+                      <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => tanamBaruChange(e, i, ii)}/>
+                    </label>
+                  ))
+                }
+                </div>
+              ))
+            }
+          </div>
+
+          <div className={`${mng["base__btn"]}`} onClick={handleBtnAddTanamBaru}>
+            + Tambah Jenis Penanaman Baru
+          </div>
+        </div>
+
+        <div className={mng.base__formsection}>
+          <p className={`${mng["base__formtitle"]} ${'mt-4'}`}>Komposisi Tanaman</p>
+
+          <div className="flex flex-col">
+            {
+              komposisi.map((items, i) => (
+                <div className={`${mng["base__formlabel_unique3"]} ${mng["base__formlabel_unique3-firstfull"]}`} key={i}>
+                {
+                  i > 0 ?
+                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => komposisiRemoveLabel(i)}>
+                    do_not_disturb_on
+                  </span>
+                  :
+                  <></>
+                }
+                {
+                  items.map((item,ii) => (
+                    <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
+                      <span className={mng.base__inputtitle}>{item.title}</span>
+                      <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => komposisiChange(e, i, ii)}/>
+                    </label>
+                  ))
+                }
+                </div>
+              ))
+            }
+          </div>
+
+          <div className={`${mng["base__btn"]}`} onClick={handleBtnAddKomposisi}>
+            + Tambah Jenis Penanaman Baru
+          </div>
+        </div>
+
+        <div className={mng.base__formsection}>
+          <p className={`${mng["base__formtitle"]} ${'mt-4'}`}>Pemupukan</p>
+
+          <div className="flex flex-col">
+            {
+              pemupukan.map((items, i) => (
+                <div className={`${mng["base__formlabel_twin"]} ${mng["base__formlabel_twin-firstfull"]}`} key={i}>
+                {
+                  i > 0 ?
+                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => pemupukanRemoveLabel(i)}>
+                    do_not_disturb_on
+                  </span>
+                  :
+                  <></>
+                }
+                {
+                  items.map((item,ii) => (
+                    <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
+                      <span className={mng.base__inputtitle}>{item.title}</span>
+                      <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => pemupukanChange(e, i, ii)}/>
+                    </label>
+                  ))
+                }
+                </div>
+              ))
+            }
+          </div>
+
+          <div className={`${mng["base__btn"]}`} onClick={handleBtnAddPemupukan}>
+            + Tambah Jenis Penanaman Baru
+          </div>
+        </div>
+
+        <div className={mng.base__formsection}>
+          <p className={`${mng["base__formtitle"]} ${'mt-4'}`}>Pengendalian Hama Penyakit</p>
+
+          <div className="flex flex-col">
+            {
+              hamaKendali.map((items, i) => (
+                <div className={`${mng["base__formlabel_unique3"]}`} key={i}>
+                  {
+                    i > 0 ?
+                    <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => hamaKendaliRemoveLabel(i)}>
+                      do_not_disturb_on
+                    </span>
+                    :
+                    <></>
+                  }
+                  {
+                    items.map((item,ii) => (
+                      <div className={`${mng["base__formlabel_unique3-secnormal"]}`} key={ii}>
+                        <p className={`${mng["base__formtitle"]} ${"mt-0"}`}>{item.sectionTitle}</p>
+                        <div className={`${mng["base__formlabel_unique3"]} ${mng["base__formlabel_unique3-firstfull"]}`}>
+                        {
+                          item.sectionData.map((child,iii) => (
+                            <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={iii}>
+                              <span className={mng.base__inputtitle}>{child.title}</span>
+                              <input className={mng.base__inputbase} type={child.type} min='0' placeholder={child.placeholder} value={child.value} onChange={(e) => hamaKendaliChange(e, i, ii, iii)}/>
+                            </label>
+                          ))
+                        }
+                        </div>
+                      </div>
+                    ))
+                  }
+                </div>
+              ))
+            }
+
+          </div>
+
+          <div className={`${mng["base__btn"]}`} onClick={handleBtnAddHamaKendali}>
+            + Tambah Jenis Penanaman Baru
+          </div>
+        </div>
+
+        <div className={mng.base__formsection}>
+          <p className={`${mng["base__formtitle"]} ${'mt-4'}`}>Diversifikasi Usaha Tani</p>
+
+          <div className="flex flex-col">
+            {
+              disertifikasi.map((items, i) => (
+                <div className={`${mng["base__formlabel_twin"]} ${mng["base__formlabel_twin-firstfull"]}`} key={i}>
+                {
+                  i > 0 ?
+                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => disertifikasiRemoveLabel(i)}>
+                    do_not_disturb_on
+                  </span>
+                  :
+                  <></>
+                }
+                {
+                  items.map((item,ii) => (
+                    <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
+                      <span className={mng.base__inputtitle}>{item.title}</span>
+                      <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => disertifikasiChange(e, i, ii)}/>
+                    </label>
+                  ))
+                }
+                </div>
+              ))
+            }
+          </div>
+
+          <div className={`${mng["base__btn"]}`} onClick={handleBtnAddDisertifikasi}>
+            + Tambah Jenis Penanaman Baru
+          </div>
+        </div>
+
+        <div className={`${["mng.base__formsection"]} border-b-0`}>
+          <p className={`${mng["base__formtitle"]} ${'mt-4'}`}>Produksi dan Produktivitas</p>
+
+          <div className="flex flex-col">
+            {
+              produksiProduktivitas.map((items, i) => (
+                <div className={`${mng["base__formlabel_twin"]} ${mng["base__formlabel_twin-firstfull"]}`} key={i}>
+                {
+                  i > 0 ?
+                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => produksiProduktivitasRemoveLabel(i)}>
+                    do_not_disturb_on
+                  </span>
+                  :
+                  <></>
+                }
+                {
+                  items.map((item,ii) => (
+                    <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
+                      <span className={mng.base__inputtitle}>{item.title}</span>
+                      <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => produksiProduktivitasChange(e, i, ii)}/>
+                    </label>
+                  ))
+                }
+                </div>
+              ))
+            }
+          </div>
+
+          <div className={`${mng["base__btn"]}`} onClick={handleBtnAddProduksiProduktivitas}>
+            + Tambah Jenis Penanaman Baru
+          </div>
+        </div>
+
+        <div className='flex justify-end items-center mt-9 pt-0.5'>
+          {/*
+            <div className={`${mng["base__btnclear"]} ${"mt-1"}`} onClick={clearData}>
+              <span className="ml-1.5">Clear data</span>
+            </div>
+          */}
+
+          <button className={`${mng["base__btnsimpan"]} ${"float-right mt-1"}`} onClick={storeData} disabled={!btnValid}>
+            Simpan dan Lanjutkan
+          </button>
+        </div>
+
+      </form>
     </>
   );
 };

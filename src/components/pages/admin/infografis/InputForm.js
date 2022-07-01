@@ -70,7 +70,7 @@ function InputForm({
         )}
         {phoneNumber && (
           <div className="flex gap-3">
-            <div className="flex items-center justify-center rounded-md border bg-white-2 py-3 px-4 text-sm">
+            <div className="flex items-center justify-center rounded-md bg-white-2 py-3 px-4 text-sm">
               +62
             </div>
             <input
@@ -94,20 +94,23 @@ function InputForm({
               m-0
               block
               w-full
-              rounded
-              border
+              rounded-md
+              border-white-2
               border-solid
-              border-gray-300 bg-white-2 bg-clip-padding
+              bg-white-2 bg-clip-padding
               bg-no-repeat px-4 py-3
               leading-4
               text-sm
               text-gray-400
               transition
               ease-in-out
-              h-[46px]
-              focus:border-primary-green focus:bg-white focus:text-gray-700 focus:outline-none
+              h-[48px]
+              cursor-pointer
+              placeholder:text-primary-gray-4
+              focus:border-primary-green border focus:bg-white focus:text-gray-700 focus:outline-none
             "
             aria-label="Default select example"
+            onChange={onChange}
           >
             <option disabled defaultValue hidden>
               {placeholder}

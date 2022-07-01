@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import Navbar from './Navbar';
+import Footer from './Footer';
 import Sidebar from './sidebar/Sidebar';
+import StickyBox from "react-sticky-box";
 import Head from 'next/head';
 
 const Page = ({
@@ -37,16 +39,18 @@ const Page = ({
           />
         </div>
         {sidebar ? (
-          <div className="w-full mx-20 mt-[100px] mb-5 flex justify-between min-h-[85vh] text-sm mx-auto">
-            <Sidebar
-              navList={navListSidebar}
-              icon={sidebarWithIcon}
-              onePage={sidebarOnePage}
-              handleChangePath={onChangeSidebar}
-              isActive={isActiveSidebar}
-              isActiveConfirm={isActiveConfirmPage}
-              handleChangePathConfirm={onChangeSidebarConfirm}
-            />
+          <div className="w-full mx-20 mt-[100px] mb-5 flex justify-between min-h-[85vh] text-sm mx-auto flex items-start">
+            <StickyBox offsetTop={100}>
+              <Sidebar
+                navList={navListSidebar}
+                icon={sidebarWithIcon}
+                onePage={sidebarOnePage}
+                handleChangePath={onChangeSidebar}
+                isActive={isActiveSidebar}
+                isActiveConfirm={isActiveConfirmPage}
+                handleChangePathConfirm={onChangeSidebarConfirm}
+              />
+            </StickyBox>
             <div className="w-[calc(100%-280px)] flex min-h-full bg-white px-10 py-6 ml-auto">
               {children}
             </div>
@@ -61,6 +65,7 @@ const Page = ({
           </div>
         )}
       </div>
+      <Footer />
     </div>
   );
 };

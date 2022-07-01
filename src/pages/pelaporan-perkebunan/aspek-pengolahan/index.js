@@ -20,7 +20,7 @@ const PengolahanPage = () => {
         <div className="relative mt-5 w-full">
           <BreadCrumbs
             links={[
-              { path: '/infografis', title: 'Infografis' },
+              { path: '/', title: 'Beranda' },
               { path: '/infografis/buat-laporan', title: 'Buat Laporan' },
               {
                 path: '/pelaporan-perkebunan/aspek-pengolahan',

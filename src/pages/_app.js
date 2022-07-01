@@ -1,4 +1,4 @@
-import '../styles/globals.css';
+import '../styles/globals.scss';
 import { Provider } from 'react-redux';
 import { store } from 'src/redux/store';
 import AuthProvider from '../components/provider/AuthProvider';

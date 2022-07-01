@@ -15,7 +15,7 @@ const KebunPage = () => {
       backdropHeight="h-[280px]"
       navListSidebar={navListPenilaianPerkebunan}
     >
-      <div className="relative mt-5">
+      <div className="relative mt-5 w-full">
         <BreadCrumbs
           links={[
             { path: '/infografis', title: 'Infografis' },
@@ -27,21 +27,9 @@ const KebunPage = () => {
           ]}
         />
         <div className="mt-6 flex items-center justify-between ">
-          <div className=" text-3xl font-semibold text-black">
-            Sub Sitem Kebun
-          </div>
-          <div className="flex items-center rounded-md bg-white py-2 px-3 text-primary-black">
-            <DatePicker
-              closeOnScroll={true}
-              selected={daySelected}
-              onChange={(date) => setDaySelected(date)}
-              dateFormat="dd MMMM yyyy"
-              className="w-28 text-xs focus:outline-none"
-            />
-            <img src="/icon/menu-board.svg" />
-          </div>
+          <div className=" text-4xl font-semibold text-black">Sub Sitem Kebun</div>
         </div>
-        <div className="w-[70%]">
+        <div className="w-[632px]">
           <FormKebun />
         </div>
       </div>

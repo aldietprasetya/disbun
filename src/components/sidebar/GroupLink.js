@@ -126,6 +126,8 @@ export const navList = [
     path: '/pelaporan-perkebunan/aspek-umum',
     icon: '/icon/home-icon-white.svg',
     isAdmin: true,
+    stickyBot: false,
+    arrowRight: false,
     // isActive: true,
   },
   {
@@ -133,6 +135,8 @@ export const navList = [
     path: '/pelaporan-perkebunan/aspek-manajemen',
     icon: '/icon/home-icon-white.svg',
     isAdmin: true,
+    stickyBot: false,
+    arrowRight: false,
     // isActive: true,
   },
   {
@@ -140,6 +144,8 @@ export const navList = [
     path: '/pelaporan-perkebunan/aspek-kebun',
     icon: '/icon/home-icon-white.svg',
     isAdmin: true,
+    stickyBot: false,
+    arrowRight: false,
     // isActive: false,
   },
   {
@@ -147,12 +153,25 @@ export const navList = [
     path: '/pelaporan-perkebunan/aspek-pengolahan',
     icon: '/icon/home-icon-white.svg',
     isAdmin: true,
+    stickyBot: false,
+    arrowRight: false,
   },
   {
     title: 'Aspek Sosial Ekonomi dan Lingkungan',
     path: '/pelaporan-perkebunan/aspek-sosial',
     icon: '/icon/home-icon-white.svg',
     isAdmin: true,
+    stickyBot: false,
+    arrowRight: false,
+    // isActive: false,
+  },
+  {
+    title: 'Konfirmasi',
+    path: '/pelaporan-perkebunan/konfirmasi',
+    icon: '/icon/home-icon-white.svg',
+    isAdmin: true,
+    stickyBot: true,
+    arrowRight: true,
     // isActive: false,
   },
 ];

@@ -1,4 +1,5 @@
 module.exports = {
+  important: true,
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx}',
     './src/components/**/*.{js,ts,jsx,tsx}',
@@ -28,6 +29,7 @@ module.exports = {
           // black
           black: '#01231F',
           'black-2': '#404040',
+          'black-3': '#151C1B',
           teal: 'rgba(3, 133, 117, 0.2)',
           // grey
           'gray-1': '#9E9E9E',
