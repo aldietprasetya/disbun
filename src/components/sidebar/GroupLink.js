@@ -182,6 +182,8 @@ export const navListPenilaianPerkebunan = [
     path: '/penilaian-perkebunan/legalitas',
     icon: '/icon/home-icon-white.svg',
     isAdmin: true,
+    stickyBot: false,
+    arrowRight: false,
     // isActive: true,
   },
   {
@@ -189,6 +191,8 @@ export const navListPenilaianPerkebunan = [
     path: '/penilaian-perkebunan/manajemen',
     icon: '/icon/home-icon-white.svg',
     isAdmin: true,
+    stickyBot: false,
+    arrowRight: false,
     // isActive: true,
   },
   {
@@ -196,6 +200,8 @@ export const navListPenilaianPerkebunan = [
     path: '/penilaian-perkebunan/kebun',
     icon: '/icon/home-icon-white.svg',
     isAdmin: true,
+    stickyBot: false,
+    arrowRight: false,
     // isActive: false,
   },
   {
@@ -203,12 +209,16 @@ export const navListPenilaianPerkebunan = [
     path: '/penilaian-perkebunan/pengolahan-hasil',
     icon: '/icon/home-icon-white.svg',
     isAdmin: true,
+    stickyBot: false,
+    arrowRight: false,
   },
   {
     title: 'Sosial',
     path: '/penilaian-perkebunan/sosial',
     icon: '/icon/home-icon-white.svg',
     isAdmin: true,
+    stickyBot: false,
+    arrowRight: false,
     // isActive: false,
   },
   {
@@ -216,6 +226,8 @@ export const navListPenilaianPerkebunan = [
     path: '/penilaian-perkebunan/ekonomi-wilayah',
     icon: '/icon/home-icon-white.svg',
     isAdmin: true,
+    stickyBot: false,
+    arrowRight: false,
     // isActive: false,
   },
   {
@@ -223,6 +235,8 @@ export const navListPenilaianPerkebunan = [
     path: '/penilaian-perkebunan/lingkungan',
     icon: '/icon/home-icon-white.svg',
     isAdmin: true,
+    stickyBot: false,
+    arrowRight: false,
     // isActive: false,
   },
   {
@@ -230,6 +244,17 @@ export const navListPenilaianPerkebunan = [
     path: '/penilaian-perkebunan/pelaporan',
     icon: '/icon/home-icon-white.svg',
     isAdmin: true,
+    stickyBot: false,
+    arrowRight: false,
+    // isActive: false,
+  },
+  {
+    title: 'Konfirmasi',
+    path: '/penilaian-perkebunan/konfirmasi',
+    icon: '/icon/home-icon-white.svg',
+    isAdmin: true,
+    stickyBot: true,
+    arrowRight: true,
     // isActive: false,
   },
 ];

@@ -109,10 +109,10 @@ const Sidebar = ({
           <>
             {icon ? (
               <>
-                {navList?.map((list) => {
+                {navList?.map((list,i) => {
                   return (
                     <NavItem
-                      key={list.title}
+                      key={i}
                       title={list.title}
                       icon={list.icon}
                       isActive={router.asPath.match(list.path)}

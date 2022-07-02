@@ -115,7 +115,7 @@ const FormAspekPengolahan = () => {
   ////////////////////////// Jenis Mutu Akhir ////////////////////////////////
 
   const [mutu, setMutu] = useState([
-    [ 
+    [
       {
         'sectionTitle': '',
         'sectionData': [
@@ -134,14 +134,36 @@ const FormAspekPengolahan = () => {
         'sectionTitle': 'Hasil Olah',
         'sectionData': [
           {'title':'Jenis Mutu Akhir','type':'text','placeholder':'Jumlah','value':''},
-          {'title':'Volume Produksi (kg)','type':'text','placeholder':'Volume','value':''},
+          {'title':'Volume Produksi (kg)','type':'text','placeholder':'Volume','value':''}
         ]
       },
     ]
   ])
 
   function handleBtnAddMutu() {
-    setMutu([...mutu,[ { 'sectionTitle': '', 'sectionData': [ {'title':'Jenis UPH','type':'text','placeholder':'Jenis UPH','value':''}, {'title':'Jumlah (unit)','type':'text','placeholder':'Luas/Volume','value':''}, {'title':'Luas bangunan (m2)','type':'text','placeholder':'Luas','value':''}, ] }, { 'sectionTitle': 'Total Kapasitas', 'sectionData': [ {'title':'Terpasang (kg/hari)','type':'text','placeholder':'Jumlah','value':''}, {'title':'terpakai (kg/hari)','type':'text','placeholder':'Jumlah','value':''}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''}, ] }, ]])
+    setMutu([...mutu,[
+      {
+        'sectionTitle': '',
+        'sectionData': [
+          {'title':'Jenis UPH','type':'text','placeholder':'Jenis Tanaman','value':''}
+        ]
+      },
+      {
+        'sectionTitle': 'Asal Bahan Baku (Kg)',
+        'sectionData': [
+          {'title':'Sendiri (Kg)','type':'text','placeholder':'Jumlah','value':''},
+          {'title':'Kebun Seinduk (Kg)','type':'text','placeholder':'Jumlah','value':''},
+          {'title':'Beli (kg)','type':'text','placeholder':'Jumlah','value':''},
+        ]
+      },
+      {
+        'sectionTitle': 'Hasil Olah',
+        'sectionData': [
+          {'title':'Jenis Mutu Akhir','type':'text','placeholder':'Jumlah','value':''},
+          {'title':'Volume Produksi (kg)','type':'text','placeholder':'Volume','value':''}
+        ]
+      },
+    ]])
   }
 
   function mutuRemoveLabel(i) {
@@ -151,6 +173,57 @@ const FormAspekPengolahan = () => {
   function mutuChange(e, index, index2, index3) {
     let stet = mutu
     let set = setMutu
+    const { name, value } = e.target;
+    const list = [...stet];
+    list.forEach((item, i) => {
+      if (i == index) {
+        item.forEach((item2, ii) => {
+          if (ii == index2) {
+            item2.sectionData.forEach((item3, iii) => {
+              if (iii == index3) {
+                item3.value = value
+              }
+            });
+          }
+        });
+      }
+    });
+    set(list);
+  }
+
+  ////////////////////////// Hasil Olah ////////////////////////////////
+
+  const [olah, setOlah] = useState([
+    [
+      {
+        'sectionTitle': 'Hasil Olah',
+        'sectionData': [
+          {'title':'Jenis Mutu Akhir','type':'text','placeholder':'Jumlah','value':''},
+          {'title':'Volume Produksi (kg)','type':'text','placeholder':'Volume','value':''},
+        ]
+      },
+    ]
+  ])
+
+  function handleBtnAddOlah() {
+    setOlah([...olah,[
+      {
+        'sectionTitle': 'Hasil Olah',
+        'sectionData': [
+          {'title':'Jenis Mutu Akhir','type':'text','placeholder':'Jumlah','value':''},
+          {'title':'Volume Produksi (kg)','type':'text','placeholder':'Volume','value':''},
+        ]
+      },
+    ]])
+  }
+
+  function olahRemoveLabel(i) {
+    setOlah(olah.filter((item, idx) => idx != i))
+  }
+
+  function olahChange(e, index, index2, index3) {
+    let stet = olah
+    let set = setOlah
     const { name, value } = e.target;
     const list = [...stet];
     list.forEach((item, i) => {
@@ -293,6 +366,51 @@ const FormAspekPengolahan = () => {
 
           <div className={`${mng["base__btn"]}`} onClick={handleBtnAddJenisBahanBaku}>
             + Tambah Jenis Penanaman Baru
+          </div>
+        </div>
+
+        <div className={`${["mng.base__formsection"]} border-b-0`}>
+          <span className={mng.base__subtitle}>Jenis Mutu Akhir</span>
+
+          <div className="flex flex-col">
+            {
+              mutu.map((items, i) => (
+                <div className={`${mng["base__formlabel_unique5"]}`} key={i}>
+                  {
+                    i > 0 ?
+                    <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => mutuRemoveLabel(i)}>
+                      do_not_disturb_on
+                    </span>
+                    :
+                    <></>
+                  }
+                  {
+                    items.map((item,ii) => (
+                      <div className={`${mng["base__formlabel_unique5-condition"]} w-full`} key={ii}>
+                        <p className={`${mng["base__formtitle"]} ${"mt-0"}`}>{item.sectionTitle}</p>
+                        <div className={`${mng["base__formlabel_unique5"]}`}>
+                        {
+                          item.sectionData.map((child,iii) => (
+                            <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={iii}>
+                              <span className={mng.base__inputtitle}>{child.title}</span>
+                              <input className={mng.base__inputbase} type={child.type} min='0' placeholder={child.placeholder} value={child.value} onChange={(e) => mutuChange(e, i, ii, iii)}/>
+                            </label>
+                          ))
+                        }
+                        </div>
+                      </div>
+                    ))
+                  }
+                </div>
+              ))
+            }
+          </div>
+          <div className={`${mng["base__btn"]} mb-6`} onClick={handleBtnAddMutu}>
+            + Tambah Hasil Olah Lainnya
+          </div>
+
+          <div className={`${mng["base__btn"]}`} onClick={handleBtnAddMutu}>
+            + Tambah Jenis Mutu Akhir UPH Lainnya
           </div>
         </div>
 
