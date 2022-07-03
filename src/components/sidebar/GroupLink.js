@@ -206,7 +206,7 @@ export const navListPenilaianPerkebunan = [
   },
   {
     title: 'Pengolahan Hasil',
-    path: '/penilaian-perkebunan/pengolahan-hasil',
+    path: '/penilaian-perkebunan/pengolahan',
     icon: '/icon/home-icon-white.svg',
     isAdmin: true,
     stickyBot: false,
@@ -223,7 +223,7 @@ export const navListPenilaianPerkebunan = [
   },
   {
     title: 'Ekonomi Wilayah',
-    path: '/penilaian-perkebunan/ekonomi-wilayah',
+    path: '/penilaian-perkebunan/ekonomi',
     icon: '/icon/home-icon-white.svg',
     isAdmin: true,
     stickyBot: false,

@@ -7,11 +7,11 @@ const FormLegalitas = () => {
   return (
     <>
       <div className="pb-4">
-        <div className="mt-6 text-base text-blue-600">
+        <div className="mt-6 text-small text-blue-600">
           <a href="/admin/infografis">Periode Pengisian</a>
         </div>
         {/* Form GRID */}
-        <div className="mt-6 grid w-full grid-cols-2 gap-2">
+        <div className="mt-6 grid w-full grid-cols-2 gap-4">
           <InputForm
             titleForm="Bulan"
             titleName="bulanPeriode"
@@ -21,7 +21,7 @@ const FormLegalitas = () => {
             placeholder="Pilih Bulan"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             selectionArea={true}
           />
           <InputForm
@@ -33,14 +33,14 @@ const FormLegalitas = () => {
             placeholder="Pilih Tahun"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             selectionArea={true}
           />
         </div>
       </div>
 
       <div className="mt-2 pb-6 border-b border-primary-gray-2">
-        <div className="text-base text-blue-600">
+        <div className="text-small text-blue-600">
           <a href="/admin/infografis">Identitas Perusahaan/Kebun</a>
         </div>
         <div className="mt-6">
@@ -53,7 +53,7 @@ const FormLegalitas = () => {
             placeholder="Nama Perusahaan Perkebunan"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
@@ -67,11 +67,11 @@ const FormLegalitas = () => {
             placeholder="Nama Perusahaan Perkebunan"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             selectionArea="true"
           />
         </div>
-        <div className="mt-6 grid w-full grid-cols-2 gap-2">
+        <div className="mt-6 grid w-full grid-cols-2 gap-4">
           <InputForm
             titleForm="Alamat Kantor Pusat"
             titleName="email"
@@ -82,7 +82,7 @@ const FormLegalitas = () => {
             placeholder="Tulis Alamat"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } block h-[150px] w-full rounded border bg-white-2  py-3 px-4 placeholder:text-primary-gray-4 focus:border-green-600 focus:outline-none`}
+            } block h-[150px] w-full rounded  bg-white-2  py-3 px-4 placeholder:text-primary-gray-4 focus:border-green-600 focus:outline-none`}
           />
           <div>
             <InputForm
@@ -95,7 +95,7 @@ const FormLegalitas = () => {
               placeholder="Masukan Nomor Telepon"
               className={`${
                 isError && 'border-primary-red-1 bg-primary-red-2'
-              } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+              } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             />
             <div className="mt-6">
               <InputForm
@@ -108,7 +108,7 @@ const FormLegalitas = () => {
                 placeholder="Masukan Nomor Telepon"
                 className={`${
                   isError && 'border-primary-red-1 bg-primary-red-2'
-                } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+                } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
               />
             </div>
           </div>
@@ -122,7 +122,7 @@ const FormLegalitas = () => {
             placeholder="Tulis Alamat"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } block h-[150px] w-full rounded border bg-white-2  py-3 px-4 placeholder:text-primary-gray-4 focus:border-green-600 focus:outline-none`}
+            } block h-[150px] w-full rounded  bg-white-2  py-3 px-4 placeholder:text-primary-gray-4 focus:border-green-600 focus:outline-none`}
           />
           <div>
             <InputForm
@@ -135,7 +135,7 @@ const FormLegalitas = () => {
               placeholder="Masukan Nomor Telepon"
               className={`${
                 isError && 'border-primary-red-1 bg-primary-red-2'
-              } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+              } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             />
             <div className="mt-6">
               <InputForm
@@ -148,7 +148,7 @@ const FormLegalitas = () => {
                 placeholder="Masukan Nomor Telepon"
                 className={`${
                   isError && 'border-primary-red-1 bg-primary-red-2'
-                } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+                } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
               />
             </div>
           </div>
@@ -163,12 +163,12 @@ const FormLegalitas = () => {
             placeholder="Nama Perusahaan Perkebunan"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
-        <div className="mt-4 text-base text-primary-black-2">Lokasi Kebun</div>
-        <div className="mt-4 grid w-full grid-cols-3 gap-2">
+        <div className="mt-4 text-small text-primary-black-2">Lokasi Kebun</div>
+        <div className="mt-4 grid w-full grid-cols-3 gap-4">
           <InputForm
             titleForm="Kota/Kabupaten"
             titleName="email"
@@ -178,7 +178,7 @@ const FormLegalitas = () => {
             placeholder="Pilih Kota / Kab"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             selectionArea="true"
           />
           <InputForm
@@ -190,7 +190,7 @@ const FormLegalitas = () => {
             placeholder="Pilih Kecamatan"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             selectionArea="true"
           />
           <InputForm
@@ -202,11 +202,11 @@ const FormLegalitas = () => {
             placeholder="Pilih Kel/Desa"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             selectionArea="true"
           />
         </div>
-        <div className="mt-4 text-base text-primary-black-2">
+        <div className="mt-4 text-small text-primary-black-2">
           Lingkup Usaha (Pilih Salah Satu dan Lengkapi)
         </div>
         <div className="mt-6">
@@ -219,11 +219,11 @@ const FormLegalitas = () => {
             placeholder="Nama Perusahaan Perkebunan"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
-        <div className="mt-6 grid w-full grid-cols-2 gap-2">
+        <div className="mt-6 grid w-full grid-cols-2 gap-4">
           <InputForm
             titleForm="Pengolahan Komoditi"
             titleName="email"
@@ -233,7 +233,7 @@ const FormLegalitas = () => {
             placeholder="Komoditi"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -245,20 +245,20 @@ const FormLegalitas = () => {
             placeholder="Produk Pengolahan"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
       </div>
 
       <div className="mt-2 pb-6 border-b border-primary-gray-2">
-        <div className="mt-6 text-base text-blue-600">
+        <div className="mt-6 text-small text-blue-600">
           <a href="/admin/infografis">Legalitas Usaha</a>
         </div>
-        <div className="mt-4 text-base text-primary-black-2">
+        <div className="mt-4 text-small text-primary-black-2">
           Hak Guna Usaha (HGU)
         </div>
-        <div className="mt-6 grid w-full grid-cols-2 gap-2">
+        <div className="mt-6 grid w-full grid-cols-2 gap-4">
           <InputForm
             titleForm="No. SK HGU"
             titleName="email"
@@ -268,7 +268,7 @@ const FormLegalitas = () => {
             placeholder="Nomor SK HGU"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -280,7 +280,7 @@ const FormLegalitas = () => {
             // values={values.email}
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4  text-base uppercase text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3 px-4 text-small uppercase text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
@@ -294,11 +294,11 @@ const FormLegalitas = () => {
             placeholder="Nama Persil"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
-        <div className="mt-6 grid w-full grid-cols-2 gap-2">
+        <div className="mt-6 grid w-full grid-cols-2 gap-4">
           <InputForm
             titleForm="Luas Lahan (Ha)"
             titleName="email"
@@ -308,7 +308,7 @@ const FormLegalitas = () => {
             placeholder="Luas Lahan dalam Ha"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } mb-6 w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } mb-6 w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -320,7 +320,7 @@ const FormLegalitas = () => {
             // values={values.email}
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4  text-base uppercase text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3 px-4  text-small uppercase text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -332,7 +332,7 @@ const FormLegalitas = () => {
             placeholder="Komoditas Lahan"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } mb-6 w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } mb-6 w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -344,7 +344,7 @@ const FormLegalitas = () => {
             placeholder="Keterangan"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } mb-6 w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } mb-6 w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             selectionArea="true"
           />
         </div>
@@ -367,7 +367,7 @@ const FormLegalitas = () => {
       </div>
 
       <div className="mt-2 pb-6 border-b border-primary-gray-2">
-        <div className="my-4 text-base text-primary-black-2">
+        <div className="my-4 text-small text-primary-black-2">
           HGU Dalam Proses
         </div>
         <InputForm
@@ -379,7 +379,7 @@ const FormLegalitas = () => {
           placeholder="Pilih Jenis IUP"
           className={`${
             isError && 'border-primary-red-1 bg-primary-red-2'
-          } mb-6 w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
+          } mb-6 w-full rounded  bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
           iconEmail="true"
         />
         <textarea
@@ -407,7 +407,7 @@ const FormLegalitas = () => {
       </div>
 
       <div className="mt-2 pb-6 border-b border-primary-gray-2">
-        <div className="mt-4 text-base text-primary-black-2">
+        <div className="mt-4 text-small text-primary-black-2">
           Perizinan Usaha Perkebunan
         </div>
         <div className="mt-6">
@@ -420,11 +420,11 @@ const FormLegalitas = () => {
             placeholder="Pilih jenis IUP"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
-        <div className="mt-6 grid w-full grid-cols-2 gap-2">
+        <div className="mt-6 grid w-full grid-cols-2 gap-4">
           <InputForm
             titleForm="Tanggal SK HGU"
             titleName="email"
@@ -434,7 +434,7 @@ const FormLegalitas = () => {
             // values={values.email}
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4  text-base uppercase text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3 px-4  text-small uppercase text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -446,7 +446,7 @@ const FormLegalitas = () => {
             placeholder="Pejabat Pemberi Izin"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } mb-6 w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } mb-6 w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
@@ -471,11 +471,11 @@ const FormLegalitas = () => {
             placeholder="Pilih jenis IUP"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
-        <div className="mt-6 grid w-full grid-cols-2 gap-2">
+        <div className="mt-6 grid w-full grid-cols-2 gap-4">
           <InputForm
             titleForm="Tanggal"
             titleName="email"
@@ -485,7 +485,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } mb-6 w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } mb-6 w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -497,7 +497,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } mb-6 w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } mb-6 w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
@@ -524,11 +524,11 @@ const FormLegalitas = () => {
             placeholder="Pilih jenis IUP"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
-        <div className="mt-6 grid w-full grid-cols-2 gap-2">
+        <div className="mt-6 grid w-full grid-cols-2 gap-4">
           <InputForm
             titleForm="Tanggal"
             titleName="email"
@@ -538,7 +538,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } mb-6 w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } mb-6 w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -550,7 +550,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } mb-6 w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } mb-6 w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
@@ -577,11 +577,11 @@ const FormLegalitas = () => {
             placeholder="Pilih jenis IUP"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
-        <div className="mt-6 grid w-full grid-cols-2 gap-2">
+        <div className="mt-6 grid w-full grid-cols-2 gap-4">
           <InputForm
             titleForm="Tanggal"
             titleName="email"
@@ -591,7 +591,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } mb-6 w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } mb-6 w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -603,7 +603,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } mb-6 w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } mb-6 w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
@@ -630,11 +630,11 @@ const FormLegalitas = () => {
             placeholder="Pilih jenis IUP"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
-        <div className="mt-6 grid w-full grid-cols-2 gap-2">
+        <div className="mt-6 grid w-full grid-cols-2 gap-4">
           <InputForm
             titleForm="Tanggal"
             titleName="email"
@@ -644,7 +644,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } mb-6 w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } mb-6 w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -656,7 +656,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } mb-6 w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } mb-6 w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
@@ -683,11 +683,11 @@ const FormLegalitas = () => {
             placeholder="Pilih jenis IUP"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
-        <div className="mt-6 grid w-full grid-cols-2 gap-2">
+        <div className="mt-6 grid w-full grid-cols-2 gap-4">
           <InputForm
             titleForm="Tanggal"
             titleName="email"
@@ -697,7 +697,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } mb-6 w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } mb-6 w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -709,7 +709,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } mb-6 w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } mb-6 w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
@@ -729,11 +729,11 @@ const FormLegalitas = () => {
       </div>
 
       <div className="mt-2 pb-6 border-b border-primary-gray-2">
-        <div className="mt-6 text-base text-blue-600">
+        <div className="mt-6 text-small text-blue-600">
           <a href="/aspek/umum">Tanah dan Iklim</a>
         </div>
         <div className="mt-4 text-primary-black-2">Tanah</div>
-        <div className="mt-4 grid w-full grid-cols-2 gap-2">
+        <div className="mt-4 grid w-full grid-cols-2 gap-4">
           <InputForm
             titleForm="Jenis Tanah"
             titleName="email"
@@ -743,7 +743,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             selectionArea="true"
           />
           <InputForm
@@ -755,12 +755,12 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
         <div className="mt-4 text-primary-black-2">Lereng Datar (0-8 %)</div>
-        <div className="mt-4 grid w-full grid-cols-3 gap-2">
+        <div className="mt-4 grid w-full grid-cols-3 gap-4">
           <InputForm
             titleForm="Luas (Ha)"
             titleName="email"
@@ -770,7 +770,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -782,7 +782,7 @@ const FormLegalitas = () => {
             placeholder="Persentase"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -794,12 +794,12 @@ const FormLegalitas = () => {
             placeholder="Keterangan"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
         <div className="mt-4 text-primary-black-2">Lereng Landai (8-15 %)</div>
-        <div className="mt-4 grid w-full grid-cols-3 gap-2">
+        <div className="mt-4 grid w-full grid-cols-3 gap-4">
           <InputForm
             titleForm="Luas (Ha)"
             titleName="email"
@@ -809,7 +809,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -821,7 +821,7 @@ const FormLegalitas = () => {
             placeholder="Persentase"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -833,12 +833,12 @@ const FormLegalitas = () => {
             placeholder="Keterangan"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
         <div className="mt-4 text-primary-black-2">Lereng Berombak (15-24 %)</div>
-        <div className="mt-4 grid w-full grid-cols-3 gap-2">
+        <div className="mt-4 grid w-full grid-cols-3 gap-4">
           <InputForm
             titleForm="Luas (Ha)"
             titleName="email"
@@ -848,7 +848,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -860,7 +860,7 @@ const FormLegalitas = () => {
             placeholder="Persentase"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -872,12 +872,12 @@ const FormLegalitas = () => {
             placeholder="Keterangan"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
         <div className="mt-4 text-primary-black-2">Lereng Berbukit (24-45 %)</div>
-        <div className="mt-4 grid w-full grid-cols-3 gap-2">
+        <div className="mt-4 grid w-full grid-cols-3 gap-4">
           <InputForm
             titleForm="Luas (Ha)"
             titleName="email"
@@ -887,7 +887,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -899,7 +899,7 @@ const FormLegalitas = () => {
             placeholder="Persentase"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -911,14 +911,14 @@ const FormLegalitas = () => {
             placeholder="Keterangan"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
         <div className="mt-4 text-primary-black-2">
           {'Lereng Bergunung (>45 %)'}
         </div>
-        <div className="mt-4 grid w-full grid-cols-3 gap-2">
+        <div className="mt-4 grid w-full grid-cols-3 gap-4">
           <InputForm
             titleForm="Luas (Ha)"
             titleName="email"
@@ -928,7 +928,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -940,7 +940,7 @@ const FormLegalitas = () => {
             placeholder="Persentase"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -952,11 +952,11 @@ const FormLegalitas = () => {
             placeholder="Keterangan"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
-        <div className="mt-4 grid w-full grid-cols-2 gap-2">
+        <div className="mt-4 grid w-full grid-cols-2 gap-4">
           <InputForm
             titleForm="Tekstur Tanah"
             titleName="email"
@@ -966,7 +966,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -978,11 +978,11 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
-        <div className="mt-4 grid w-full grid-cols-2 gap-2">
+        <div className="mt-4 grid w-full grid-cols-2 gap-4">
           <InputForm
             titleForm="Kedalaman efektif solum (m)"
             titleName="email"
@@ -992,7 +992,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -1004,7 +1004,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
@@ -1018,11 +1018,11 @@ const FormLegalitas = () => {
             placeholder="Pilih jenis IUP"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
-        <div className="mt-6 grid w-full grid-cols-2 gap-2">
+        <div className="mt-6 grid w-full grid-cols-2 gap-4">
           <InputForm
             titleForm="Tanggal"
             titleName="email"
@@ -1032,7 +1032,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } mb-6 w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } mb-6 w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -1044,7 +1044,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } mb-6 w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } mb-6 w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
@@ -1069,11 +1069,11 @@ const FormLegalitas = () => {
             placeholder="Pilih jenis IUP"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
-        <div className="mt-6 grid w-full grid-cols-2 gap-2">
+        <div className="mt-6 grid w-full grid-cols-2 gap-4">
           <InputForm
             titleForm="Tanggal"
             titleName="email"
@@ -1083,7 +1083,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } mb-6 w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } mb-6 w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -1095,7 +1095,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } mb-6 w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } mb-6 w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
@@ -1122,11 +1122,11 @@ const FormLegalitas = () => {
             placeholder="Pilih jenis IUP"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
-        <div className="mt-6 grid w-full grid-cols-2 gap-2">
+        <div className="mt-6 grid w-full grid-cols-2 gap-4">
           <InputForm
             titleForm="Tanggal"
             titleName="email"
@@ -1136,7 +1136,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } mb-6 w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } mb-6 w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -1148,7 +1148,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } mb-6 w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } mb-6 w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
@@ -1175,11 +1175,11 @@ const FormLegalitas = () => {
             placeholder="Pilih jenis IUP"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
-        <div className="mt-6 grid w-full grid-cols-2 gap-2">
+        <div className="mt-6 grid w-full grid-cols-2 gap-4">
           <InputForm
             titleForm="Tanggal"
             titleName="email"
@@ -1189,7 +1189,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } mb-6 w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } mb-6 w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -1201,7 +1201,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } mb-6 w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } mb-6 w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
@@ -1228,11 +1228,11 @@ const FormLegalitas = () => {
             placeholder="Pilih jenis IUP"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
-        <div className="mt-6 grid w-full grid-cols-2 gap-2">
+        <div className="mt-6 grid w-full grid-cols-2 gap-4">
           <InputForm
             titleForm="Tanggal"
             titleName="email"
@@ -1242,7 +1242,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } mb-6 w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } mb-6 w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -1254,7 +1254,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } mb-6 w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } mb-6 w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
@@ -1281,11 +1281,11 @@ const FormLegalitas = () => {
             placeholder="Pilih jenis IUP"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
-        <div className="mt-6 grid w-full grid-cols-2 gap-2">
+        <div className="mt-6 grid w-full grid-cols-2 gap-4">
           <InputForm
             titleForm="Tanggal"
             titleName="email"
@@ -1295,7 +1295,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } mb-6 w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } mb-6 w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -1307,7 +1307,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } mb-6 w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } mb-6 w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
@@ -1327,11 +1327,11 @@ const FormLegalitas = () => {
       </div>
 
       <div className="mt-2 pb-6 border-b border-primary-gray-2">
-        <div className="mt-6 text-base text-blue-600">
+        <div className="mt-6 text-small text-blue-600">
           <a href="/aspek/umum">Tanah dan Iklim</a>
         </div>
         <div className="mt-4 text-primary-black-2">Tanah</div>
-        <div className="mt-4 grid w-full grid-cols-2 gap-2">
+        <div className="mt-4 grid w-full grid-cols-2 gap-4">
           <InputForm
             titleForm="Jenis Tanah"
             titleName="email"
@@ -1341,7 +1341,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             selectionArea="true"
           />
           <InputForm
@@ -1353,12 +1353,12 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
         <div className="mt-4 text-primary-black-2">Lereng Datar (0-8 %)</div>
-        <div className="mt-4 grid w-full grid-cols-3 gap-2">
+        <div className="mt-4 grid w-full grid-cols-3 gap-4">
           <InputForm
             titleForm="Luas (Ha)"
             titleName="email"
@@ -1368,7 +1368,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -1380,7 +1380,7 @@ const FormLegalitas = () => {
             placeholder="Persentase"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -1392,12 +1392,12 @@ const FormLegalitas = () => {
             placeholder="Keterangan"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
         <div className="mt-4 text-primary-black-2">Lereng Landai (8-15 %)</div>
-        <div className="mt-4 grid w-full grid-cols-3 gap-2">
+        <div className="mt-4 grid w-full grid-cols-3 gap-4">
           <InputForm
             titleForm="Luas (Ha)"
             titleName="email"
@@ -1407,7 +1407,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -1419,7 +1419,7 @@ const FormLegalitas = () => {
             placeholder="Persentase"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -1431,12 +1431,12 @@ const FormLegalitas = () => {
             placeholder="Keterangan"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
         <div className="mt-4 text-primary-black-2">Lereng Berombak (15-24 %)</div>
-        <div className="mt-4 grid w-full grid-cols-3 gap-2">
+        <div className="mt-4 grid w-full grid-cols-3 gap-4">
           <InputForm
             titleForm="Luas (Ha)"
             titleName="email"
@@ -1446,7 +1446,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -1458,7 +1458,7 @@ const FormLegalitas = () => {
             placeholder="Persentase"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -1470,12 +1470,12 @@ const FormLegalitas = () => {
             placeholder="Keterangan"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
         <div className="mt-4 text-primary-black-2">Lereng Berbukit (24-45 %)</div>
-        <div className="mt-4 grid w-full grid-cols-3 gap-2">
+        <div className="mt-4 grid w-full grid-cols-3 gap-4">
           <InputForm
             titleForm="Luas (Ha)"
             titleName="email"
@@ -1485,7 +1485,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -1497,7 +1497,7 @@ const FormLegalitas = () => {
             placeholder="Persentase"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -1509,14 +1509,14 @@ const FormLegalitas = () => {
             placeholder="Keterangan"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
         <div className="mt-4 text-primary-black-2">
           {'Lereng Bergunung (>45 %)'}
         </div>
-        <div className="mt-4 grid w-full grid-cols-3 gap-2">
+        <div className="mt-4 grid w-full grid-cols-3 gap-4">
           <InputForm
             titleForm="Luas (Ha)"
             titleName="email"
@@ -1526,7 +1526,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -1538,7 +1538,7 @@ const FormLegalitas = () => {
             placeholder="Persentase"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -1550,11 +1550,11 @@ const FormLegalitas = () => {
             placeholder="Keterangan"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
-        <div className="mt-4 grid w-full grid-cols-2 gap-2">
+        <div className="mt-4 grid w-full grid-cols-2 gap-4">
           <InputForm
             titleForm="Tekstur Tanah"
             titleName="email"
@@ -1564,7 +1564,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -1576,11 +1576,11 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
-        <div className="mt-4 grid w-full grid-cols-2 gap-2">
+        <div className="mt-4 grid w-full grid-cols-2 gap-4">
           <InputForm
             titleForm="Kedalaman efektif solum (m)"
             titleName="email"
@@ -1590,7 +1590,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -1602,11 +1602,11 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
-        <div className="mt-4 rounded-md border bg-primary-blue-2 bg-[url('/icon/info-image.svg')] bg-right bg-no-repeat p-3">
+        <div className="mt-4 rounded-md  bg-primary-blue-2 bg-[url('/icon/info-image.svg')] bg-right bg-no-repeat p-3">
           <div className="flex items-center">
             <img src="/icon/info-circle.svg" className="w-6" />
             <div className="mx-2 text-sm font-semibold text-primary-blue-1">
@@ -1618,7 +1618,7 @@ const FormLegalitas = () => {
             Lahan Gambut untuk Budidaya Kelapa Sawit
           </div>
         </div>
-        <div className="mt-6 grid w-full grid-cols-2 gap-2">
+        <div className="mt-6 grid w-full grid-cols-2 gap-4">
           <InputForm
             titleForm="Ketebalan gambut (m)"
             titleName="email"
@@ -1629,7 +1629,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } block h-[150px] w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4 focus:border-green-600 focus:outline-none`}
+            } block h-[150px] w-full rounded  bg-white-2 py-3 px-4 placeholder:text-primary-gray-4 focus:border-green-600 focus:outline-none`}
           />
           <InputForm
             titleForm="Tingkat dekomposisi"
@@ -1641,7 +1641,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } block h-[150px] w-full rounded border bg-white-2 py-3 px-4 placeholder:text-primary-gray-4 focus:border-green-600 focus:outline-none`}
+            } block h-[150px] w-full rounded  bg-white-2 py-3 px-4 placeholder:text-primary-gray-4 focus:border-green-600 focus:outline-none`}
           />
         </div>
         <div className="mt-6">
@@ -1654,7 +1654,7 @@ const FormLegalitas = () => {
             placeholder="Pilih jenis IUP"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
@@ -1672,12 +1672,12 @@ const FormLegalitas = () => {
             placeholder="Pilih jenis IUP"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
         <div className="mt-4 text-primary-black-2">Kelas Lahan S1</div>
-        <div className="mt-6 grid w-full grid-cols-3 gap-2">
+        <div className="mt-6 grid w-full grid-cols-3 gap-4">
           <InputForm
             titleForm="Lokasi"
             titleName="email"
@@ -1687,7 +1687,7 @@ const FormLegalitas = () => {
             placeholder="Luas Lahan dalam Ha"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -1699,7 +1699,7 @@ const FormLegalitas = () => {
             placeholder="Persentase"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -1711,12 +1711,12 @@ const FormLegalitas = () => {
             placeholder="Keterangan"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
         <div className="mt-4 text-primary-black-2">Kelas Lahan S2</div>
-        <div className="mt-6 grid w-full grid-cols-3 gap-2">
+        <div className="mt-6 grid w-full grid-cols-3 gap-4">
           <InputForm
             titleForm="Lokasi"
             titleName="email"
@@ -1726,7 +1726,7 @@ const FormLegalitas = () => {
             placeholder="Luas Lahan dalam Ha"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -1738,7 +1738,7 @@ const FormLegalitas = () => {
             placeholder="Persentase"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -1750,12 +1750,12 @@ const FormLegalitas = () => {
             placeholder="Keterangan"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
         <div className="mt-4 text-primary-black-2">Kelas Lahan S3</div>
-        <div className="mt-6 grid w-full grid-cols-3 gap-2">
+        <div className="mt-6 grid w-full grid-cols-3 gap-4">
           <InputForm
             titleForm="Lokasi"
             titleName="email"
@@ -1765,7 +1765,7 @@ const FormLegalitas = () => {
             placeholder="Luas Lahan dalam Ha"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -1777,7 +1777,7 @@ const FormLegalitas = () => {
             placeholder="Persentase"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -1789,7 +1789,7 @@ const FormLegalitas = () => {
             placeholder="Keterangan"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
@@ -1800,7 +1800,7 @@ const FormLegalitas = () => {
 
       <div className="mt-2">
         <div className="mt-4 text-primary-black-2">Iklim</div>
-        <div className="mt-6 grid w-full grid-cols-2 gap-2">
+        <div className="mt-6 grid w-full grid-cols-2 gap-4">
           <InputForm
             titleForm="Tipe Iklim"
             titleName="email"
@@ -1810,7 +1810,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             selectionArea="true"
           />
           <InputForm
@@ -1822,11 +1822,11 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
-        <div className="mt-4 rounded-md border bg-primary-blue-2 bg-[url('/icon/info-image.svg')] bg-right bg-no-repeat p-3">
+        <div className="mt-4 rounded-md  bg-primary-blue-2 bg-[url('/icon/info-image.svg')] bg-right bg-no-repeat p-3">
           <div className="flex items-center">
             <img src="/icon/info-circle.svg" className="w-6" />
             <div className="mx-2 text-sm font-semibold text-primary-blue-1">
@@ -1847,12 +1847,12 @@ const FormLegalitas = () => {
             placeholder="YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
         <div className="mt-4 text-primary-black-2">Januari</div>
-        <div className="mt-6 grid w-full grid-cols-2 gap-2">
+        <div className="mt-6 grid w-full grid-cols-2 gap-4">
           <InputForm
             titleForm="Curah Hujan (mm)"
             titleName="email"
@@ -1862,7 +1862,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -1874,12 +1874,12 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
         <div className="mt-4 text-primary-black-2">Februari</div>
-        <div className="mt-6 grid w-full grid-cols-2 gap-2">
+        <div className="mt-6 grid w-full grid-cols-2 gap-4">
           <InputForm
             titleForm="Curah Hujan (mm)"
             titleName="email"
@@ -1889,7 +1889,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -1901,12 +1901,12 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
         <div className="mt-4 text-primary-black-2">Maret</div>
-        <div className="mt-6 grid w-full grid-cols-2 gap-2">
+        <div className="mt-6 grid w-full grid-cols-2 gap-4">
           <InputForm
             titleForm="Curah Hujan (mm)"
             titleName="email"
@@ -1916,7 +1916,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -1928,12 +1928,12 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
         <div className="mt-4 text-primary-black-2">April</div>
-        <div className="mt-6 grid w-full grid-cols-2 gap-2">
+        <div className="mt-6 grid w-full grid-cols-2 gap-4">
           <InputForm
             titleForm="Curah Hujan (mm)"
             titleName="email"
@@ -1943,7 +1943,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -1955,12 +1955,12 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
         <div className="mt-4 text-primary-black-2">Mei</div>
-        <div className="mt-6 grid w-full grid-cols-2 gap-2">
+        <div className="mt-6 grid w-full grid-cols-2 gap-4">
           <InputForm
             titleForm="Curah Hujan (mm)"
             titleName="email"
@@ -1970,7 +1970,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -1982,12 +1982,12 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
         <div className="mt-4 text-primary-black-2">Juni</div>
-        <div className="mt-6 grid w-full grid-cols-2 gap-2">
+        <div className="mt-6 grid w-full grid-cols-2 gap-4">
           <InputForm
             titleForm="Curah Hujan (mm)"
             titleName="email"
@@ -1997,7 +1997,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -2009,12 +2009,12 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
         <div className="mt-4 text-primary-black-2">Juli</div>
-        <div className="mt-6 grid w-full grid-cols-2 gap-2">
+        <div className="mt-6 grid w-full grid-cols-2 gap-4">
           <InputForm
             titleForm="Curah Hujan (mm)"
             titleName="email"
@@ -2024,7 +2024,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -2036,12 +2036,12 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
         <div className="mt-4 text-primary-black-2">Agustus</div>
-        <div className="mt-6 grid w-full grid-cols-2 gap-2">
+        <div className="mt-6 grid w-full grid-cols-2 gap-4">
           <InputForm
             titleForm="Curah Hujan (mm)"
             titleName="email"
@@ -2051,7 +2051,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -2063,12 +2063,12 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
         <div className="mt-4 text-primary-black-2">September</div>
-        <div className="mt-6 grid w-full grid-cols-2 gap-2">
+        <div className="mt-6 grid w-full grid-cols-2 gap-4">
           <InputForm
             titleForm="Curah Hujan (mm)"
             titleName="email"
@@ -2078,7 +2078,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -2090,12 +2090,12 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
         <div className="mt-4 text-primary-black-2">Oktober</div>
-        <div className="mt-6 grid w-full grid-cols-2 gap-2">
+        <div className="mt-6 grid w-full grid-cols-2 gap-4">
           <InputForm
             titleForm="Curah Hujan (mm)"
             titleName="email"
@@ -2105,7 +2105,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -2117,12 +2117,12 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
         <div className="mt-4 text-primary-black-2">November</div>
-        <div className="mt-6 grid w-full grid-cols-2 gap-2">
+        <div className="mt-6 grid w-full grid-cols-2 gap-4">
           <InputForm
             titleForm="Curah Hujan (mm)"
             titleName="email"
@@ -2132,7 +2132,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -2144,12 +2144,12 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
         <div className="mt-4 text-primary-black-2">Desember</div>
-        <div className="mt-6 grid w-full grid-cols-2 gap-2">
+        <div className="mt-6 grid w-full grid-cols-2 gap-4">
           <InputForm
             titleForm="Curah Hujan (mm)"
             titleName="email"
@@ -2159,7 +2159,7 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -2171,11 +2171,11 @@ const FormLegalitas = () => {
             placeholder="DD/MM/YYYY"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>
-        <div className="mt-6 grid w-full grid-cols-2 gap-2">
+        <div className="mt-6 grid w-full grid-cols-2 gap-4">
           <InputForm
             titleForm="Rata-rata/Bulan CH≥60 mm"
             titleName="email"
@@ -2185,7 +2185,7 @@ const FormLegalitas = () => {
             placeholder="automated"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -2197,7 +2197,7 @@ const FormLegalitas = () => {
             placeholder="automated"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -2209,7 +2209,7 @@ const FormLegalitas = () => {
             placeholder="automated"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
           <InputForm
@@ -2221,7 +2221,7 @@ const FormLegalitas = () => {
             placeholder="automated"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
+            } w-full rounded  bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
             iconEmail="true"
           />
         </div>

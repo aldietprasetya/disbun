@@ -70,7 +70,7 @@ const FormLapor = () => {
   return (
     <>
       <form>
-        <div className={`${["mng.base__formsection"]} border-b-0`}>
+        <div className={`${mng["base__formsection"]} border-b-0`}>
           {/* Aspek Laporan : Legalitas */}
           <p className={`${mng["base__formtitle"]} ${'mt-4'}`}>Aspek Laporan : Legalitas</p>
           <label className={mng.base__formlabel}>

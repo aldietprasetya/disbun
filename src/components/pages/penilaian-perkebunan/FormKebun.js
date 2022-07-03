@@ -208,7 +208,28 @@ const FormKebun = () => {
   ])
 
   function handleBtnAddSeragamTanaman() {
-    setSeragamTanam([...seragamTanam,...seragamTanam])
+    setSeragamTanam([...seragamTanam,[
+      {
+        'sectionTitle': 'Tanaman selain Tebu',
+        'sectionData': [{'title':'Jenis Tanaman','type':'text','placeholder':'Jenis Tanaman','value':''}]
+      },
+      {
+        'sectionTitle': 'Komposisi TBM',
+        'sectionData': [{'title':'Luas (Ha)','type':'text','placeholder':'masukkan luas total dalam ha','value':''},{'title':'Presentase (%)','type':'text','placeholder':'masukkan presentase total','value':''}]
+      },
+      {
+        'sectionTitle': 'Komposisi TM',
+        'sectionData': [{'title':'Luas (Ha)','type':'text','placeholder':'masukkan luas total dalam ha','value':''},{'title':'Presentase (%)','type':'text','placeholder':'masukkan presentase total','value':''}]
+      },
+      {
+        'sectionTitle': 'Komposisi TT/TR',
+        'sectionData': [{'title':'Luas (Ha)','type':'text','placeholder':'masukkan luas total dalam ha','value':''},{'title':'Presentase (%)','type':'text','placeholder':'masukkan presentase total','value':''}]
+      },
+      {
+        'sectionTitle': 'Komposisi Jumlah',
+        'sectionData': [{'title':'Luas (Ha)','type':'text','placeholder':'masukkan luas total dalam ha','value':''},{'title':'Presentase (%)','type':'text','placeholder':'masukkan presentase total','value':''}]
+      },
+    ]])
   }
 
   function seragamTanamRemoveLabel(i) {
@@ -1760,7 +1781,7 @@ const FormKebun = () => {
           </div>
         </div>
 
-        <div className={`${["mng.base__formsection"]} border-b-0`}>
+        <div className={`${mng["base__formsection"]} border-b-0`}>
           <span className={mng.base__subtitle}>Diversifikasi Cabang Usaha Tani</span>
           <div className="flex flex-col">
             {
