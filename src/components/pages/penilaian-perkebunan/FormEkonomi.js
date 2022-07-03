@@ -307,7 +307,7 @@ const FormEkonomi = () => {
 
         </div>
 
-        <div className={`${mng["base__formsection"]}`}>
+        <div className={`${mng["base__formsection"]} border-b-0`}>
           <span className={mng.base__subtitle}>Penyerapan Tenaga Lokal untuk Posisi Staf</span>
 
           <div className="mt-2 mb-3 rounded-md border bg-primary-blue-2 bg-[url('/icon/info-image.svg')] bg-right bg-no-repeat p-3">

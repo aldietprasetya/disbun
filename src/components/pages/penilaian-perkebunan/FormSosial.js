@@ -1374,7 +1374,7 @@ const FormSosial = () => {
           </div>
         </div>
 
-        <div className={`${mng["base__formsection"]}`}>
+        <div className={`${mng["base__formsection"]} border-b-0`}>
           <span className={mng.base__subtitle}>Konflik</span>
           <div className="flex flex-col mt-6">
             {

@@ -27,7 +27,7 @@ const KebunPage = () => {
           ]}
         />
         <div className="mt-6 flex items-center justify-between ">
-          <div className=" text-4xl font-semibold text-black">Sub Sitem Kebun</div>
+          <div className=" text-4xl font-semibold text-black">Sub Sistem Kebun</div>
         </div>
         <div className="w-[632px]">
           <FormKebun />
