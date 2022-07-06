@@ -439,6 +439,19 @@
         }
       }
     }
+    &_custom4 {
+      @apply relative w-full;
+    }
+    &_single {
+      @apply relative flex flex-row flex-wrap mb-4 border-b border-gray-50;
+      label {
+        @apply w-full;
+      }
+      &:last-of-type {
+        @apply border-b-0 mb-0;
+        border-bottom: 0 !important;
+      }
+    }
     &_twin {
       @apply relative flex flex-row flex-wrap mb-4 border-b border-gray-50;
       label {
@@ -466,7 +479,7 @@
       &-lastfull {
         label {
           &:last-of-type {
-            @apply w-full;
+            @apply w-full pr-0 pl-0;
           }
         }
       }
@@ -491,6 +504,71 @@
               @apply w-full pl-0 pr-0;
             }
           }
+        }
+      }
+      &-lastSecFull {
+        &:last-of-type {
+          div {
+            @apply flex-wrap;
+          }
+          label {
+            @apply w-1/2;
+            &:nth-of-type(2n+1) {
+              @apply pr-2 pl-0;
+            }
+            &:nth-of-type(2n+2) {
+              @apply pr-0 pl-2;
+            }
+          }
+        }
+      }
+      &-sec-tris {
+        @apply flex;
+        label {
+          @apply w-1/3;
+          &:nth-of-type(3n+1) {
+            @apply pr-2 pl-0;
+          }
+          &:nth-of-type(3n+2) {
+            @apply pl-2 pr-2;
+          }
+          &:nth-of-type(3n+3) {
+            @apply pl-2 pr-0;
+          }
+        }
+      }
+      &-custom3rd {
+        label {
+          &:nth-of-type(3) {
+            @apply w-full pr-0;
+          }
+          &:nth-of-type(4),
+          &:nth-of-type(6) {
+            @apply pr-2 pl-0;
+          }
+          &:nth-of-type(5),
+          &:nth-of-type(7) {
+            @apply pr-0 pl-2;
+          }
+        }
+      }
+      &:last-of-type {
+        @apply border-b-0 mb-0;
+        border-bottom: 0 !important;
+      }
+    }
+    &_tri {
+      @apply relative flex flex-row flex-wrap mb-4 border-b border-gray-50;
+      label {
+        @apply w-1/3;
+        &:nth-of-type(3n+1) {
+          @apply pr-2 pl-0;
+        }
+        &:nth-of-type(3n+2) {
+          @apply pl-2 pr-2;
+        }
+        &:nth-of-type(3n+3) {
+          @apply pl-2 pr-0;
         }
       }
       &:last-of-type {

@@ -62,7 +62,7 @@ const FormAspekManajemen = () => {
 
   const [tenagaKerja, setTenagaKerja] = useState([
     {'title':'Administratur','placeholder':'Jumlah','value':''},
-    {'title':'Staf','placeholder':'Jumlah','value':''},
+    {'title':'Staf/Karyawan Tetap','placeholder':'Jumlah','value':''},
     {'title':'Tenaga Kerja Bulanan','placeholder':'Jumlah','value':''},
     {'title':'Tenaga Kerja Harian Tetap','placeholder':'Jumlah','value':''},
     {'title':'Tenaga Kerja Harian Lepas','placeholder':'Jumlah','value':''},

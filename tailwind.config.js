@@ -6,6 +6,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      overflow: {
+        overlay: 'overlay',
+      },
       fontFamily: {
         inter: ['Inter', 'sans - serif'],
       },

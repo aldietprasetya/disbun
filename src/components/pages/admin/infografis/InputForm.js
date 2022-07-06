@@ -112,7 +112,7 @@ function InputForm({
             aria-label="Default select example"
             onChange={onChange}
           >
-            <option disabled defaultValue hidden>
+            <option disabled selected hidden>
               {placeholder}
             </option>
             <option value="1">One</option>
