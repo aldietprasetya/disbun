@@ -562,7 +562,7 @@ const FormLegalitas = () => {
                         ) : item.isOpt == 'textarea' ? (
                           <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
                             <span className={mng.base__inputtitle}>{item.title}</span>
-                            <textarea className={`${mng["base__inputbase"]} h-[140px]`} type={item.type} rows="20" placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, hguProses, setHguProses, i, ii)}></textarea>
+                            <textarea className={`${mng["base__inputbase"]} min-h-[140px]`} type={item.type} rows="20" placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, hguProses, setHguProses, i, ii)}></textarea>
                           </label>
                         ) : (
                           <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>

@@ -39,7 +39,7 @@ const Page = ({
           />
         </div>
         {sidebar ? (
-          <div className="w-full mx-20 mt-[100px] mb-5 flex justify-between min-h-[85vh] text-sm mx-auto flex items-start">
+          <div className="container mx-20 mt-[100px] mb-5 flex justify-between min-h-[85vh] text-sm mx-auto flex items-start">
             <StickyBox offsetTop={100}>
               <Sidebar
                 navList={navListSidebar}
