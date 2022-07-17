@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import {useRouter} from 'next/router'
 import InputForm from '../admin/infografis/InputForm';
 import mng from '../../../styles/Managemen.module.scss'
+import ChildStore from './store/sosial'
 
 const preventDefault = f => e => {
   e.preventDefault()
@@ -22,9 +23,7 @@ const FormAspekSosial = () => {
 
   ////////////////////////// PAJAK RESTRIBUSI ////////////////////////////////
 
-  const [pajakRestribusi, setPajakRestribusi] = useState([
-    [ {'title':'Jenis Pajak/Retribusi','type':'text','placeholder':'Jenis Pajak/Retrbusi','value':''}, {'title':'Nilai (Rp)','placeholder':'Nilai Pajak/Retribusi','type':'text','value':''}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''} ]
-  ])
+  const [pajakRestribusi, setPajakRestribusi] = useState([])
 
   function handleBtnAddPajakRestribusi() {
     setPajakRestribusi([...pajakRestribusi,[ {'title':'Jenis Pajak/Retribusi','type':'text','placeholder':'Jenis Pajak/Retrbusi','value':''}, {'title':'Nilai (Rp)','placeholder':'Nilai Pajak/Retribusi','type':'text','value':''}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''} ]])
@@ -38,9 +37,7 @@ const FormAspekSosial = () => {
 
   ////////////////////////// KONSERVASI ////////////////////////////////
 
-  const [konservasi, setKonservasi] = useState([
-    [ {'title':'Jenis Kegiatan Konservasi','type':'text','placeholder':'Jenis Pajak/Retrbusi','value':''}, {'title':'Luas (Ha)','placeholder':'Luas Lahan dalam Ha','type':'text','value':''}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''} ]
-  ])
+  const [konservasi, setKonservasi] = useState([])
 
   function handleBtnAddKonservasi() {
     setKonservasi([...konservasi,[ {'title':'Jenis Kegiatan Konservasi','type':'text','placeholder':'Jenis Pajak/Retrbusi','value':''}, {'title':'Luas (Ha)','placeholder':'Luas Lahan dalam Ha','type':'text','value':''}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''} ]])
@@ -48,9 +45,7 @@ const FormAspekSosial = () => {
 
   ////////////////////////// PENGAWASAN LINGKUNGAN ////////////////////////////////
 
-  const [pengawasan, setPengawasan] = useState([
-    [ {'title':'Masalah Lingkungan','type':'text','placeholder':'Jenis Masalah Lingkungan','value':''}, {'title':'Waktu kejadian','placeholder':'DD/MM/YYYY','type':'text','value':''}, {'title':'Frekuensi (kali)','type':'text','placeholder':'Jumlah','value':''}, {'title':'Upaya Penyelesaian','type':'text','placeholder':'Deskripsi Upaya','value':''}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''} ]
-  ])
+  const [pengawasan, setPengawasan] = useState([])
 
   function handleBtnAddPengawasan() {
     setPengawasan([...pengawasan,[ {'title':'Masalah Lingkungan','type':'text','placeholder':'Jenis Masalah Lingkungan','value':''}, {'title':'Waktu kejadian','placeholder':'DD/MM/YYYY','type':'text','value':''}, {'title':'Frekuensi (kali)','type':'text','placeholder':'Jumlah','value':''}, {'title':'Upaya Penyelesaian','type':'text','placeholder':'Deskripsi Upaya','value':''}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''} ]])
@@ -58,9 +53,7 @@ const FormAspekSosial = () => {
 
   ////////////////////////// KEMITRAAN USAHA ////////////////////////////////
 
-  const [kemitraan, setKemitraan] = useState([
-    [ {'title':'Nama Kelompok Tani','type':'text','placeholder':'Nama Poktan','value':''}, {'title':'Nomor','placeholder':'Nomor','type':'text','value':''}, {'title':'Waktu Perjanjian','type':'text','placeholder':'DD/MM/YYYY','value':''}, {'title':'Lamanya perjanjian','type':'text','placeholder':'Durasi','value':''}, {'title':'Jenis perjanjian','type':'text','placeholder':'Jenis Perjanjian','value':''} ]
-  ])
+  const [kemitraan, setKemitraan] = useState([])
 
   function handleBtnAddKemitraan() {
     setKemitraan([...kemitraan,[ {'title':'Nama Kelompok Tani','type':'text','placeholder':'Nama Poktan','value':''}, {'title':'Nomor','placeholder':'Nomor','type':'text','value':''}, {'title':'Waktu Perjanjian','type':'text','placeholder':'DD/MM/YYYY','value':''}, {'title':'Lamanya perjanjian','type':'text','placeholder':'Durasi','value':''}, {'title':'Jenis perjanjian','type':'text','placeholder':'Jenis Perjanjian','value':''} ]])
@@ -89,7 +82,7 @@ const FormAspekSosial = () => {
 
   useEffect(() => {
     if (initialLoad) {
-      let retrievedObject = JSON.parse(localStorage.getItem('generalSocial'));
+      let retrievedObject = JSON.parse(localStorage.getItem('sosialReport'));
 
       if (!_.isEmpty(retrievedObject)) {
 
@@ -181,14 +174,14 @@ const FormAspekSosial = () => {
         legalInv.year = item[1].value
         legalInv.effort = item[2].value
       });
-      data.protectedArea.push(legalInv)
+      data.protectedArea = legalInv
     });
 
-    console.log(data)
+    localStorage.setItem("dataSubmitSosial", JSON.stringify(data));
 
-    // router.push({
-    //   pathname: "/beranda/laporan/konfirmasi"
-    // })
+    router.push({
+      pathname: "/pelaporan-perkebunan/konfirmasi/"
+    })
   })
 
   return (
@@ -196,6 +189,9 @@ const FormAspekSosial = () => {
       <Head>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
       </Head>
+
+      <ChildStore/>
+
       <form>
 
         <div className={mng.base__formsection}>
