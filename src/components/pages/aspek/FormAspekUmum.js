@@ -219,6 +219,11 @@ const FormAspekUmum = (props) => {
 
     localStorage.setItem("dataSubmitGeneral", JSON.stringify(data));
 
+    console.log('Data Send Aspek Umum')
+    console.log('=========================================================')
+    console.log(data)
+    console.log('=========================================================')
+
     router.push({
       pathname: "/pelaporan-perkebunan/aspek-manajemen/"
     })

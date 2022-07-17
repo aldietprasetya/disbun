@@ -180,6 +180,11 @@ const FormAspekSosial = () => {
 
     localStorage.setItem("dataSubmitSosial", JSON.stringify(data));
 
+    console.log('Data Send Sosial')
+    console.log('=========================================================')
+    console.log(data)
+    console.log('=========================================================')
+
     router.push({
       pathname: "/pelaporan-perkebunan/konfirmasi/"
     })

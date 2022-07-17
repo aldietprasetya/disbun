@@ -343,6 +343,11 @@ const FormAspekPengolahan = () => {
 
     localStorage.setItem("dataSubmitOlah", JSON.stringify(data));
 
+    console.log('Data Send Pengolahan')
+    console.log('=========================================================')
+    console.log(data)
+    console.log('=========================================================')
+
     router.push({
       pathname: "/pelaporan-perkebunan/aspek-sosial/"
     })

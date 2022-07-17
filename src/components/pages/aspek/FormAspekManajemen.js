@@ -216,6 +216,11 @@ const FormAspekManajemen = () => {
 
     localStorage.setItem("dataSubmit", JSON.stringify(data));
 
+    console.log('Data Send Manajemen')
+    console.log('=========================================================')
+    console.log(data)
+    console.log('=========================================================')
+
     router.push({
       pathname: "/pelaporan-perkebunan/aspek-kebun/"
     })

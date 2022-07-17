@@ -514,6 +514,11 @@ const FormAspekKebun = () => {
 
     localStorage.setItem("dataSubmitKebun", JSON.stringify(data));
 
+    console.log('Data Send Kebun')
+    console.log('=========================================================')
+    console.log(data)
+    console.log('=========================================================')
+
     router.push({
       pathname: "/pelaporan-perkebunan/aspek-pengolahan/"
     })
