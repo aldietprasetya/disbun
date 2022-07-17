@@ -12,6 +12,14 @@ const preventDefault = f => e => {
 const FormAspekSosial = () => {
   const [isError, setIsError] = useState(false);
 
+  const router = useRouter()
+
+  const [initialLoad, setInitialLoad] = useState(true)
+  const [btnValid, setBtnValid] = useState(false)
+  const [data, setData] = useState(null)
+  const [dataPass, setDataPass] = useState({})
+  const [dataSubmit, setDataSubmit] = useState({})
+
   ////////////////////////// PAJAK RESTRIBUSI ////////////////////////////////
 
   const [pajakRestribusi, setPajakRestribusi] = useState([
@@ -22,49 +30,11 @@ const FormAspekSosial = () => {
     setPajakRestribusi([...pajakRestribusi,[ {'title':'Jenis Pajak/Retribusi','type':'text','placeholder':'Jenis Pajak/Retrbusi','value':''}, {'title':'Nilai (Rp)','placeholder':'Nilai Pajak/Retribusi','type':'text','value':''}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''} ]])
   }
 
-  function pajakRestribusiRemoveLabel(i) {
-    setPajakRestribusi(pajakRestribusi.filter((item, idx) => idx != i))
-  }
-
-  function pajakRestribusiChange(e, index, index2) {
-    let stet = pajakRestribusi
-    let set = setPajakRestribusi
-    const { name, value } = e.target;
-    const list = [...stet];
-    list.forEach((item, i) => {
-      if (i == index) {
-        item.forEach((item2, ii) => {
-          if (ii == index2) {
-            item2.value = value
-          }
-        });
-      }
-    });
-    set(list);
-  }
-
   ////////////////////////// KAWASAN LINDUNG ////////////////////////////////
 
   const [kawasanLindung, setKawasanLindung] = useState([
     [ {'title':'Luas Kawasan Lindung (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''}, {'title':'Dikelola Sejak tahun','placeholder':'YYYY','type':'text','value':''}, {'title':'Usaha Pelestarian','type':'textarea','placeholder':'Tulis usaha pelestarian yang dilakukan.','value':''} ]
   ])
-
-  function kawasanLindungChange(e, index, index2) {
-    let stet = kawasanLindung
-    let set = setKawasanLindung
-    const { name, value } = e.target;
-    const list = [...stet];
-    list.forEach((item, i) => {
-      if (i == index) {
-        item.forEach((item2, ii) => {
-          if (ii == index2) {
-            item2.value = value
-          }
-        });
-      }
-    });
-    set(list);
-  }
 
   ////////////////////////// KONSERVASI ////////////////////////////////
 
@@ -74,27 +44,6 @@ const FormAspekSosial = () => {
 
   function handleBtnAddKonservasi() {
     setKonservasi([...konservasi,[ {'title':'Jenis Kegiatan Konservasi','type':'text','placeholder':'Jenis Pajak/Retrbusi','value':''}, {'title':'Luas (Ha)','placeholder':'Luas Lahan dalam Ha','type':'text','value':''}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''} ]])
-  }
-
-  function konservasiRemoveLabel(i) {
-    setKonservasi(konservasi.filter((item, idx) => idx != i))
-  }
-
-  function konservasiChange(e, index, index2) {
-    let stet = konservasi
-    let set = setKonservasi
-    const { name, value } = e.target;
-    const list = [...stet];
-    list.forEach((item, i) => {
-      if (i == index) {
-        item.forEach((item2, ii) => {
-          if (ii == index2) {
-            item2.value = value
-          }
-        });
-      }
-    });
-    set(list);
   }
 
   ////////////////////////// PENGAWASAN LINGKUNGAN ////////////////////////////////
@@ -107,27 +56,6 @@ const FormAspekSosial = () => {
     setPengawasan([...pengawasan,[ {'title':'Masalah Lingkungan','type':'text','placeholder':'Jenis Masalah Lingkungan','value':''}, {'title':'Waktu kejadian','placeholder':'DD/MM/YYYY','type':'text','value':''}, {'title':'Frekuensi (kali)','type':'text','placeholder':'Jumlah','value':''}, {'title':'Upaya Penyelesaian','type':'text','placeholder':'Deskripsi Upaya','value':''}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''} ]])
   }
 
-  function pengawasanRemoveLabel(i) {
-    setPengawasan(pengawasan.filter((item, idx) => idx != i))
-  }
-
-  function pengawasanChange(e, index, index2) {
-    let stet = pengawasan
-    let set = setPengawasan
-    const { name, value } = e.target;
-    const list = [...stet];
-    list.forEach((item, i) => {
-      if (i == index) {
-        item.forEach((item2, ii) => {
-          if (ii == index2) {
-            item2.value = value
-          }
-        });
-      }
-    });
-    set(list);
-  }
-
   ////////////////////////// KEMITRAAN USAHA ////////////////////////////////
 
   const [kemitraan, setKemitraan] = useState([
@@ -138,15 +66,15 @@ const FormAspekSosial = () => {
     setKemitraan([...kemitraan,[ {'title':'Nama Kelompok Tani','type':'text','placeholder':'Nama Poktan','value':''}, {'title':'Nomor','placeholder':'Nomor','type':'text','value':''}, {'title':'Waktu Perjanjian','type':'text','placeholder':'DD/MM/YYYY','value':''}, {'title':'Lamanya perjanjian','type':'text','placeholder':'Durasi','value':''}, {'title':'Jenis perjanjian','type':'text','placeholder':'Jenis Perjanjian','value':''} ]])
   }
 
-  function kemitraanRemoveLabel(i) {
-    setKemitraan(kemitraan.filter((item, idx) => idx != i))
+  ////////////////////////// OTHER FUNCTION ////////////////////////////////
+
+  function removeLabel(i,state,setState) {
+    setState(state.filter((item, idx) => idx != i))
   }
 
-  function kemitraanChange(e, index, index2) {
-    let stet = kemitraan
-    let set = setKemitraan
+  function formRegularChange(e, state, setState, index, index2) {
     const { name, value } = e.target;
-    const list = [...stet];
+    const list = [...state];
     list.forEach((item, i) => {
       if (i == index) {
         item.forEach((item2, ii) => {
@@ -156,20 +84,111 @@ const FormAspekSosial = () => {
         });
       }
     });
-    set(list);
+    setState(list);
   }
 
-  ////////////////////////// OTHER FUNCTION ////////////////////////////////
+  useEffect(() => {
+    if (initialLoad) {
+      let retrievedObject = JSON.parse(localStorage.getItem('generalSocial'));
 
-  const [btnValid, setBtnValid] = useState(false)
+      if (!_.isEmpty(retrievedObject)) {
 
-  const router = useRouter()
+        setPajakRestribusi(retrievedObject.retribution)
+        setKawasanLindung(retrievedObject.protectedArea)
+        setKonservasi(retrievedObject.conservation)
+        setPengawasan(retrievedObject.environmentalMonitoring)
+        setKemitraan(retrievedObject.businessPartnership)
+      }
+    }
+    setInitialLoad(false)
+  }, [initialLoad])
+
+  useEffect(() => {
+    setDataSubmit({
+      'retribution': pajakRestribusi,
+      'protectedArea':kawasanLindung,
+      'conservation':konservasi,
+      'environmentalMonitoring':pengawasan,
+      'businessPartnership':kemitraan
+    })
+
+  }, [pajakRestribusi,kawasanLindung,konservasi,pengawasan,kemitraan])
+
+  useEffect(() => {
+    if (!_.isEmpty(dataSubmit)) {
+      setDataPass(dataSubmit)
+    }
+  },[dataPass,dataSubmit])
 
   const storeData = preventDefault(() => {
-    localStorage.setItem("dataSubmit", JSON.stringify(dataSubmit));
-    router.push({
-      pathname: "/beranda/laporan/konfirmasi"
-    })
+    localStorage.setItem("generalSocial", JSON.stringify(dataSubmit));
+    let data = {
+      retribution: [],
+      protectedArea: [],
+      conservation: [],
+      environmentalMonitoring: [],
+      businessPartnership: [],
+    }
+
+    pajakRestribusi.forEach((item, i) => {
+      let legalInv = {}
+      item.forEach(() => {
+        legalInv.retributionType = item[0].value
+        legalInv.value = item[1].value
+        legalInv.description = item[2].value
+      });
+      data.retribution.push(legalInv)
+    });
+
+    konservasi.forEach((item, i) => {
+      let legalInv = {}
+      item.forEach(() => {
+        legalInv.conservationType = item[0].value
+        legalInv.area = item[1].value
+        legalInv.description = item[2].value
+      });
+      data.conservation.push(legalInv)
+    });
+
+    pengawasan.forEach((item, i) => {
+      let legalInv = {}
+      item.forEach(() => {
+        legalInv.problem = item[0].value
+        legalInv.dateOccurency = item[1].value
+        legalInv.frequency = item[2].value
+        legalInv.effort = item[3].value
+        legalInv.description = item[4].value
+      });
+      data.environmentalMonitoring.push(legalInv)
+    });
+
+    kemitraan.forEach((item, i) => {
+      let legalInv = {}
+      item.forEach(() => {
+        legalInv.groupName = item[0].value
+        legalInv.agreementDate = item[1].value
+        legalInv.agreementNumber = item[2].value
+        legalInv.duration = item[3].value
+        legalInv.agreementType = item[4].value
+      });
+      data.businessPartnership.push(legalInv)
+    });
+
+    kawasanLindung.forEach((item, i) => {
+      let legalInv = {}
+      item.forEach(() => {
+        legalInv.area = item[0].value
+        legalInv.year = item[1].value
+        legalInv.effort = item[2].value
+      });
+      data.protectedArea.push(legalInv)
+    });
+
+    console.log(data)
+
+    // router.push({
+    //   pathname: "/beranda/laporan/konfirmasi"
+    // })
   })
 
   return (
@@ -188,7 +207,7 @@ const FormAspekSosial = () => {
                 <div className={`${mng["base__formlabel_twin"]} ${mng["base__formlabel_twin-firstfull"]}`} key={i}>
                 {
                   i > 0 ?
-                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => pajakRestribusiRemoveLabel(i)}>
+                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => removeLabel(i, pajakRestribusi, setPajakRestribusi)}>
                     do_not_disturb_on
                   </span>
                   :
@@ -198,7 +217,7 @@ const FormAspekSosial = () => {
                   items.map((item,ii) => (
                     <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
                       <span className={mng.base__inputtitle}>{item.title}</span>
-                      <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => pajakRestribusiChange(e, i, ii)}/>
+                      <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, pajakRestribusi, setPajakRestribusi, i, ii)}/>
                     </label>
                   ))
                 }
@@ -223,7 +242,7 @@ const FormAspekSosial = () => {
                   items.map((item,ii) => (
                     <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
                       <span className={mng.base__inputtitle}>{item.title}</span>
-                      <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => kawasanLindungChange(e, i, ii)}/>
+                      <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, kawasanLindung, setKawasanLindung, i, ii)}/>
                     </label>
                   ))
                 }
@@ -242,7 +261,7 @@ const FormAspekSosial = () => {
                 <div className={`${mng["base__formlabel_twin"]} ${mng["base__formlabel_twin-firstfull"]}`} key={i}>
                 {
                   i > 0 ?
-                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => konservasiRemoveLabel(i)}>
+                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => removeLabel(i, konservasi, setKonservasi)}>
                     do_not_disturb_on
                   </span>
                   :
@@ -252,7 +271,7 @@ const FormAspekSosial = () => {
                   items.map((item,ii) => (
                     <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
                       <span className={mng.base__inputtitle}>{item.title}</span>
-                      <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => konservasiChange(e, i, ii)}/>
+                      <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, konservasi, setKonservasi, i, ii)}/>
                     </label>
                   ))
                 }
@@ -276,7 +295,7 @@ const FormAspekSosial = () => {
                 <div className={`${mng["base__formlabel_unique4"]}`} key={i}>
                 {
                   i > 0 ?
-                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => kemitraanRemoveLabel(i)}>
+                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => removeLabel(i, kemitraan, setKemitraan)}>
                     do_not_disturb_on
                   </span>
                   :
@@ -286,7 +305,7 @@ const FormAspekSosial = () => {
                   items.map((item,ii) => (
                     <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
                       <span className={mng.base__inputtitle}>{item.title}</span>
-                      <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => kemitraanChange(e, i, ii)}/>
+                      <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, kemitraan, setKemitraan, i, ii)}/>
                     </label>
                   ))
                 }
@@ -309,7 +328,7 @@ const FormAspekSosial = () => {
                 <div className={`${mng["base__formlabel_twin"]} ${mng["base__formlabel_twin-firstfull"]}`} key={i}>
                 {
                   i > 0 ?
-                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => pengawasanRemoveLabel(i)}>
+                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => removeLabel(i, pengawasan, setPengawasan)}>
                     do_not_disturb_on
                   </span>
                   :
@@ -319,7 +338,7 @@ const FormAspekSosial = () => {
                   items.map((item,ii) => (
                     <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
                       <span className={mng.base__inputtitle}>{item.title}</span>
-                      <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => pengawasanChange(e, i, ii)}/>
+                      <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, pengawasan, setPengawasan, i, ii)}/>
                     </label>
                   ))
                 }
@@ -340,7 +359,7 @@ const FormAspekSosial = () => {
             </div>
           */}
 
-          <button className={`${mng["base__btnsimpan"]} ${"float-right mt-1"}`} onClick={storeData} disabled={!btnValid}>
+          <button className={`${mng["base__btnsimpan"]} ${"float-right mt-1"}`} onClick={storeData}>
             Simpan dan Lanjutkan
           </button>
         </div>

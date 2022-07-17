@@ -57,7 +57,7 @@ const SectionSendEmail = ({ email, date, title, description }) => {
           },
         },
       );
-      if (res.data.success) {
+      if (res.data.status == 'success') {
         setCountDownSendEmail(moment().add(3, 'minutes'));
       }
     } catch (error) {

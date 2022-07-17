@@ -69,7 +69,7 @@ const SectionDaftar = ({ margin = 'lg:mt-32 tall:mt-8' }) => {
             },
           },
         );
-        if (res.data.success) {
+        if (res.data.status == 'success') {
           Cookies.set('token-temp', res.data.data.token, {
             expires: 30 / 1440,
           });

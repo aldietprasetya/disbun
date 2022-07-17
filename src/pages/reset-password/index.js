@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import ResetPage from '../../components/pages/auth/resetPassword';
+import ResetPage from 'src/components/pages/auth/resetPassword';
 import Head from 'next/head';
 
 const reset = () => {

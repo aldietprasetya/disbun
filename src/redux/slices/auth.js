@@ -96,7 +96,7 @@ export function initialize() {
             Authorization: `Bearer ${token}`,
           },
         });
-        if (res.data.success) {
+        if (res.data.status == 'success') {
           dispatch(
             slice.actions.getInitialize({
               user: res.data.data,

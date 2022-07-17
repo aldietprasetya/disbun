@@ -45,74 +45,68 @@ const ResetPassPage = () => {
       password2: '',
     },
     validationSchema: resetSchema,
-    // onSubmit: async (values) => {
-    //   try {
-    //     setLoading(true);
-    //     const res = await axios.post(
-    //       `${appConfig.baseUrl}/users`,
-    //       {
-    //         password1: values.password,
-    //         password2: values.passwordConfirm,
-    //       },
-    //       {
-    //         auth: {
-    //           password1: appConfig.usernameBasicAuth,
-    //           password2: appConfig.passwordBasicAuth,
-    //         },
-    //       },
-    //     );
-    //     if (res.data.success) {
-    //       setIsError(false);
-    //       const result = await axios.get(`${appConfig.baseUrl}/users`, {
-    //         headers: {
-    //           Authorization: `Bearer ${res.data.data.token}`,
-    //         },
-    //       });
-    //       console.log(result);
-    //       if (res.data.data.role.id === 1) {
-    //         router.push('/');
-    //       } else {
-    //         router.push('/auth/login');
-    //       }
-    //     } else {
-    //       setIsError(true);
-    //       enqueueSnackbar(res.data.message, {
-    //         anchorOrigin: {
-    //           vertical: 'top',
-    //           horizontal: 'right',
-    //         },
-    //         content: (key, message) => (
-    //           <CustomComponent
-    //             id={key}
-    //             message="Pasangan Email dan Password anda salah."
-    //             variant="error"
-    //             title="Gagal Masuk!"
-    //           />
-    //         ),
-    //       });
-    //     }
-    //     setLoading(false);
-    //   } catch (error) {
-    //     setLoading(false);
-    //     if (error.response.status >= 400) {
-    //       setIsError(true);
-    //       enqueueSnackbar(error.response.data.message, {
-    //         anchorOrigin: {
-    //           vertical: 'top',
-    //           horizontal: 'right',
-    //         },
-    //         content: (key, message) => (
-    //           <CustomComponent
-    //             id={key}
-    //             message="Pasangan Email dan Password anda salah."
-    //             variant="error"
-    //             title="Gagal Masuk!"
-    //           />
-    //         ),
-    //       });
-    //     }
-    //   }
-    // },
+    onSubmit: async (values) => {
+      try {
+        setLoading(true);
+        const res = await axios.post(
+          `${appConfig.baseUrl}/users/password`,
+          {
+            password1: values.password,
+            password2: values.passwordConfirm,
+          },
+        );
+        if (res.data.status == 'success') {
+          setIsError(false);
+          const result = await axios.get(`${appConfig.baseUrl}/users`, {
+            headers: {
+              Authorization: `Bearer ${res.data.data.token}`,
+            },
+          });
+          console.log(result);
+          if (res.data.data.role.id === 1) {
+            router.push('/');
+          } else {
+            router.push('/auth/login');
+          }
+        } else {
+          setIsError(true);
+          enqueueSnackbar(res.data.message, {
+            anchorOrigin: {
+              vertical: 'top',
+              horizontal: 'right',
+            },
+            content: (key, message) => (
+              <CustomComponent
+                id={key}
+                message="Pasangan Email dan Password anda salah."
+                variant="error"
+                title="Gagal Masuk!"
+              />
+            ),
+          });
+        }
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        if (error.response.status >= 400) {
+          setIsError(true);
+          enqueueSnackbar(error.response.data.message, {
+            anchorOrigin: {
+              vertical: 'top',
+              horizontal: 'right',
+            },
+            content: (key, message) => (
+              <CustomComponent
+                id={key}
+                message="Pasangan Email dan Password anda salah."
+                variant="error"
+                title="Gagal Masuk!"
+              />
+            ),
+          });
+        }
+      }
+    },
   });
 
   useEffect(() => {

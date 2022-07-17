@@ -133,8 +133,10 @@ const FormAspekPengolahan = () => {
       {
         'sectionTitle': 'Hasil Olah',
         'sectionData': [
-          {'title':'Jenis Mutu Akhir','type':'text','placeholder':'Jumlah','value':''},
-          {'title':'Volume Produksi (kg)','type':'text','placeholder':'Volume','value':''}
+          [
+            {'title':'Jenis Mutu Akhir','type':'text','placeholder':'Jumlah','value':''},
+            {'title':'Volume Produksi (kg)','type':'text','placeholder':'Volume','value':''}
+          ]
         ]
       },
     ]

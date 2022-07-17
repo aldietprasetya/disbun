@@ -72,7 +72,7 @@ const FormSurveyChse = ({
           dtwChseSurveyAnswers: dataToPost,
           status: 1,
         });
-        if (res.data.success) {
+        if (res.data.status == 'success') {
           enqueueSnackbar(res.data.message, {
             anchorOrigin: {
               vertical: 'top',

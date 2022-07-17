@@ -1,5 +1,5 @@
 import React from 'react';
-import SetPasswordPage from '../../../components/pages/auth/setPassword';
+import SetPasswordPage from 'src/components/pages/auth/setPassword';
 import Head from 'next/head';
 
 const SetPassword = () => {

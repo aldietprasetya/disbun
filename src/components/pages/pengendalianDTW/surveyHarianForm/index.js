@@ -66,7 +66,7 @@ const SurveyHarianForm = ({ data, type }) => {
           surveySession: values.sesiSurvei,
           status: values.status,
         });
-        if (res.data.success) {
+        if (res.data.status == 'success') {
           enqueueSnackbar(res.data.message, {
             anchorOrigin: {
               vertical: 'top',

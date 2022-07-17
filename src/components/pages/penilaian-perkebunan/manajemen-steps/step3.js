@@ -161,7 +161,55 @@ const FormManajemenStep3 = () => {
 
   const [lokal, setLokal] = useState([
     [
-      { 'sectionTitle': '', 'sectionData': [ {'title':'Komoditas','type':'text','placeholder':'masukkan jenis komoditas','value':''} ] }, { 'sectionTitle': '', 'sectionData': [ {'title':'Jenis produksi','type':'text','placeholder':'masukkan jenis produksi','value':''}, {'title':'vol tahun 1','type':'text','placeholder':'masukkan volume dalam satuan ku','value':''}, {'title':'nilai tahun 1','type':'text','placeholder':'masukkan nilai dalam satuan rupiah','value':''}, {'title':'vol tahun 2','type':'text','placeholder':'masukkan volume dalam satuan ku','value':''}, {'title':'nilai tahun 2','type':'text','placeholder':'masukkan nilai dalam satuan rupiah','value':''}, {'title':'vol tahun 3','type':'text','placeholder':'masukkan volume dalam satuan ku','value':''}, {'title':'nilai tahun 3','type':'text','placeholder':'masukkan nilai dalam satuan rupiah','value':''}, ] },
+      {
+        'sectionTitle': '',
+        'sectionData': [{
+          'title': 'Komoditas',
+          'type': 'text',
+          'placeholder': 'masukkan jenis komoditas',
+          'value': ''
+        }]
+      }, {
+        'sectionTitle': '',
+        'sectionData': [
+          {
+            'title': 'Jenis produksi',
+            'type': 'text',
+            'placeholder': 'masukkan jenis produksi',
+            'value': ''
+          }, {
+            'title': 'vol tahun 1',
+            'type': 'text',
+            'placeholder': 'masukkan volume dalam satuan ku',
+            'value': ''
+          }, {
+            'title': 'nilai tahun 1',
+            'type': 'text',
+            'placeholder': 'masukkan nilai dalam satuan rupiah',
+            'value': ''
+          }, {
+            'title': 'vol tahun 2',
+            'type': 'text',
+            'placeholder': 'masukkan volume dalam satuan ku',
+            'value': ''
+          }, {
+            'title': 'nilai tahun 2',
+            'type': 'text',
+            'placeholder': 'masukkan nilai dalam satuan rupiah',
+            'value': ''
+          }, {
+            'title': 'vol tahun 3',
+            'type': 'text',
+            'placeholder': 'masukkan volume dalam satuan ku',
+            'value': ''
+          }, {
+            'title': 'nilai tahun 3',
+            'type': 'text',
+            'placeholder': 'masukkan nilai dalam satuan rupiah',
+            'value': ''
+          },
+        ]
+      },
     ],
   ])
 

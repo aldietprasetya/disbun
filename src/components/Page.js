@@ -27,7 +27,7 @@ const Page = ({
         <link rel="icon" href="/favicondis.ico" />
       </Head>
       <Navbar backdrop={isInfografis ? false : true} />
-      <div className="relative flex bg-gray-100">
+      <div className="relative flex bg-gray-100 min-h-screen">
         <div
           className={`${
             backdrop ? 'block' : 'hidden'

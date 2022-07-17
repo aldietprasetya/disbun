@@ -57,7 +57,7 @@ const SurveyChseForm = () => {
             email: values.email,
           },
         );
-        if (res.data.success) {
+        if (res.data.status == 'success') {
           enqueueSnackbar(res.data.message, {
             anchorOrigin: {
               vertical: 'top',

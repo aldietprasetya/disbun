@@ -1,8 +1,10 @@
 import Head from 'next/head'
 import React, { useState, useEffect } from 'react';
 import {useRouter} from 'next/router'
+import _ from 'lodash';
 import InputForm from '../admin/infografis/InputForm';
 import mng from '../../../styles/Managemen.module.scss'
+import ChildStore from './store/kebun'
 
 const preventDefault = f => e => {
   e.preventDefault()
@@ -12,463 +14,167 @@ const preventDefault = f => e => {
 const FormAspekKebun = () => {
   const [isError, setIserror] = useState(false);
 
+  const router = useRouter()
+
+  const [initialLoad, setInitialLoad] = useState(true)
+  const [btnValid, setBtnValid] = useState(false)
+  const [data, setData] = useState(null)
+  const [dataPass, setDataPass] = useState({})
+  const [dataSubmit, setDataSubmit] = useState({})
+
   ////////////////////////// PEMANFAATAN LAHAN HGU ////////////////////////////////
 
-  const [tanaman, setTanaman] = useState([
-    [ {'title':'Jenis Tanaman','type':'text','placeholder':'Jenis Tanaman','value':'','isOpt':false}, {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false}, ]
-  ])
+  const [tanaman, setTanaman] = useState([])
 
   function handleBtnAddTanaman() {
     setTanaman([...tanaman,[ {'title':'Jenis Tanaman','type':'text','placeholder':'Jenis Tanaman','value':'','isOpt':false}, {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false}, ]])
   }
 
-  function tanamanRemoveLabel(i) {
-    setTanaman(tanaman.filter((item, idx) => idx != i))
-  }
-
-  function tanamanChange(e, index, index2) {
-    let stet = tanaman
-    let set = setTanaman
-    const { name, value } = e.target;
-    const list = [...stet];
-    list.forEach((item, i) => {
-      if (i == index) {
-        item.forEach((item2, ii) => {
-          if (ii == index2) {
-            item2.value = value
-          }
-        });
-      }
-    });
-    set(list);
-  }
-
   ////////////////////////// PEMBIBITAN ////////////////////////////////
 
-  const [bibit, setBibit] = useState([
-    [ {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false}, ]
-  ])
+  const [bibit, setBibit] = useState([])
 
   function handleBtnAddBibit() {
     setBibit([...bibit,[ {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false}, ]])
   }
 
-  function bibitRemoveLabel(i) {
-    setBibit(bibit.filter((item, idx) => idx != i))
-  }
-
-  function bibitChange(e, index, index2) {
-    let stet = bibit
-    let set = setBibit
-    const { name, value } = e.target;
-    const list = [...stet];
-    list.forEach((item, i) => {
-      if (i == index) {
-        item.forEach((item2, ii) => {
-          if (ii == index2) {
-            item2.value = value
-          }
-        });
-      }
-    });
-    set(list);
-  }
-
   ////////////////////////// KEBUN INDUK ENTRES ////////////////////////////////
 
-  const [kebun, setKebun] = useState([
-    [ {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false}, ]
-  ])
+  const [kebun, setKebun] = useState([])
 
   function handleBtnAddKebun() {
     setKebun([...kebun,[ {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false}, ]])
   }
 
-  function kebunRemoveLabel(i) {
-    setKebun(kebun.filter((item, idx) => idx != i))
-  }
-
-  function kebunChange(e, index, index2) {
-    let stet = kebun
-    let set = setKebun
-    const { name, value } = e.target;
-    const list = [...stet];
-    list.forEach((item, i) => {
-      if (i == index) {
-        item.forEach((item2, ii) => {
-          if (ii == index2) {
-            item2.value = value
-          }
-        });
-      }
-    });
-    set(list);
-  }
-
   ////////////////////////// EMPLASMEN ////////////////////////////////
 
-  const [emplasmen, setEmplasmen] = useState([
-    [ {'title':'Jenis Emplasmen','placeholder':'Pilih Jenis Emplasmen','type':'text','value':'','isOpt':true}, {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Masukkan Nilai Biaya','value':'','isOpt':false}, ]
-  ])
+  const [emplasmen, setEmplasmen] = useState([])
 
   function handleBtnAddEmplasmen() {
     setEmplasmen([...emplasmen,[ {'title':'Jenis Emplasmen','placeholder':'Pilih Jenis Emplasmen','type':'text','value':'','isOpt':true}, {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Masukkan Nilai Biaya','value':'','isOpt':false}, ]])
   }
 
-  function emplasmenRemoveLabel(i) {
-    setEmplasmen(emplasmen.filter((item, idx) => idx != i))
-  }
-
-  function emplasmenChange(e, index, index2) {
-    let stet = emplasmen
-    let set = setEmplasmen
-    const { name, value } = e.target;
-    const list = [...stet];
-    list.forEach((item, i) => {
-      if (i == index) {
-        item.forEach((item2, ii) => {
-          if (ii == index2) {
-            item2.value = value
-          }
-        });
-      }
-    });
-    set(list);
-  }
-
   ////////////////////////// JALAN JEMBATAN ////////////////////////////////
 
-  const [jalanJembatan, setJalanJembatan] = useState([
-    [ {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false}, ]
-  ])
+  const [jalanJembatan, setJalanJembatan] = useState([])
 
   function handleBtnAddJalanJembatan() {
     setJalanJembatan([...jalanJembatan,[ {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false}, ]])
   }
 
-  function jalanJembatanRemoveLabel(i) {
-    setJalanJembatan(jalanJembatan.filter((item, idx) => idx != i))
-  }
-
-  function jalanJembatanChange(e, index, index2) {
-    let stet = jalanJembatan
-    let set = setJalanJembatan
-    const { name, value } = e.target;
-    const list = [...stet];
-    list.forEach((item, i) => {
-      if (i == index) {
-        item.forEach((item2, ii) => {
-          if (ii == index2) {
-            item2.value = value
-          }
-        });
-      }
-    });
-    set(list);
-  }
-
   ////////////////////////// AREAL CADANGAN ////////////////////////////////
 
-  const [cadangan, setCadangan] = useState([
-    [ {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false}, ]
-  ])
+  const [cadangan, setCadangan] = useState([])
 
   function handleBtnAddCadangan() {
     setCadangan([...cadangan,[ {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false}, ]])
   }
 
-  function cadanganRemoveLabel(i) {
-    setCadangan(cadangan.filter((item, idx) => idx != i))
-  }
-
-  function cadanganChange(e, index, index2) {
-    let stet = cadangan
-    let set = setCadangan
-    const { name, value } = e.target;
-    const list = [...stet];
-    list.forEach((item, i) => {
-      if (i == index) {
-        item.forEach((item2, ii) => {
-          if (ii == index2) {
-            item2.value = value
-          }
-        });
-      }
-    });
-    set(list);
-  }
-
   ////////////////////////// AREAL KONSERVASI ////////////////////////////////
 
-  const [konservasi, setKonservasi] = useState([
-    [ {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false}, ]
-  ])
+  const [konservasi, setKonservasi] = useState([])
 
   function handleBtnAddKonservasi() {
     setKonservasi([...konservasi,[ {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false}, ]])
   }
 
-  function konservasiRemoveLabel(i) {
-    setKonservasi(konservasi.filter((item, idx) => idx != i))
-  }
-
-  function konservasiChange(e, index, index2) {
-    let stet = konservasi
-    let set = setKonservasi
-    const { name, value } = e.target;
-    const list = [...stet];
-    list.forEach((item, i) => {
-      if (i == index) {
-        item.forEach((item2, ii) => {
-          if (ii == index2) {
-            item2.value = value
-          }
-        });
-      }
-    });
-    set(list);
-  }
-
   ////////////////////////// Areal Tidak Mungkin Ditanami (TMD) ////////////////////////////////
 
-  const [tmd, setTmd] = useState([
-    [ {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false}, ]
-  ])
+  const [tmd, setTmd] = useState([])
 
   function handleBtnAddTmd() {
-    setKonservasi([...konservasi,[ {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false}, ]])
-  }
-
-  function tmdRemoveLabel(i) {
-    setKonservasi(konservasi.filter((item, idx) => idx != i))
-  }
-
-  function tmdChange(e, index, index2) {
-    let stet = tmd
-    let set = setTmd
-    const { name, value } = e.target;
-    const list = [...stet];
-    list.forEach((item, i) => {
-      if (i == index) {
-        item.forEach((item2, ii) => {
-          if (ii == index2) {
-            item2.value = value
-          }
-        });
-      }
-    });
-    set(list);
+    setTmd([...tmd,[ {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false}, ]])
   }
 
   ////////////////////////// Areal Sawah ////////////////////////////////
 
-  const [sawah, setSawah] = useState([
-    [ {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false}, ]
-  ])
+  const [sawah, setSawah] = useState([])
 
   function handleBtnAddSawah() {
     setSawah([...sawah,[ {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false}, ]])
   }
 
-  function sawahRemoveLabel(i) {
-    setSawah(sawah.filter((item, idx) => idx != i))
-  }
-
-  function sawahChange(e, index, index2) {
-    let stet = sawah
-    let set = setSawah
-    const { name, value } = e.target;
-    const list = [...stet];
-    list.forEach((item, i) => {
-      if (i == index) {
-        item.forEach((item2, ii) => {
-          if (ii == index2) {
-            item2.value = value
-          }
-        });
-      }
-    });
-    set(list);
-  }
-
   ////////////////////////// Pihak Ketiga ////////////////////////////////
 
-  const [pihakKetiga, setPihakKetiga] = useState([
-    [ {'title':'Jenis Pihak Ketiga','placeholder':'Pilih Jenis Pihak Ketiga','type':'text','value':'','isOpt':true}, {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Masukkan Nilai Biaya','value':'','isOpt':false}, ]
-  ])
+  const [pihakKetiga, setPihakKetiga] = useState([])
 
   function handleBtnAddPihakKetiga() {
     setPihakKetiga([...pihakKetiga,[ {'title':'Jenis Pihak Ketiga','placeholder':'Pilih Jenis Pihak Ketiga','type':'text','value':'','isOpt':true}, {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Masukkan Nilai Biaya','value':'','isOpt':false}, ]])
   }
 
-  function pihakKetigaRemoveLabel(i) {
-    setPihakKetiga(pihakKetiga.filter((item, idx) => idx != i))
-  }
-
-  function pihakKetigaChange(e, index, index2) {
-    let stet = pihakKetiga
-    let set = setPihakKetiga
-    const { name, value } = e.target;
-    const list = [...stet];
-    list.forEach((item, i) => {
-      if (i == index) {
-        item.forEach((item2, ii) => {
-          if (ii == index2) {
-            item2.value = value
-          }
-        });
-      }
-    });
-    set(list);
-  }
-
   ////////////////////////// Lain-lain ////////////////////////////////
 
-  const [lainnya, setLainnya] = useState([
-    [ {'title':'Jenis Areal Lain-lain','placeholder':'Jenis Areal','type':'text','value':'','isOpt':false}, {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Masukkan Nilai Biaya','value':'','isOpt':false}, ]
-  ])
+  const [lainnya, setLainnya] = useState([])
 
   function handleBtnAddLainnya() {
     setLainnya([...lainnya,[ {'title':'Jenis Areal Lain-lain','placeholder':'Jenis Areal','type':'text','value':'','isOpt':false}, {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Masukkan Nilai Biaya','value':'','isOpt':false}, ]])
   }
 
-  function lainnyaRemoveLabel(i) {
-    setLainnya(lainnya.filter((item, idx) => idx != i))
-  }
-
-  function lainnyaChange(e, index, index2) {
-    let stet = lainnya
-    let set = setLainnya
-    const { name, value } = e.target;
-    const list = [...stet];
-    list.forEach((item, i) => {
-      if (i == index) {
-        item.forEach((item2, ii) => {
-          if (ii == index2) {
-            item2.value = value
-          }
-        });
-      }
-    });
-    set(list);
-  }
-
   ////////////////////////// Topografi ////////////////////////////////
 
-  const [topografi, setTopografi] = useState([
-    [ { 'sectionTitle': 'Lereng Datar (0-8 %)', 'sectionData': [{'title':'Luas (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''},{'title':'Persentase (%)','type':'text','placeholder':'Persentase','value':''},{'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''}] }, { 'sectionTitle': 'Lereng Landai (8-15 %)', 'sectionData': [{'title':'Luas (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''},{'title':'Persentase (%)','type':'text','placeholder':'Persentase','value':''},{'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''}] }, { 'sectionTitle': 'Lereng Agak Curam (15-24 %)', 'sectionData': [{'title':'Luas (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''},{'title':'Persentase (%)','type':'text','placeholder':'Persentase','value':''},{'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''}] }, { 'sectionTitle': 'Lereng Curam (24-45 %)', 'sectionData': [{'title':'Luas (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''},{'title':'Persentase (%)','type':'text','placeholder':'Persentase','value':''},{'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''}] }, { 'sectionTitle': 'Lereng Sangat Curam (>45 %)', 'sectionData': [ {'title':'Luas (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''}, {'title':'Persentase (%)','type':'text','placeholder':'Persentase','value':''}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''}, {'title':'Tipe Iklim','type':'text','placeholder':'Tipe Iklim','value':''}, {'title':'Curah Hujan (mm)','type':'text','placeholder':'Jumlah','value':''}, {'title':'Waktu Laporan','type':'text','placeholder':'MM/YYYY','value':''}, ] } ]
-  ])
+  const [topografi, setTopografi] = useState([])
 
   function handleBtnAddTopografi() {
     setTopografi([...topografi,[ { 'sectionTitle': 'Lereng Datar (0-8 %)', 'sectionData': [{'title':'Luas (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''},{'title':'Persentase (%)','type':'text','placeholder':'Persentase','value':''},{'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''}] }, { 'sectionTitle': 'Lereng Landai (8-15 %)', 'sectionData': [{'title':'Luas (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''},{'title':'Persentase (%)','type':'text','placeholder':'Persentase','value':''},{'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''}] }, { 'sectionTitle': 'Lereng Agak Curam (15-24 %)', 'sectionData': [{'title':'Luas (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''},{'title':'Persentase (%)','type':'text','placeholder':'Persentase','value':''},{'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''}] }, { 'sectionTitle': 'Lereng Curam (24-45 %)', 'sectionData': [{'title':'Luas (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''},{'title':'Persentase (%)','type':'text','placeholder':'Persentase','value':''},{'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''}] }, { 'sectionTitle': 'Lereng Sangat Curam (>45 %)', 'sectionData': [ {'title':'Luas (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''}, {'title':'Persentase (%)','type':'text','placeholder':'Persentase','value':''}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''}, {'title':'Tipe Iklim','type':'text','placeholder':'Tipe Iklim','value':''}, {'title':'Curah Hujan (mm)','type':'text','placeholder':'Jumlah','value':''}, {'title':'Waktu Laporan','type':'text','placeholder':'MM/YYYY','value':''}, ] } ]])
   }
 
-  function topografiRemoveLabel(i) {
-    setTopografi(topografi.filter((item, idx) => idx != i))
-  }
-
-  function topografiChange(e, index, index2, index3) {
-    let stet = topografi
-    let set = setTopografi
-    const { name, value } = e.target;
-    const list = [...stet];
-    list.forEach((item, i) => {
-      if (i == index) {
-        item.forEach((item2, ii) => {
-          if (ii == index2) {
-            item2.sectionData.forEach((item3, iii) => {
-              if (iii == index3) {
-                item3.value = value
-              }
-            });
-          }
-        });
-      }
-    });
-    set(list);
-  }
-
   ////////////////////////// Penanaman Baru ////////////////////////////////
 
-  const [tanamBaru, setTanamBaru] = useState([
-    [ {'title':'Jenis Tanaman','placeholder':'Jenis Tanaman','type':'text','value':'','isOpt':false}, {'title':'Tahun Tanam','placeholder':'YYYY','type':'text','value':'','isOpt':false}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Jumlah Pohon','type':'text','placeholder':'Jumlah','value':'','isOpt':false} ]
-  ])
+  const [tanamBaru, setTanamBaru] = useState([])
 
   function handleBtnAddTanamBaru() {
     setTanamBaru([...tanamBaru,[ {'title':'Jenis Tanaman','placeholder':'Jenis Tanaman','type':'text','value':'','isOpt':false}, {'title':'Tahun Tanam','placeholder':'YYYY','type':'text','value':'','isOpt':false}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Jumlah Pohon','type':'text','placeholder':'Jumlah','value':'','isOpt':false} ]])
   }
 
-  function tanamBaruRemoveLabel(i) {
-    setTanamBaru(tanamBaru.filter((item, idx) => idx != i))
-  }
-
-  function tanamBaruChange(e, index, index2) {
-    let stet = tanamBaru
-    let set = setTanamBaru
-    const { name, value } = e.target;
-    const list = [...stet];
-    list.forEach((item, i) => {
-      if (i == index) {
-        item.forEach((item2, ii) => {
-          if (ii == index2) {
-            item2.value = value
-          }
-        });
-      }
-    });
-    set(list);
-  }
-
   ////////////////////////// Komposisi Tanaman ////////////////////////////////
 
-  const [komposisi, setKomposisi] = useState([
-    [ {'title':'Jenis Tanaman','placeholder':'Jenis Tanaman','type':'text','value':'','isOpt':false}, {'title':'TBM (Ha)','placeholder':'Luas Lahan dalam Ha','type':'text','value':'','isOpt':false}, {'title':'TM (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'TTR (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false} ]
-  ])
+  const [komposisi, setKomposisi] = useState([])
 
   function handleBtnAddKomposisi() {
     setKomposisi([...komposisi,[ {'title':'Jenis Tanaman','placeholder':'Jenis Tanaman','type':'text','value':'','isOpt':false}, {'title':'TBM (Ha)','placeholder':'Luas Lahan dalam Ha','type':'text','value':'','isOpt':false}, {'title':'TM (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'TTR (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false} ]])
   }
 
-  function komposisiRemoveLabel(i) {
-    setKomposisi(komposisi.filter((item, idx) => idx != i))
-  }
-
-  function komposisiChange(e, index, index2) {
-    let stet = komposisi
-    let set = setKomposisi
-    const { name, value } = e.target;
-    const list = [...stet];
-    list.forEach((item, i) => {
-      if (i == index) {
-        item.forEach((item2, ii) => {
-          if (ii == index2) {
-            item2.value = value
-          }
-        });
-      }
-    });
-    set(list);
-  }
-
   ////////////////////////// Pemupukan ////////////////////////////////
 
-  const [pemupukan, setPemupukan] = useState([
-    [ {'title':'Jenis Tanaman','placeholder':'Jenis Tanaman','type':'text','value':'','isOpt':false}, {'title':'Luas yang Dipupuk (Ha)','placeholder':'Luas Lahan dalam Ha','type':'text','value':'','isOpt':false}, {'title':'Jenis pupuk','type':'text','placeholder':'Jenis Pupuk','value':'','isOpt':false}, {'title':'Dosis (kg/Ha)','type':'text','placeholder':'Jumlah Dosis','value':'','isOpt':false}, {'title':'Jumlah pupuk (Kg)','type':'text','placeholder':'Jumlah Pupuk','value':'','isOpt':false} ]
-  ])
+  const [pemupukan, setPemupukan] = useState([])
 
   function handleBtnAddPemupukan() {
     setPemupukan([...pemupukan,[ {'title':'Jenis Tanaman','placeholder':'Jenis Tanaman','type':'text','value':'','isOpt':false}, {'title':'Luas yang Dipupuk (Ha)','placeholder':'Luas Lahan dalam Ha','type':'text','value':'','isOpt':false}, {'title':'Jenis pupuk','type':'text','placeholder':'Jenis Pupuk','value':'','isOpt':false}, {'title':'Dosis (kg/Ha)','type':'text','placeholder':'Jumlah Dosis','value':'','isOpt':false}, {'title':'Jumlah pupuk (Kg)','type':'text','placeholder':'Jumlah Pupuk','value':'','isOpt':false} ]])
   }
 
-  function pemupukanRemoveLabel(i) {
-    setPemupukan(pemupukan.filter((item, idx) => idx != i))
+  ////////////////////////// Pengendalian Hama Penyakit ////////////////////////////////
+
+  const [hamaKendali, setHamaKendali] = useState([])
+
+  function handleBtnAddHamaKendali() {
+    setHamaKendali([...hamaKendali,[ { 'sectionTitle': '', 'sectionData': [ {'title':'Jenis Tanaman','type':'text','placeholder':'Jenis Tanaman','value':''}, {'title':'Jenis Hama Penyakit','type':'text','placeholder':'Jenis Hama Penyakit','value':''}, {'title':'Luas Serangan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''}, {'title':'Luas yang dikendalikan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''}, ] }, { 'sectionTitle': 'Luas Cara Pengendalian', 'sectionData': [ {'title':'Chemical (ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''}, {'title':'Hayati (ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''}, {'title':'Mekanis (ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''} ] } ]])
   }
 
-  function pemupukanChange(e, index, index2) {
-    let stet = pemupukan
-    let set = setPemupukan
+  ////////////////////////// Diversifikasi Usaha Tani ////////////////////////////////
+
+  const [disertifikasi, setDisertifikasi] = useState([])
+
+  function handleBtnAddDisertifikasi() {
+    setDisertifikasi([...disertifikasi,[ {'title':'Cabang Diversifikasi','placeholder':'Jenis Diversifikasi','type':'text','value':'','isOpt':false}, {'title':'Luas/volume','placeholder':'Luas/Volume','type':'text','value':'','isOpt':false}, {'title':'Produksi (Ton)','type':'text','placeholder':'Jumlah Produksi','value':'','isOpt':false}, {'title':'Nilai (Rp)','type':'text','placeholder':'Nilai dalam Rupiah','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false} ]])
+  }
+
+  ////////////////////////// Produksi dan Produktivitas ////////////////////////////////
+
+  const [produksiProduktivitas, setProduksiProduktivitas] = useState([])
+
+  function handleBtnAddProduksiProduktivitas() {
+    setProduksiProduktivitas([...produksiProduktivitas,[ {'title':'Jenis Tanaman','placeholder':'Jenis Tanaman','type':'text','value':'','isOpt':false}, {'title':'Luas TM (ha)','placeholder':'Luas Lahan dalam Ha','type':'text','value':'','isOpt':false}, {'title':'Luas yang dipanen (ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Produksi mentah (kg)','type':'text','placeholder':'Jumlah Produksi','value':'','isOpt':false}, {'title':'produksi kering (kg)','type':'text','placeholder':'Jumlah Produksi','value':'','isOpt':false}, {'title':'Produktivitas (kg/ha/tahun)','type':'text','placeholder':'Nilai Produktivitas','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false} ]])
+  }
+
+  ////////////////////////// OTHER FUNCTION ////////////////////////////////
+
+  function removeLabel(i,state,setState) {
+    setState(state.filter((item, idx) => idx != i))
+  }
+
+  function formRegularChange(e, state, setState, index, index2) {
     const { name, value } = e.target;
-    const list = [...stet];
+    const list = [...state];
     list.forEach((item, i) => {
       if (i == index) {
         item.forEach((item2, ii) => {
@@ -478,28 +184,12 @@ const FormAspekKebun = () => {
         });
       }
     });
-    set(list);
+    setState(list);
   }
 
-  ////////////////////////// Pengendalian Hama Penyakit ////////////////////////////////
-
-  const [hamaKendali, setHamaKendali] = useState([
-    [ { 'sectionTitle': '', 'sectionData': [ {'title':'Jenis Tanaman','type':'text','placeholder':'Jenis Tanaman','value':''}, {'title':'Jenis Hama Penyakit','type':'text','placeholder':'Jenis Hama Penyakit','value':''}, {'title':'Luas Serangan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''}, {'title':'Luas yang dikendalikan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''}, ] }, { 'sectionTitle': 'Luas Cara Pengendalian', 'sectionData': [ {'title':'Chemical (ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''}, {'title':'Hayati (ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''}, {'title':'Mekanis (ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''} ] } ]
-  ])
-
-  function handleBtnAddHamaKendali() {
-    setHamaKendali([...hamaKendali,[ { 'sectionTitle': '', 'sectionData': [ {'title':'Jenis Tanaman','type':'text','placeholder':'Jenis Tanaman','value':''}, {'title':'Jenis Hama Penyakit','type':'text','placeholder':'Jenis Hama Penyakit','value':''}, {'title':'Luas Serangan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''}, {'title':'Luas yang dikendalikan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''}, ] }, { 'sectionTitle': 'Luas Cara Pengendalian', 'sectionData': [ {'title':'Chemical (ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''}, {'title':'Hayati (ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''}, {'title':'Mekanis (ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''} ] } ]])
-  }
-
-  function hamaKendaliRemoveLabel(i) {
-    setHamaKendali(hamaKendali.filter((item, idx) => idx != i))
-  }
-
-  function hamaKendaliChange(e, index, index2, index3) {
-    let stet = hamaKendali
-    let set = setHamaKendali
+  function formSectionChange(e, state, setState, index, index2, index3) {
     const { name, value } = e.target;
-    const list = [...stet];
+    const list = [...state];
     list.forEach((item, i) => {
       if (i == index) {
         item.forEach((item2, ii) => {
@@ -513,81 +203,319 @@ const FormAspekKebun = () => {
         });
       }
     });
-    set(list);
+    setState(list);
   }
 
-  ////////////////////////// Diversifikasi Usaha Tani ////////////////////////////////
+  useEffect(() => {
+    if (initialLoad) {
+      let retrievedObject = JSON.parse(localStorage.getItem('KebunReport'));
 
-  const [disertifikasi, setDisertifikasi] = useState([
-    [ {'title':'Cabang Diversifikasi','placeholder':'Jenis Diversifikasi','type':'text','value':'','isOpt':false}, {'title':'Luas/volume','placeholder':'Luas/Volume','type':'text','value':'','isOpt':false}, {'title':'Produksi (Ton)','type':'text','placeholder':'Jumlah Produksi','value':'','isOpt':false}, {'title':'Nilai (Rp)','type':'text','placeholder':'Nilai dalam Rupiah','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false} ]
-  ])
-
-  function handleBtnAddDisertifikasi() {
-    setDisertifikasi([...disertifikasi,[ {'title':'Cabang Diversifikasi','placeholder':'Jenis Diversifikasi','type':'text','value':'','isOpt':false}, {'title':'Luas/volume','placeholder':'Luas/Volume','type':'text','value':'','isOpt':false}, {'title':'Produksi (Ton)','type':'text','placeholder':'Jumlah Produksi','value':'','isOpt':false}, {'title':'Nilai (Rp)','type':'text','placeholder':'Nilai dalam Rupiah','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false} ]])
-  }
-
-  function disertifikasiRemoveLabel(i) {
-    setDisertifikasi(disertifikasi.filter((item, idx) => idx != i))
-  }
-
-  function disertifikasiChange(e, index, index2) {
-    let stet = disertifikasi
-    let set = setDisertifikasi
-    const { name, value } = e.target;
-    const list = [...stet];
-    list.forEach((item, i) => {
-      if (i == index) {
-        item.forEach((item2, ii) => {
-          if (ii == index2) {
-            item2.value = value
-          }
-        });
+      if (!_.isEmpty(retrievedObject)) {
+        setTanaman(retrievedObject.plant)
+        setBibit(retrievedObject.seed)
+        setKebun(retrievedObject.sprout)
+        setEmplasmen(retrievedObject.emplacement)
+        setJalanJembatan(retrievedObject.road)
+        setCadangan(retrievedObject.backupArea)
+        setKonservasi(retrievedObject.conservationArea)
+        setTmd(retrievedObject.tmd)
+        setSawah(retrievedObject.riceField)
+        setPihakKetiga(retrievedObject.thirdParty)
+        setLainnya(retrievedObject.other)
+        setTopografi(retrievedObject.topography)
+        setTanamBaru(retrievedObject.newPlanting)
+        setKomposisi(retrievedObject.composition)
+        setPemupukan(retrievedObject.fertilization)
+        setHamaKendali(retrievedObject.pestControl)
+        setDisertifikasi(retrievedObject.diversification)
+        setProduksiProduktivitas(retrievedObject.productivity)
       }
-    });
-    set(list);
-  }
+    }
+    setInitialLoad(false)
+  }, [initialLoad])
 
-  ////////////////////////// Produksi dan Produktivitas ////////////////////////////////
+  useEffect(() => {
+    setDataSubmit({
+      "plant": tanaman,
+      "seed": bibit,
+      "sprout": kebun,
+      "emplacement": emplasmen,
+      "road": jalanJembatan,
+      "backupArea": cadangan,
+      "conservationArea": konservasi,
+      "tmd": tmd,
+      "riceField": sawah,
+      "thirdParty": pihakKetiga,
+      "other": lainnya,
+      "topography": topografi,
+      "newPlanting": tanamBaru,
+      "composition": komposisi,
+      "fertilization": pemupukan,
+      "pestControl": hamaKendali,
+      "diversification": disertifikasi,
+      "productivity": produksiProduktivitas
+    })
 
-  const [produksiProduktivitas, setProduksiProduktivitas] = useState([
-    [ {'title':'Jenis Tanaman','placeholder':'Jenis Tanaman','type':'text','value':'','isOpt':false}, {'title':'Luas TM (ha)','placeholder':'Luas Lahan dalam Ha','type':'text','value':'','isOpt':false}, {'title':'Luas yang dipanen (ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Produksi mentah (kg)','type':'text','placeholder':'Jumlah Produksi','value':'','isOpt':false}, {'title':'produksi kering (kg)','type':'text','placeholder':'Jumlah Produksi','value':'','isOpt':false}, {'title':'Produktivitas (kg/ha/tahun)','type':'text','placeholder':'Nilai Produktivitas','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false} ]
-  ])
+  }, [tanaman,bibit,kebun,emplasmen,jalanJembatan,cadangan,konservasi
+    ,tmd,sawah,pihakKetiga,lainnya,topografi,tanamBaru
+    ,komposisi,pemupukan,hamaKendali,disertifikasi,produksiProduktivitas])
 
-  function handleBtnAddProduksiProduktivitas() {
-    setProduksiProduktivitas([...produksiProduktivitas,[ {'title':'Jenis Tanaman','placeholder':'Jenis Tanaman','type':'text','value':'','isOpt':false}, {'title':'Luas TM (ha)','placeholder':'Luas Lahan dalam Ha','type':'text','value':'','isOpt':false}, {'title':'Luas yang dipanen (ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Produksi mentah (kg)','type':'text','placeholder':'Jumlah Produksi','value':'','isOpt':false}, {'title':'produksi kering (kg)','type':'text','placeholder':'Jumlah Produksi','value':'','isOpt':false}, {'title':'Produktivitas (kg/ha/tahun)','type':'text','placeholder':'Nilai Produktivitas','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false} ]])
-  }
-
-  function produksiProduktivitasRemoveLabel(i) {
-    setProduksiProduktivitas(produksiProduktivitas.filter((item, idx) => idx != i))
-  }
-
-  function produksiProduktivitasChange(e, index, index2) {
-    let stet = produksiProduktivitas
-    let set = setProduksiProduktivitas
-    const { name, value } = e.target;
-    const list = [...stet];
-    list.forEach((item, i) => {
-      if (i == index) {
-        item.forEach((item2, ii) => {
-          if (ii == index2) {
-            item2.value = value
-          }
-        });
-      }
-    });
-    set(list);
-  }
-
-  ////////////////////////// OTHER FUNCTION ////////////////////////////////
-
-  const [btnValid, setBtnValid] = useState(false)
-
-  const router = useRouter()
+  useEffect(() => {
+    if (!_.isEmpty(dataSubmit)) {
+      setDataPass(dataSubmit)
+    }
+  },[dataPass,dataSubmit])
 
   const storeData = preventDefault(() => {
-    localStorage.setItem("dataSubmit", JSON.stringify(dataSubmit));
+    localStorage.setItem("KebunReport", JSON.stringify(dataSubmit));
+    let data = {
+      "plant": [],
+      "seed": [],
+      "sprout": [],
+      "emplacement": [],
+      "road": [],
+      "backupArea": [],
+      "conservationArea": [],
+      "tmd": [],
+      "riceField": [],
+      "thirdParty": [],
+      "other": [],
+      "topography": [],
+      "newPlanting": [],
+      "composition": [],
+      "fertilization": [],
+      "pestControl": [],
+      "diversification": [],
+      "productivity": []
+    }
+
+    tanaman.forEach((item, i) => {
+      let dataTemp = {}
+      item.forEach(() => {
+        dataTemp.plantType = item[0].value
+        dataTemp.villageId = item[1].value
+        dataTemp.description = item[2].value
+        dataTemp.area = item[3].value
+      });
+      data.plant.push(dataTemp)
+    });
+
+    bibit.forEach((item, i) => {
+      let dataTemp = {}
+      item.forEach(() => {
+        dataTemp.villageId = item[0].value
+        dataTemp.area = item[1].value
+        dataTemp.description = item[2].value
+      });
+      data.seed.push(dataTemp)
+    });
+
+    kebun.forEach((item, i) => {
+      let dataTemp = {}
+      item.forEach(() => {
+        dataTemp.villageId = item[0].value
+        dataTemp.area = item[1].value
+        dataTemp.description = item[2].value
+      });
+      data.sprout.push(dataTemp)
+    });
+
+    emplasmen.forEach((item, i) => {
+      let dataTemp = {}
+      item.forEach(() => {
+        dataTemp.emplacementType = item[0].value
+        dataTemp.villageId = item[1].value
+        dataTemp.area = item[2].value
+        dataTemp.description = item[3].value
+      });
+      data.emplacement.push(dataTemp)
+    });
+
+    jalanJembatan.forEach((item, i) => {
+      let dataTemp = {}
+      item.forEach(() => {
+        dataTemp.villageId = item[0].value
+        dataTemp.area = item[1].value
+        dataTemp.description = item[2].value
+      });
+      data.road.push(dataTemp)
+    });
+
+    cadangan.forEach((item, i) => {
+      let dataTemp = {}
+      item.forEach(() => {
+        dataTemp.villageId = item[0].value
+        dataTemp.area = item[1].value
+        dataTemp.description = item[2].value
+      });
+      data.backupArea.push(dataTemp)
+    });
+
+    konservasi.forEach((item, i) => {
+      let dataTemp = {}
+      item.forEach(() => {
+        dataTemp.villageId = item[0].value
+        dataTemp.area = item[1].value
+        dataTemp.description = item[2].value
+      });
+      data.conservationArea.push(dataTemp)
+    });
+
+    tmd.forEach((item, i) => {
+      let dataTemp = {}
+      item.forEach(() => {
+        dataTemp.villageId = item[0].value
+        dataTemp.area = item[1].value
+        dataTemp.description = item[2].value
+      });
+      data.tmd.push(dataTemp)
+    });
+
+    sawah.forEach((item, i) => {
+      let dataTemp = {}
+      item.forEach(() => {
+        dataTemp.villageId = item[0].value
+        dataTemp.area = item[1].value
+        dataTemp.description = item[2].value
+      });
+      data.riceField.push(dataTemp)
+    });
+
+    pihakKetiga.forEach((item, i) => {
+      let dataTemp = {}
+      item.forEach(() => {
+        dataTemp.thirdPartyType = item[0].value
+        dataTemp.villageId = item[1].value
+        dataTemp.area = item[2].value
+        dataTemp.description = item[3].value
+      });
+      data.thirdParty.push(dataTemp)
+    });
+
+    lainnya.forEach((item, i) => {
+      let dataTemp = {}
+      item.forEach(() => {
+        dataTemp.thirdPartyType = item[0].value
+        dataTemp.villageId = item[1].value
+        dataTemp.area = item[2].value
+        dataTemp.description = item[3].value
+      });
+      data.other.push(dataTemp)
+    });
+
+    tanamBaru.forEach((item, i) => {
+      let dataTemp = {}
+      item.forEach(() => {
+        dataTemp.plantType = item[0].value
+        dataTemp.year = item[1].value
+        dataTemp.area = item[2].value
+        dataTemp.plantCount = item[3].value
+      });
+      data.newPlanting.push(dataTemp)
+    });
+
+    komposisi.forEach((item, i) => {
+      let dataTemp = {}
+      item.forEach(() => {
+        dataTemp.plantType = item[0].value
+        dataTemp.tbm = item[1].value
+        dataTemp.tm = item[2].value
+        dataTemp.ttr = item[3].value
+      });
+      data.composition.push(dataTemp)
+    });
+
+    pemupukan.forEach((item, i) => {
+      let dataTemp = {}
+      item.forEach(() => {
+        dataTemp.plantType = item[0].value
+        dataTemp.area = item[1].value
+        dataTemp.fertilizerType = item[2].value
+        dataTemp.dose = item[3].value
+        dataTemp.fertilizerAmount = item[4].value
+      });
+      data.fertilization.push(dataTemp)
+    });
+
+    disertifikasi.forEach((item, i) => {
+      let dataTemp = {}
+      item.forEach(() => {
+        dataTemp.diversificationType = item[0].value
+        dataTemp.area = item[1].value
+        dataTemp.totalProduction = item[2].value
+        dataTemp.value = item[3].value
+        dataTemp.description = item[4].value
+      });
+      data.diversification.push(dataTemp)
+    });
+
+    produksiProduktivitas.forEach((item, i) => {
+      let dataTemp = {}
+      item.forEach(() => {
+        dataTemp.plantType = item[0].value
+        dataTemp.landArea = item[1].value
+        dataTemp.harvestArea = item[2].value
+        dataTemp.rawProduction = item[3].value
+        dataTemp.dryProduction = item[4].value
+        dataTemp.productivity = item[5].value
+        dataTemp.description = item[6].value
+      });
+      data.productivity.push(dataTemp)
+    });
+
+    topografi.forEach((item, i) => {
+      let dataTemp = {
+        flat:{},
+        slope:{},
+        midSteep:{},
+        steep:{},
+        verySteep:{},
+      }
+      item.forEach((item2, ii, arr) => {
+        dataTemp.flat.area = arr[0].sectionData[0].value
+        dataTemp.flat.percentage = arr[0].sectionData[1].value
+        dataTemp.flat.description = arr[0].sectionData[2].value
+
+        dataTemp.slope.area = arr[1].sectionData[0].value
+        dataTemp.slope.percentage = arr[1].sectionData[1].value
+        dataTemp.slope.description = arr[1].sectionData[2].value
+
+        dataTemp.midSteep.area = arr[2].sectionData[0].value
+        dataTemp.midSteep.percentage = arr[2].sectionData[1].value
+        dataTemp.midSteep.description = arr[2].sectionData[2].value
+
+        dataTemp.steep.area = arr[3].sectionData[0].value
+        dataTemp.steep.percentage = arr[3].sectionData[1].value
+        dataTemp.steep.description = arr[3].sectionData[2].value
+
+        dataTemp.verySteep.area = arr[4].sectionData[0].value
+        dataTemp.verySteep.percentage = arr[4].sectionData[1].value
+        dataTemp.verySteep.description = arr[4].sectionData[2].value
+        dataTemp.verySteep.climateType = arr[4].sectionData[3].value
+        dataTemp.verySteep.rainfall = arr[4].sectionData[4].value
+        dataTemp.verySteep.reportDate = arr[4].sectionData[5].value
+      });
+      data.topography.push(dataTemp)
+    });
+
+    hamaKendali.forEach((item, i) => {
+      let dataTemp = {}
+      item.forEach((e, i, arr) => {
+        dataTemp.plantType = arr[0].sectionData[0].value
+        dataTemp.pestType = arr[0].sectionData[1].value
+        dataTemp.attackedArea = arr[0].sectionData[2].value
+        dataTemp.controlledArea = arr[0].sectionData[3].value
+        dataTemp.chemicalArea = arr[1].sectionData[0].value
+        dataTemp.biologicalArea = arr[1].sectionData[1].value
+        dataTemp.mechanicalArea = arr[1].sectionData[2].value
+      });
+      data.pestControl.push(dataTemp)
+    });
+
+    localStorage.setItem("dataSubmitKebun", JSON.stringify(data));
+
     router.push({
-      pathname: "/beranda/laporan/konfirmasi"
+      pathname: "/pelaporan-perkebunan/aspek-pengolahan/"
     })
   })
 
@@ -597,6 +525,9 @@ const FormAspekKebun = () => {
       <Head>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
       </Head>
+
+      <ChildStore/>
+
       <form>
         <div className={mng.base__formsection}>
 
@@ -609,7 +540,7 @@ const FormAspekKebun = () => {
                 <div className={`${mng["base__formlabel_twin"]}`} key={i}>
                 {
                   i > 0 ?
-                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => tanamanRemoveLabel(i)}>
+                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => removeLabel(i, tanaman, setTanaman)}>
                     do_not_disturb_on
                   </span>
                   :
@@ -624,7 +555,7 @@ const FormAspekKebun = () => {
                             <InputForm
                               titleForm={item.title}
                               titleName={item.title}
-                              onChange={(e) => tanamanChange(e, i, ii)}
+                              onChange={(e) => formRegularChange(e, tanaman, setTanaman, i, ii)}
                               type="text"
                               placeholder={item.placeholder}
                               className={`${
@@ -636,7 +567,7 @@ const FormAspekKebun = () => {
                         ) : (
                           <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
                             <span className={mng.base__inputtitle}>{item.title}</span>
-                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => tanamanChange(e, i, ii)}/>
+                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, tanaman, setTanaman, i, ii)}/>
                           </label>
                         )
                       }
@@ -662,7 +593,7 @@ const FormAspekKebun = () => {
                 <div className={`${mng["base__formlabel_unique3"]}`} key={i}>
                 {
                   i > 0 ?
-                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => bibitRemoveLabel(i)}>
+                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => removeLabel(i, bibit, setBibit)}>
                     do_not_disturb_on
                   </span>
                   :
@@ -677,7 +608,7 @@ const FormAspekKebun = () => {
                             <InputForm
                               titleForm={item.title}
                               titleName={item.title}
-                              onChange={(e) => bibitChange(e, i, ii)}
+                              onChange={(e) => formRegularChange(e, bibit, setBibit, i, ii)}
                               type="text"
                               placeholder={item.placeholder}
                               className={`${
@@ -689,7 +620,7 @@ const FormAspekKebun = () => {
                         ) : (
                           <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
                             <span className={mng.base__inputtitle}>{item.title}</span>
-                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => bibitChange(e, i, ii)}/>
+                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, bibit, setBibit, i, ii)}/>
                           </label>
                         )
                       }
@@ -716,7 +647,7 @@ const FormAspekKebun = () => {
                 <div className={`${mng["base__formlabel_unique3"]}`} key={i}>
                 {
                   i > 0 ?
-                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => kebunRemoveLabel(i)}>
+                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => removeLabel(i, kebun, setKebun)}>
                     do_not_disturb_on
                   </span>
                   :
@@ -731,7 +662,7 @@ const FormAspekKebun = () => {
                             <InputForm
                               titleForm={item.title}
                               titleName={item.title}
-                              onChange={(e) => kebunChange(e, i, ii)}
+                              onChange={(e) => formRegularChange(e, kebun, setKebun, i, ii)}
                               type="text"
                               placeholder={item.placeholder}
                               className={`${
@@ -743,7 +674,7 @@ const FormAspekKebun = () => {
                         ) : (
                           <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
                             <span className={mng.base__inputtitle}>{item.title}</span>
-                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => kebunChange(e, i, ii)}/>
+                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, kebun, setKebun, i, ii)}/>
                           </label>
                         )
                       }
@@ -771,7 +702,7 @@ const FormAspekKebun = () => {
                 <div className={`${mng["base__formlabel_twin"]}`} key={i}>
                 {
                   i > 0 ?
-                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => emplasmenRemoveLabel(i)}>
+                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => removeLabel(i, emplasmen, setEmplasmen)}>
                     do_not_disturb_on
                   </span>
                   :
@@ -786,7 +717,7 @@ const FormAspekKebun = () => {
                             <InputForm
                               titleForm={item.title}
                               titleName={item.title}
-                              onChange={(e) => emplasmenChange(e, i, ii)}
+                              onChange={(e) => formRegularChange(e, emplasmen, setEmplasmen, i, ii)}
                               type="text"
                               placeholder={item.placeholder}
                               className={`${
@@ -798,7 +729,7 @@ const FormAspekKebun = () => {
                         ) : (
                           <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
                             <span className={mng.base__inputtitle}>{item.title}</span>
-                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => emplasmenChange(e, i, ii)}/>
+                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, emplasmen, setEmplasmen, i, ii)}/>
                           </label>
                         )
                       }
@@ -824,7 +755,7 @@ const FormAspekKebun = () => {
                 <div className={`${mng["base__formlabel_unique3"]}`} key={i}>
                 {
                   i > 0 ?
-                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => jalanJembatanRemoveLabel(i)}>
+                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => removeLabel(i, jalanJembatan, setJalanJembatan)}>
                     do_not_disturb_on
                   </span>
                   :
@@ -839,7 +770,7 @@ const FormAspekKebun = () => {
                             <InputForm
                               titleForm={item.title}
                               titleName={item.title}
-                              onChange={(e) => jalanJembatanChange(e, i, ii)}
+                              onChange={(e) => formRegularChange(e, jalanJembatan, setJalanJembatan, i, ii)}
                               type="text"
                               placeholder={item.placeholder}
                               className={`${
@@ -851,7 +782,7 @@ const FormAspekKebun = () => {
                         ) : (
                           <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
                             <span className={mng.base__inputtitle}>{item.title}</span>
-                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => jalanJembatanChange(e, i, ii)}/>
+                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, jalanJembatan, setJalanJembatan, i, ii)}/>
                           </label>
                         )
                       }
@@ -878,7 +809,7 @@ const FormAspekKebun = () => {
                 <div className={`${mng["base__formlabel_unique3"]}`} key={i}>
                 {
                   i > 0 ?
-                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => cadanganRemoveLabel(i)}>
+                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => removeLabel(i, cadangan, setCadangan)}>
                     do_not_disturb_on
                   </span>
                   :
@@ -893,7 +824,7 @@ const FormAspekKebun = () => {
                             <InputForm
                               titleForm={item.title}
                               titleName={item.title}
-                              onChange={(e) => cadanganChange(e, i, ii)}
+                              onChange={(e) => formRegularChange(e, cadangan, setCadangan, i, ii)}
                               type="text"
                               placeholder={item.placeholder}
                               className={`${
@@ -905,7 +836,7 @@ const FormAspekKebun = () => {
                         ) : (
                           <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
                             <span className={mng.base__inputtitle}>{item.title}</span>
-                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => cadanganChange(e, i, ii)}/>
+                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, cadangan, setCadangan, i, ii)}/>
                           </label>
                         )
                       }
@@ -932,7 +863,7 @@ const FormAspekKebun = () => {
                 <div className={`${mng["base__formlabel_unique3"]}`} key={i}>
                 {
                   i > 0 ?
-                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => konservasiRemoveLabel(i)}>
+                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => removeLabel(i, konservasi, setKonservasi)}>
                     do_not_disturb_on
                   </span>
                   :
@@ -947,7 +878,7 @@ const FormAspekKebun = () => {
                             <InputForm
                               titleForm={item.title}
                               titleName={item.title}
-                              onChange={(e) => konservasiChange(e, i, ii)}
+                              onChange={(e) => formRegularChange(e, konservasi, setKonservasi, i, ii)}
                               type="text"
                               placeholder={item.placeholder}
                               className={`${
@@ -959,7 +890,7 @@ const FormAspekKebun = () => {
                         ) : (
                           <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
                             <span className={mng.base__inputtitle}>{item.title}</span>
-                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => konservasiChange(e, i, ii)}/>
+                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, konservasi, setKonservasi, i, ii)}/>
                           </label>
                         )
                       }
@@ -986,7 +917,7 @@ const FormAspekKebun = () => {
                 <div className={`${mng["base__formlabel_unique3"]}`} key={i}>
                 {
                   i > 0 ?
-                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => tmdRemoveLabel(i)}>
+                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => removeLabel(i, tmd, setTmd)}>
                     do_not_disturb_on
                   </span>
                   :
@@ -1001,7 +932,7 @@ const FormAspekKebun = () => {
                             <InputForm
                               titleForm={item.title}
                               titleName={item.title}
-                              onChange={(e) => tmdChange(e, i, ii)}
+                              onChange={(e) => formRegularChange(e, tmd, setTmd, i, ii)}
                               type="text"
                               placeholder={item.placeholder}
                               className={`${
@@ -1013,7 +944,7 @@ const FormAspekKebun = () => {
                         ) : (
                           <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
                             <span className={mng.base__inputtitle}>{item.title}</span>
-                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => tmdChange(e, i, ii)}/>
+                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, tmd, setTmd, i, ii)}/>
                           </label>
                         )
                       }
@@ -1040,7 +971,7 @@ const FormAspekKebun = () => {
                 <div className={`${mng["base__formlabel_unique3"]}`} key={i}>
                 {
                   i > 0 ?
-                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => sawahRemoveLabel(i)}>
+                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => removeLabel(i, sawah, setSawah)}>
                     do_not_disturb_on
                   </span>
                   :
@@ -1055,7 +986,7 @@ const FormAspekKebun = () => {
                             <InputForm
                               titleForm={item.title}
                               titleName={item.title}
-                              onChange={(e) => sawahChange(e, i, ii)}
+                              onChange={(e) => formRegularChange(e, sawah, setSawah, i, ii)}
                               type="text"
                               placeholder={item.placeholder}
                               className={`${
@@ -1067,7 +998,7 @@ const FormAspekKebun = () => {
                         ) : (
                           <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
                             <span className={mng.base__inputtitle}>{item.title}</span>
-                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => sawahChange(e, i, ii)}/>
+                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, sawah, setSawah, i, ii)}/>
                           </label>
                         )
                       }
@@ -1095,7 +1026,7 @@ const FormAspekKebun = () => {
                 <div className={`${mng["base__formlabel_twin"]}`} key={i}>
                 {
                   i > 0 ?
-                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => pihakKetigaRemoveLabel(i)}>
+                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => removeLabel(i, pihakKetiga, setPihakKetiga)}>
                     do_not_disturb_on
                   </span>
                   :
@@ -1110,7 +1041,7 @@ const FormAspekKebun = () => {
                             <InputForm
                               titleForm={item.title}
                               titleName={item.title}
-                              onChange={(e) => pihakKetigaChange(e, i, ii)}
+                              onChange={(e) => formRegularChange(e, pihakKetiga, setPihakKetiga, i, ii)}
                               type="text"
                               placeholder={item.placeholder}
                               className={`${
@@ -1122,7 +1053,7 @@ const FormAspekKebun = () => {
                         ) : (
                           <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
                             <span className={mng.base__inputtitle}>{item.title}</span>
-                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => pihakKetigaChange(e, i, ii)}/>
+                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, pihakKetiga, setPihakKetiga, i, ii)}/>
                           </label>
                         )
                       }
@@ -1149,7 +1080,7 @@ const FormAspekKebun = () => {
                 <div className={`${mng["base__formlabel_twin"]}`} key={i}>
                 {
                   i > 0 ?
-                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => lainnyaRemoveLabel(i)}>
+                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => removeLabel(i, lainnya, setLainnya)}>
                     do_not_disturb_on
                   </span>
                   :
@@ -1164,7 +1095,7 @@ const FormAspekKebun = () => {
                             <InputForm
                               titleForm={item.title}
                               titleName={item.title}
-                              onChange={(e) => lainnyaChange(e, i, ii)}
+                              onChange={(e) => formRegularChange(e, lainnya, setLainnya, i, ii)}
                               type="text"
                               placeholder={item.placeholder}
                               className={`${
@@ -1176,7 +1107,7 @@ const FormAspekKebun = () => {
                         ) : (
                           <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
                             <span className={mng.base__inputtitle}>{item.title}</span>
-                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => lainnyaChange(e, i, ii)}/>
+                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, lainnya, setLainnya, i, ii)}/>
                           </label>
                         )
                       }
@@ -1202,7 +1133,7 @@ const FormAspekKebun = () => {
                 <div className={`${mng["base__formlabel_unique3"]}`} key={i}>
                   {
                     i > 0 ?
-                    <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => topografiRemoveLabel(i)}>
+                    <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => removeLabel(i, topografi, setTopografi)}>
                       do_not_disturb_on
                     </span>
                     :
@@ -1217,7 +1148,7 @@ const FormAspekKebun = () => {
                           item.sectionData.map((child,iii) => (
                             <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={iii}>
                               <span className={mng.base__inputtitle}>{child.title}</span>
-                              <input className={mng.base__inputbase} type={child.type} min='0' placeholder={child.placeholder} value={child.value} onChange={(e) => topografiChange(e, i, ii, iii)}/>
+                              <input className={mng.base__inputbase} type={child.type} min='0' placeholder={child.placeholder} value={child.value} onChange={(e) => formSectionChange(e, topografi, setTopografi, i, ii, iii)}/>
                             </label>
                           ))
                         }
@@ -1246,7 +1177,7 @@ const FormAspekKebun = () => {
                 <div className={`${mng["base__formlabel_twin"]}`} key={i}>
                 {
                   i > 0 ?
-                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => tanamBaruRemoveLabel(i)}>
+                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => removeLabel(i, tanamBaru, setTanamBaru)}>
                     do_not_disturb_on
                   </span>
                   :
@@ -1256,7 +1187,7 @@ const FormAspekKebun = () => {
                   items.map((item,ii) => (
                     <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
                       <span className={mng.base__inputtitle}>{item.title}</span>
-                      <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => tanamBaruChange(e, i, ii)}/>
+                      <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, tanamBaru, setTanamBaru, i, ii)}/>
                     </label>
                   ))
                 }
@@ -1279,7 +1210,7 @@ const FormAspekKebun = () => {
                 <div className={`${mng["base__formlabel_unique3"]} ${mng["base__formlabel_unique3-firstfull"]}`} key={i}>
                 {
                   i > 0 ?
-                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => komposisiRemoveLabel(i)}>
+                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => removeLabel(i, komposisi, setKomposisi)}>
                     do_not_disturb_on
                   </span>
                   :
@@ -1289,7 +1220,7 @@ const FormAspekKebun = () => {
                   items.map((item,ii) => (
                     <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
                       <span className={mng.base__inputtitle}>{item.title}</span>
-                      <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => komposisiChange(e, i, ii)}/>
+                      <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, komposisi, setKomposisi, i, ii)}/>
                     </label>
                   ))
                 }
@@ -1312,7 +1243,7 @@ const FormAspekKebun = () => {
                 <div className={`${mng["base__formlabel_twin"]} ${mng["base__formlabel_twin-firstfull"]}`} key={i}>
                 {
                   i > 0 ?
-                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => pemupukanRemoveLabel(i)}>
+                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => removeLabel(i, pemupukan, setPemupukan)}>
                     do_not_disturb_on
                   </span>
                   :
@@ -1322,7 +1253,7 @@ const FormAspekKebun = () => {
                   items.map((item,ii) => (
                     <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
                       <span className={mng.base__inputtitle}>{item.title}</span>
-                      <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => pemupukanChange(e, i, ii)}/>
+                      <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, pemupukan, setPemupukan, i, ii)}/>
                     </label>
                   ))
                 }
@@ -1345,7 +1276,7 @@ const FormAspekKebun = () => {
                 <div className={`${mng["base__formlabel_unique3"]}`} key={i}>
                   {
                     i > 0 ?
-                    <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => hamaKendaliRemoveLabel(i)}>
+                    <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => removeLabel(i, hamaKendali, setHamaKendali)}>
                       do_not_disturb_on
                     </span>
                     :
@@ -1360,7 +1291,7 @@ const FormAspekKebun = () => {
                           item.sectionData.map((child,iii) => (
                             <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={iii}>
                               <span className={mng.base__inputtitle}>{child.title}</span>
-                              <input className={mng.base__inputbase} type={child.type} min='0' placeholder={child.placeholder} value={child.value} onChange={(e) => hamaKendaliChange(e, i, ii, iii)}/>
+                              <input className={mng.base__inputbase} type={child.type} min='0' placeholder={child.placeholder} value={child.value} onChange={(e) => formSectionChange(e, hamaKendali, setHamaKendali, i, ii, iii)}/>
                             </label>
                           ))
                         }
@@ -1388,7 +1319,7 @@ const FormAspekKebun = () => {
                 <div className={`${mng["base__formlabel_twin"]} ${mng["base__formlabel_twin-firstfull"]}`} key={i}>
                 {
                   i > 0 ?
-                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => disertifikasiRemoveLabel(i)}>
+                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => removeLabel(i, disertifikasi, setDisertifikasi)}>
                     do_not_disturb_on
                   </span>
                   :
@@ -1398,7 +1329,7 @@ const FormAspekKebun = () => {
                   items.map((item,ii) => (
                     <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
                       <span className={mng.base__inputtitle}>{item.title}</span>
-                      <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => disertifikasiChange(e, i, ii)}/>
+                      <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, disertifikasi, setDisertifikasi, i, ii)}/>
                     </label>
                   ))
                 }
@@ -1421,7 +1352,7 @@ const FormAspekKebun = () => {
                 <div className={`${mng["base__formlabel_twin"]} ${mng["base__formlabel_twin-firstfull"]}`} key={i}>
                 {
                   i > 0 ?
-                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => produksiProduktivitasRemoveLabel(i)}>
+                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => removeLabel(i, produksiProduktivitas, setProduksiProduktivitas)}>
                     do_not_disturb_on
                   </span>
                   :
@@ -1431,7 +1362,7 @@ const FormAspekKebun = () => {
                   items.map((item,ii) => (
                     <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
                       <span className={mng.base__inputtitle}>{item.title}</span>
-                      <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => produksiProduktivitasChange(e, i, ii)}/>
+                      <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, produksiProduktivitas, setProduksiProduktivitas, i, ii)}/>
                     </label>
                   ))
                 }
@@ -1452,7 +1383,7 @@ const FormAspekKebun = () => {
             </div>
           */}
 
-          <button className={`${mng["base__btnsimpan"]} ${"float-right mt-1"}`} onClick={storeData} disabled={!btnValid}>
+          <button className={`${mng["base__btnsimpan"]} ${"float-right mt-1"}`} onClick={storeData}>
             Simpan dan Lanjutkan
           </button>
         </div>

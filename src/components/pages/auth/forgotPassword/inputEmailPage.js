@@ -35,14 +35,8 @@ const InputEmailPage = ({ handleNextStep, handleBackState }) => {
           {
             email: values.email,
           },
-          {
-            auth: {
-              username: appConfig.usernameBasicAuth,
-              password: appConfig.passwordBasicAuth,
-            },
-          },
         );
-        if (res.data.success) {
+        if (res.data.status == 'success') {
           handleNextStep(values.email);
         }
         setLoading(false);

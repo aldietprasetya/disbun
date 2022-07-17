@@ -85,7 +85,13 @@ function InputForm({
           </div>
         )}
         {textArea && (
-          <textarea className={`${className} placeholder:text-sm placeholder:font-normal`} placeholder={placeholder} />
+          <textarea
+            name={titleName}
+            className={`${className} placeholder:text-sm placeholder:font-normal`}
+            value={values}
+            onChange={onChange}
+            placeholder={placeholder}
+          />
         )}
         {selectionArea && (
           <select
@@ -111,6 +117,7 @@ function InputForm({
             "
             aria-label="Default select example"
             onChange={onChange}
+            value={values}
           >
             <option disabled selected hidden>
               {placeholder}

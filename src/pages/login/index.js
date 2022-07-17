@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import LoginPage from '../../components/pages/auth/login';
+import LoginPage from 'src/components/pages/auth/login';
 import Head from 'next/head';
 
 const login = () => {

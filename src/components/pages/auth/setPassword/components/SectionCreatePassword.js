@@ -64,7 +64,7 @@ const SectionCreatePassword = ({ handleNextState }) => {
             },
           },
         );
-        if (res.data.success) {
+        if (res.data.status == 'success') {
           handleNextState(res.data.data.email);
           Cookies.remove('input-register');
         }

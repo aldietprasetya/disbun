@@ -4,6 +4,7 @@ import {useRouter} from 'next/router'
 import _ from 'lodash';
 import InputForm from '../admin/infografis/InputForm';
 import mng from '../../../styles/Managemen.module.scss'
+import ChildStore from './store/manajemen'
 
 const preventDefault = f => e => {
   e.preventDefault()
@@ -11,43 +12,28 @@ const preventDefault = f => e => {
 }
 
 const FormAspekManajemen = () => {
+
+  const router = useRouter()
+
   const [initialLoad, setInitialLoad] = useState(true)
+  const [btnValid, setBtnValid] = useState(false)
+  const [data, setData] = useState(null)
+  const [dataPass, setDataPass] = useState({})
+  const [dataSubmit, setDataSubmit] = useState({})
 
   ////////////////////////// KOMISARIS ////////////////////////////////
-  const [komisaris, setKomisaris] = useState([
-    {'title':'Komisaris Utama','placeholder':'Nama Komisaris Utama','value':''},
-    {'title':'Komisaris','placeholder':'Nama Komisaris','value':''},
-  ])
+  const [komisaris, setKomisaris] = useState([])
 
   function handleBtnAddKomisaris() {
     setKomisaris([...komisaris, {'title':'Komisaris','placeholder':'Nama Komisaris','value':''}])
   }
 
-  function komisarisRemoveLabel(i) {
-    setKomisaris(komisaris.filter((item, idx) => idx != i))
-  }
-
-  function komisarisChange(e, index) {
-    addToRowChange(setKomisaris, komisaris, e, index)
-  }
-
   ////////////////////////// DIREKSI ////////////////////////////////
 
-  const [direksi, setDireksi] = useState([
-    {'title':'Direktur Utama','placeholder':'Nama Direktur Utama','value':''},
-    {'title':'Direktur','placeholder':'Nama Direktur','value':''},
-  ])
+  const [direksi, setDireksi] = useState([])
 
   function handleBtnAddDirektur() {
     setDireksi([...direksi, {'title':'Direktur','placeholder':'Nama Direktur','value':''}])
-  }
-
-  function direkturRemoveLabel(i) {
-    setDireksi(direksi.filter((item, idx) => idx != i))
-  }
-
-  function direkturChange(e, index) {
-    addToRowChange(setDireksi, direksi, e, index)
   }
 
   ////////////////////////// ADMINISTRASI ////////////////////////////////
@@ -60,28 +46,11 @@ const FormAspekManajemen = () => {
 
   ////////////////////////// TENAGA KERJA ////////////////////////////////
 
-  const [tenagaKerja, setTenagaKerja] = useState([
-    {'title':'Administratur','placeholder':'Jumlah','value':''},
-    {'title':'Staf/Karyawan Tetap','placeholder':'Jumlah','value':''},
-    {'title':'Tenaga Kerja Bulanan','placeholder':'Jumlah','value':''},
-    {'title':'Tenaga Kerja Harian Tetap','placeholder':'Jumlah','value':''},
-    {'title':'Tenaga Kerja Harian Lepas','placeholder':'Jumlah','value':''},
-    {'title':'Staf Borongan/Musiman','placeholder':'Jumlah','value':''},
-  ])
+  const [tenagaKerja, setTenagaKerja] = useState([])
 
-  function tngKerjaChange(e, index) {
-    addToRowChange(setTenagaKerja, tenagaKerja, e, index)
-  }
   ////////////////////////// RENCANA INVESTASI ////////////////////////////////
 
-  const [rencanaInvest, setRencanaInvest] = useState([
-    [
-      {'title':'Kegiatan Investasi/Eksploitasi','type':'text','placeholder':'Nama Kegiatan','value':''},
-      {'title':'Tahun','placeholder':'YYYY','type':'number','value':''},
-      {'title':'Volume','type':'number','placeholder':'Luas Lahan/Unit Barang','value':''},
-      {'title':'Nilai Biaya','type':'number','placeholder':'Masukkan Nilai Biaya','value':''}
-    ],
-  ])
+  const [rencanaInvest, setRencanaInvest] = useState([])
 
   function handleBtnAddRencanaInvest() {
     setRencanaInvest([...rencanaInvest,
@@ -94,16 +63,26 @@ const FormAspekManajemen = () => {
     ])
   }
 
-  function investasiRemoveLabel(i) {
-    setRencanaInvest(rencanaInvest.filter((item, idx) => idx != i))
+  ////////////////////////// OTHER FUNCTION ////////////////////////////////
+
+  function removeLabel(i,state,setState) {
+    setState(state.filter((item, idx) => idx != i))
   }
 
-  function investasiChange(e, index, index2) {
-    let stet = rencanaInvest
-    let set = setRencanaInvest
+  function formOneRowChange(e, state, setState, index) {
     const { name, value } = e.target;
-    const list = [...stet];
+    const list = [...state];
+    list.forEach((item, i) => {
+      if (i == index) {
+        item.value = value
+      }
+    });
+    setState(list);
+  }
 
+  function formRegularChange(e, state, setState, index, index2) {
+    const { name, value } = e.target;
+    const list = [...state];
     list.forEach((item, i) => {
       if (i == index) {
         item.forEach((item2, ii) => {
@@ -111,21 +90,9 @@ const FormAspekManajemen = () => {
             item2.value = value
           }
         });
-
       }
     });
-
-    set(list);
-  }
-
-  ////////////////////////// OTHER FUNCTION ////////////////////////////////
-
-  function addToRowChange(set, stet, e, index) {
-    const { value } = e.target;
-    const list = [...stet];
-
-    list[index] = { ...list[index], value };
-    set(list);
+    setState(list);
   }
 
   function checkEachSec(data, cond) {
@@ -144,9 +111,20 @@ const FormAspekManajemen = () => {
     return condition
   }
 
-  const [btnValid, setBtnValid] = useState(false)
-  const [data, setData] = useState(null)
-  var dataSubmit = {}
+  useEffect(() => {
+    if (initialLoad) {
+      let retrievedObject = JSON.parse(localStorage.getItem('manajementReport'));
+
+      if (!_.isEmpty(retrievedObject)) {
+        setAdministrasi(retrievedObject.administrasi)
+        setKomisaris(retrievedObject.komisaris)
+        setDireksi(retrievedObject.direksi)
+        setTenagaKerja(retrievedObject.tenagaKerja)
+        setRencanaInvest(retrievedObject.rencanaInvest)
+      }
+    }
+    setInitialLoad(false)
+  }, [initialLoad])
 
   useEffect(() => {
 
@@ -176,41 +154,77 @@ const FormAspekManajemen = () => {
       setBtnValid(false)
     }
 
-    if (initialLoad) {
-      let retrievedObject = JSON.parse(localStorage.getItem('dataSubmit'));
-
-      if (!_.isEmpty(retrievedObject)) {
-        setAdministrasi(retrievedObject.administrasi)
-        setKomisaris(retrievedObject.komisaris)
-        setDireksi(retrievedObject.direksi)
-        setTenagaKerja(retrievedObject.tenagaKerja)
-        setRencanaInvest(retrievedObject.rencanaInvest)
-      }
-    }
-    setInitialLoad(false)
-
-    dataSubmit = {
+    setDataSubmit({
       'komisaris': komisaris,
       'direksi':direksi,
       'administrasi':administrasi,
       'tenagaKerja':tenagaKerja,
-      'rencanaInvest':rencanaInvest,
-    }
-  }, [komisaris,direksi,administrasi,tenagaKerja,rencanaInvest, handleBtnAddDirektur, handleBtnAddKomisaris, handleBtnAddRencanaInvest, investasiRemoveLabel, direkturRemoveLabel, komisarisRemoveLabel])
+      'rencanaInvest':rencanaInvest
+    })
 
-  const router = useRouter()
+  }, [komisaris,direksi,administrasi,tenagaKerja,rencanaInvest])
+
+  useEffect(() => {
+    if (!_.isEmpty(dataSubmit)) {
+      setDataPass(dataSubmit)
+    }
+  },[dataPass,dataSubmit])
 
   const storeData = preventDefault(() => {
-    localStorage.setItem("dataSubmit", JSON.stringify(dataSubmit));
+    localStorage.setItem("manajementReport", JSON.stringify(dataSubmit));
+    let data = {
+      commissioner: [{}],
+      director: [],
+      investment: [],
+      administrator: [],
+    }
+
+    data.administrator = [{
+      "administratorName": administrasi,
+      "administratorCount": tenagaKerja[0].value,
+      "staffCount": tenagaKerja[1].value,
+      "monthlyLaborCount": tenagaKerja[2].value,
+      "freelanceDailyLaborCount": tenagaKerja[3].value,
+      "permanentDailyLaborCount": tenagaKerja[4].value,
+      "projectLaborCount": tenagaKerja[5].value
+    }]
+
+    komisaris.forEach((item, i) => {
+      let setObj = {
+        [(item.title == 'Komisaris Utama' ? 'majorCommissionerName' : 'commisionerName'+i)]: item.value
+      }
+      data.commissioner[0] = {...data.commissioner[0], ...setObj}
+    });
+
+    direksi.forEach((item, i) => {
+      let setObj = {
+        [(item.title == 'Direktur Utama' ? 'majorDirectorName' : 'directorName'+i)]: item.value
+      }
+      data.director[0] = {...data.director[0], ...setObj}
+    });
+
+    rencanaInvest.forEach((item, i) => {
+      let rencanaInv = {}
+      item.forEach(() => {
+        rencanaInv.activity = item[0].value
+        rencanaInv.year = item[1].value
+        rencanaInv.volume = item[2].value
+        rencanaInv.value = item[3].value
+      });
+      data.investment.push(rencanaInv)
+    });
+
+    localStorage.setItem("dataSubmit", JSON.stringify(data));
+
     router.push({
-      pathname: "/beranda/laporan/konfirmasi"
+      pathname: "/pelaporan-perkebunan/aspek-kebun/"
     })
   })
 
   function clearData() {
-    localStorage.setItem("dataSubmit", JSON.stringify({}));
+    localStorage.setItem("manajementReport", JSON.stringify(dataSubmit.manajemen={}));
     router.push({
-      pathname: "#"
+      pathname: "/pelaporan-perkebunan/aspek-manajemen/"
     })
   }
 
@@ -219,6 +233,9 @@ const FormAspekManajemen = () => {
       <Head>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
       </Head>
+
+      <ChildStore/>
+
       <form>
 
         <div className={mng.base__formsection}>
@@ -231,14 +248,14 @@ const FormAspekManajemen = () => {
                   {item.title}
                   {
                     i > 1 ?
-                    <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondel"]}`} onClick={() => komisarisRemoveLabel(i)}>
+                    <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondel"]}`} onClick={() => removeLabel(i, komisaris, setKomisaris)}>
                       do_not_disturb_on
                     </span>
                     :
                     <></>
                   }
                 </span>
-                <input className={mng.base__inputbase} type="text" placeholder={item.placeholder} value={item.value} onChange={(e) => komisarisChange(e, i)}/>
+                <input className={mng.base__inputbase} type="text" placeholder={item.placeholder} value={item.value} onChange={(e) => formOneRowChange(e, komisaris, setKomisaris, i)}/>
               </label>
             ))
           }
@@ -256,14 +273,14 @@ const FormAspekManajemen = () => {
                   {item.title}
                   {
                     i > 1 ?
-                    <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondel"]}`} onClick={() => direkturRemoveLabel(i)}>
+                    <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondel"]}`} onClick={() => removeLabel(i, direksi, setDireksi)}>
                       do_not_disturb_on
                     </span>
                     :
                     <></>
                   }
                 </span>
-                <input className={mng.base__inputbase} type="text" placeholder={item.placeholder} value={item.value} onChange={(e) => direkturChange(e, i)}/>
+                <input className={mng.base__inputbase} type="text" placeholder={item.placeholder} value={item.value} onChange={(e) => formOneRowChange(e, direksi, setDireksi, i)}/>
               </label>
             ))
           }
@@ -289,7 +306,7 @@ const FormAspekManajemen = () => {
               tenagaKerja.map((item, i) => (
                 <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_tris"]}`} key={i}>
                   <span className={mng.base__inputtitle}>{item.title}</span>
-                  <input className={mng.base__inputbase} type="number" min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => tngKerjaChange(e, i)}/>
+                  <input className={mng.base__inputbase} type="number" min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formOneRowChange(e, tenagaKerja, setTenagaKerja, i)}/>
                 </label>
               ))
             }
@@ -308,7 +325,7 @@ const FormAspekManajemen = () => {
                 <div className={mng.base__formlabel_twin} key={i}>
                 {
                   i > 0 ?
-                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => investasiRemoveLabel(i)}>
+                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => removeLabel(i, rencanaInvest, setRencanaInvest)}>
                     do_not_disturb_on
                   </span>
                   :
@@ -318,7 +335,7 @@ const FormAspekManajemen = () => {
                   items.map((item,ii) => (
                     <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
                       <span className={mng.base__inputtitle}>{item.title}</span>
-                      <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => investasiChange(e, i, ii)}/>
+                      <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, rencanaInvest, setRencanaInvest, i, ii)}/>
                     </label>
                   ))
                 }
@@ -340,6 +357,9 @@ const FormAspekManajemen = () => {
               <span className="ml-1.5">Clear data</span>
             </div>
           */}
+          <div className={`${mng["base__btnclear"]} ${"mt-1"}`} onClick={clearData}>
+            <span className="ml-1.5">Clear data</span>
+          </div>
 
           <button className={`${mng["base__btnsimpan"]} ${"float-right mt-1"}`} onClick={storeData} disabled={!btnValid}>
             Simpan dan Lanjutkan

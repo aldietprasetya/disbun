@@ -48,7 +48,7 @@ const MasterBasisDataPage = () => {
   const handleDownloadData = async () => {
     try {
       const res = await axiosInstance.get('/dtw-control/v1/generate-excel');
-      if (res.data.success) {
+      if (res.data.status == 'success') {
         window.open(res.data.data.excel, '_blank');
       }
     } catch (error) {

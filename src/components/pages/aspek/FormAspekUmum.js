@@ -1,9 +1,11 @@
 import Head from 'next/head'
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {useRouter} from 'next/router'
+import _ from 'lodash';
 import MyMap from 'src/components/googleMap/MyMap';
 import InputForm from '../admin/infografis/InputForm';
 import mng from '../../../styles/Managemen.module.scss'
+import ChildStore from './store/generals'
 
 const preventDefault = f => e => {
   e.preventDefault()
@@ -13,56 +15,65 @@ const preventDefault = f => e => {
 const FormAspekUmum = (props) => {
   const [isError, setIsError] = useState(false);
 
+  const router = useRouter()
+
+  const [initialLoad, setInitialLoad] = useState(true)
+  const [btnValid, setBtnValid] = useState(false)
+  const [data, setData] = useState(null)
+  const [dataPass, setDataPass] = useState({})
+  const [dataSubmit, setDataSubmit] = useState({})
+
+  const [companyName, setCompanyName] = useState('');
+
+  const [periodMonthId, setPeriodMonthId] = useState('');
+  const [periodYearId, setPeriodYearId] = useState('');
+
+  const [centerAddress, setCenterAddress] = useState('');
+  const [centerPhone, setCenterPhone] = useState('');
+  const [centerFax, setCenterFax] = useState('');
+
+  const [representativeAddress, setRepresentativeAddress] = useState('');
+  const [representativePhone, setRepresentativePhone] = useState('');
+  const [representativeFax, setRepresentativeFax] = useState('');
+
+  const [gardenAddress, setGardenAddress] = useState('');
+  const [gardenPhone, setGardenPhone] = useState('');
+  const [gardenFax, setGardenFax] = useState('');
+
+  const [latitude, setLatitude] = useState('');
+  const [longitude, setLongitude] = useState('');
+
+  const [gardenName, setGardenName] = useState('');
+  const [factoryName, setFactoryName] = useState('');
+  const [cityId, setCityId] = useState('');
+  const [districtId, setDistrictId] = useState('');
+  const [villageId, setVillageId] = useState('');
+
   ////////////////////////// Legalitas ////////////////////////////////
 
-  const [legalitas, setLegalitas] = useState([
-    [ {'title':'Nama Persil','placeholder':'Nama Persil','type':'text','value':'','isOpt':false}, {'title':'Nomor SK HGU','placeholder':'Nomor SK HGU','type':'text','value':'','isOpt':false}, {'title':'Tanggal SK HGU','type':'text','placeholder':'DD/MM/YYYY','value':'','isOpt':false}, {'title':'Nomor Sertifikat HGU','type':'text','placeholder':'Nomor Sertifikat HGU','value':'','isOpt':false}, {'title':'Tanggal Sertifikat HGU','type':'text','placeholder':'DD/MM/YYYY','value':'','isOpt':false}, {'title':'Luas Lahan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Tanggal Expirasi','type':'text','placeholder':'DD/MM/YYYY','value':'','isOpt':false}, {'title':'Komoditas','type':'text','placeholder':'Komoditas Lahan','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false} ]
-  ])
+  const [legalitas, setLegalitas] = useState([])
 
   function handleBtnAddLegalitas() {
     setLegalitas([...legalitas,[ {'title':'Nama Persil','placeholder':'Nama Persil','type':'text','value':'','isOpt':false}, {'title':'Nomor SK HGU','placeholder':'Nomor SK HGU','type':'text','value':'','isOpt':false}, {'title':'Tanggal SK HGU','type':'text','placeholder':'DD/MM/YYYY','value':'','isOpt':false}, {'title':'Nomor Sertifikat HGU','type':'text','placeholder':'Nomor Sertifikat HGU','value':'','isOpt':false}, {'title':'Tanggal Sertifikat HGU','type':'text','placeholder':'DD/MM/YYYY','value':'','isOpt':false}, {'title':'Luas Lahan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Tanggal Expirasi','type':'text','placeholder':'DD/MM/YYYY','value':'','isOpt':false}, {'title':'Komoditas','type':'text','placeholder':'Komoditas Lahan','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false} ]])
   }
 
-  function legalitasRemoveLabel(i) {
-    setLegalitas(legalitas.filter((item, idx) => idx != i))
-  }
-
-  function legalitasChange(e, index, index2) {
-    let stet = legalitas
-    let set = setLegalitas
-    const { name, value } = e.target;
-    const list = [...stet];
-    list.forEach((item, i) => {
-      if (i == index) {
-        item.forEach((item2, ii) => {
-          if (ii == index2) {
-            item2.value = value
-          }
-        });
-      }
-    });
-    set(list);
-  }
-
   ////////////////////////// Izin Usaha Perkebunan (IUP) ////////////////////////////////
 
-  const [izin, setIzin] = useState([
-    [ {'title':'jenis IUP','placeholder':'Pilih jenis IUP','type':'text','value':'','isOpt':true}, {'title':'Nomor IUP','placeholder':'Nomor SK HGU','type':'text','value':'','isOpt':false}, {'title':'Tanggal Penetapan IUP','type':'text','placeholder':'DD/MM/YYYY','value':'','isOpt':false}, {'title':'Luas Lahan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Pejabat yang Menetapkan','type':'text','placeholder':'Pejabat','value':'','isOpt':false}, {'title':'Komoditas','type':'text','placeholder':'Komoditas Perkebunan','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false} ]
-  ])
+  const [izin, setIzin] = useState([])
 
   function handleBtnAddIzin() {
     setIzin([...izin,[ {'title':'jenis IUP','placeholder':'Pilih jenis IUP','type':'text','value':'','isOpt':true}, {'title':'Nomor IUP','placeholder':'Nomor SK HGU','type':'text','value':'','isOpt':false}, {'title':'Tanggal Penetapan IUP','type':'text','placeholder':'DD/MM/YYYY','value':'','isOpt':false}, {'title':'Luas Lahan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Pejabat yang Menetapkan','type':'text','placeholder':'Pejabat','value':'','isOpt':false}, {'title':'Komoditas','type':'text','placeholder':'Komoditas Perkebunan','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false} ]])
   }
 
-  function izinRemoveLabel(i) {
-    setIzin(izin.filter((item, idx) => idx != i))
+  ////////////////////////// OTHER FUNCTION ////////////////////////////////
+
+  function removeLabel(i,state,setState) {
+    setState(state.filter((item, idx) => idx != i))
   }
 
-  function izinChange(e, index, index2) {
-    let stet = izin
-    let set = setIzin
+  function formRegularChange(e, state, setState, index, index2) {
     const { name, value } = e.target;
-    const list = [...stet];
+    const list = [...state];
     list.forEach((item, i) => {
       if (i == index) {
         item.forEach((item2, ii) => {
@@ -72,19 +83,144 @@ const FormAspekUmum = (props) => {
         });
       }
     });
-    set(list);
+    setState(list);
   }
 
-  ////////////////////////// OTHER FUNCTION ////////////////////////////////
+  useEffect(() => {
+    if (initialLoad) {
+      let retrievedObject = JSON.parse(localStorage.getItem('generalReport'));
 
-  const [btnValid, setBtnValid] = useState(false)
+      if (!_.isEmpty(retrievedObject)) {
+        console.log(retrievedObject)
 
-  const router = useRouter()
+        setCompanyName(retrievedObject.companyName)
+
+        setPeriodMonthId(retrievedObject.periodMonthId)
+        setPeriodYearId(retrievedObject.periodYearId)
+
+        setCenterAddress(retrievedObject.centerAddress)
+        setCenterPhone(retrievedObject.centerPhone)
+        setCenterFax(retrievedObject.centerFax)
+
+        setRepresentativeAddress(retrievedObject.representativeAddress)
+        setRepresentativePhone(retrievedObject.representativePhone)
+        setRepresentativeFax(retrievedObject.representativeFax)
+
+        setGardenAddress(retrievedObject.gardenAddress)
+        setGardenPhone(retrievedObject.gardenPhone)
+        setGardenFax(retrievedObject.gardenFax)
+
+        setLatitude(retrievedObject.latitude)
+        setLongitude(retrievedObject.longitude)
+
+        setGardenName(retrievedObject.gardenName)
+        setFactoryName(retrievedObject.factoryName)
+        setCityId(retrievedObject.cityId)
+        setDistrictId(retrievedObject.districtId)
+        setVillageId(retrievedObject.villageId)
+
+        setLegalitas(retrievedObject.legalities)
+        setIzin(retrievedObject.iup)
+      }
+    }
+    setInitialLoad(false)
+  }, [initialLoad])
+
+  useEffect(() => {
+    setDataSubmit({
+      "companyName": companyName,
+      "periodMonthId": periodMonthId,
+      "periodYearId": periodYearId,
+      "centerAddress": centerAddress,
+      "centerPhone": centerPhone,
+      "centerFax": centerFax,
+      "representativeAddress": representativeAddress,
+      "representativePhone": representativePhone,
+      "representativeFax": representativeFax,
+      "gardenAddress": gardenAddress,
+      "gardenPhone": gardenPhone,
+      "gardenFax": gardenFax,
+      "latitude": latitude,
+      "longitude": longitude,
+      "gardenName": gardenName,
+      "factoryName": factoryName,
+      "cityId": cityId,
+      "districtId": districtId,
+      "villageId": villageId,
+      "legalities": legalitas,
+      "iup": izin,
+    })
+
+  }, [companyName,periodMonthId,periodYearId,centerAddress,centerPhone,centerFax,representativeAddress
+    ,representativePhone,representativeFax,gardenAddress,gardenPhone,gardenFax,latitude
+    ,longitude,gardenName,factoryName,cityId,districtId,villageId,izin,legalitas])
+
+  useEffect(() => {
+    if (!_.isEmpty(dataSubmit)) {
+      setDataPass(dataSubmit)
+    }
+  },[dataPass,dataSubmit])
 
   const storeData = preventDefault(() => {
-    localStorage.setItem("dataSubmit", JSON.stringify(dataSubmit));
+    localStorage.setItem("generalReport", JSON.stringify(dataSubmit));
+    let data = {
+      "companyName": companyName,
+      "periodMonthId": periodMonthId,
+      "periodYearId": periodYearId,
+      "centerAddress": centerAddress,
+      "centerPhone": centerPhone,
+      "centerFax": centerFax,
+      "representativeAddress": representativeAddress,
+      "representativePhone": representativePhone,
+      "representativeFax": representativeFax,
+      "gardenAddress": gardenAddress,
+      "gardenPhone": gardenPhone,
+      "gardenFax": gardenFax,
+      "latitude": latitude,
+      "longitude": longitude,
+      "gardenName": gardenName,
+      "factoryName": factoryName,
+      "cityId": cityId,
+      "districtId": districtId,
+      "villageId": villageId,
+      "legalities": [],
+      "iup": [],
+    }
+
+    legalitas.forEach((item, i) => {
+      let legalInv = {}
+      item.forEach(() => {
+        legalInv.parcelName = item[0].value
+        legalInv.skHguNo = item[1].value
+        legalInv.skHguDate = item[2].value
+        legalInv.certifHguNo = item[3].value
+        legalInv.certifHguDate = item[4].value
+        legalInv.area = item[5].value
+        legalInv.expDate = item[6].value
+        legalInv.comodity = item[7].value
+        legalInv.description = item[8].value
+      });
+      data.legalities.push(legalInv)
+    });
+
+    izin.forEach((item, i) => {
+      let izinInv = {}
+      item.forEach(() => {
+        izinInv.iupType = item[0].value
+        izinInv.iupNo = item[1].value
+        izinInv.iupDate = item[2].value
+        izinInv.area = item[3].value
+        izinInv.certifierId = item[4].value
+        izinInv.comodity = item[5].value
+        izinInv.description = item[6].value
+      });
+      data.iup.push(izinInv)
+    });
+
+    localStorage.setItem("dataSubmitGeneral", JSON.stringify(data));
+
     router.push({
-      pathname: "/beranda/laporan/konfirmasi"
+      pathname: "/pelaporan-perkebunan/aspek-manajemen/"
     })
   })
 
@@ -93,6 +229,7 @@ const FormAspekUmum = (props) => {
       <Head>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
       </Head>
+      <ChildStore/>
       {/* Periode Pengisian */}
       <div className="pb-4">
         <div className="mt-6 text-base text-blue-600">
@@ -103,9 +240,9 @@ const FormAspekUmum = (props) => {
           <InputForm
             titleForm="Bulan"
             titleName="bulanPeriode"
-            // onChange={handleChange}
+            onChange={(e) => setPeriodMonthId(e.target.value)}
             type="text"
-            // values={values.email}
+            values={periodMonthId}
             placeholder="Pilih Bulan"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
@@ -115,9 +252,9 @@ const FormAspekUmum = (props) => {
           <InputForm
             titleForm="Tahun"
             titleName="tahunPediode"
-            // onChange={handleChange}
+            onChange={(e) => setPeriodYearId(e.target.value)}
             type="text"
-            // values={values.email}
+            values={periodYearId}
             placeholder="Pilih Tahun"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
@@ -136,9 +273,9 @@ const FormAspekUmum = (props) => {
           <InputForm
             titleForm="Nama Perusahaan"
             titleName="companyName"
-            // onChange={handleChange}
+            onChange={(e) => setCompanyName(e.target.value)}
             type="text"
-            // values={values.email}
+            values={companyName}
             placeholder="Nama Perusahaan Perkebunan"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
@@ -153,9 +290,9 @@ const FormAspekUmum = (props) => {
             titleForm="Alamat Kantor Pusat"
             titleName="centerAddress"
             textArea="true"
-            // onChange={handleChange}
+            onChange={(e) => setCenterAddress(e.target.value)}
             type="text"
-            // values={values.email}
+            values={centerAddress}
             placeholder="Tulis Alamat"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
@@ -166,9 +303,9 @@ const FormAspekUmum = (props) => {
               titleForm="Nomor Telepon Kantor Pusat"
               titleName="centerPhone"
               phoneNumber="true"
-              // onChange={handleChange}
+              onChange={(e) => setCenterPhone(e.target.value)}
               type="text"
-              // values={values.email}
+              values={centerPhone}
               placeholder="Masukan Nomor Telepon"
               className={`${
                 isError && 'border-primary-red-1 bg-primary-red-2'
@@ -179,9 +316,9 @@ const FormAspekUmum = (props) => {
                 titleForm="Nomor Fax Kantor Pusat"
                 titleName="centerFax"
                 phoneNumber="true"
-                // onChange={handleChange}
+                onChange={(e) => setCenterFax(e.target.value)}
                 type="text"
-                // values={values.email}
+                values={centerFax}
                 placeholder="Masukan Nomor Telepon"
                 className={`${
                   isError && 'border-primary-red-1 bg-primary-red-2'
@@ -197,9 +334,9 @@ const FormAspekUmum = (props) => {
             titleForm="Alamat Kantor Perwakilan"
             titleName="representativeAddress"
             textArea="true"
-            // onChange={handleChange}
+            onChange={(e) => setRepresentativeAddress(e.target.value)}
             type="text"
-            // values={values.email}
+            values={representativeAddress}
             placeholder="Tulis Alamat"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
@@ -210,9 +347,9 @@ const FormAspekUmum = (props) => {
               titleForm="Nomor Telepon Kantor Perwakilan"
               titleName="representativePhone"
               phoneNumber="true"
-              // onChange={handleChange}
+              onChange={(e) => setRepresentativePhone(e.target.value)}
               type="text"
-              // values={values.email}
+              values={representativePhone}
               placeholder="Masukan Nomor Telepon"
               className={`${
                 isError && 'border-primary-red-1 bg-primary-red-2'
@@ -223,9 +360,9 @@ const FormAspekUmum = (props) => {
                 titleForm="Nomor Fax Kantor Perwakilan"
                 titleName="representativeFax"
                 phoneNumber="true"
-                // onChange={handleChange}
+                onChange={(e) => setRepresentativeFax(e.target.value)}
                 type="text"
-                // values={values.email}
+                values={representativeFax}
                 placeholder="Masukan Nomor Telepon"
                 className={`${
                   isError && 'border-primary-red-1 bg-primary-red-2'
@@ -241,9 +378,9 @@ const FormAspekUmum = (props) => {
             titleForm="Alamat Kantor Kebun"
             titleName="gardenAddress"
             textArea="true"
-            // onChange={handleChange}
+            onChange={(e) => setGardenAddress(e.target.value)}
             type="text"
-            // values={values.email}
+            values={gardenAddress}
             placeholder="Tulis Alamat"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
@@ -254,9 +391,9 @@ const FormAspekUmum = (props) => {
               titleForm="Nomor Telepon Kantor Kebun"
               titleName="gardenPhone"
               phoneNumber="true"
-              // onChange={handleChange}
+              onChange={(e) => setGardenPhone(e.target.value)}
               type="text"
-              // values={values.email}
+              values={gardenPhone}
               placeholder="Masukan Nomor Telepon"
               className={`${
                 isError && 'border-primary-red-1 bg-primary-red-2'
@@ -267,9 +404,9 @@ const FormAspekUmum = (props) => {
                 titleForm="Nomor Fax Kantor Kebun"
                 titleName="gardenFax"
                 phoneNumber="true"
-                // onChange={handleChange}
+                onChange={(e) => setGardenFax(e.target.value)}
                 type="text"
-                // values={values.email}
+                values={gardenFax}
                 placeholder="Masukan Nomor Telepon"
                 className={`${
                   isError && 'border-primary-red-1 bg-primary-red-2'
@@ -284,9 +421,9 @@ const FormAspekUmum = (props) => {
           <InputForm
             titleForm="Koordinat Kantor Kebun (Longitude)"
             titleName="longitude"
-            // onChange={handleChange}
+            onChange={(e) => setLongitude(e.target.value)}
             type="text"
-            // values={values.email}
+            values={longitude}
             placeholder="Longitude"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
@@ -296,9 +433,9 @@ const FormAspekUmum = (props) => {
           <InputForm
             titleForm="Koordinat Kantor Kebun (Latitude)"
             titleName="latitude"
-            // onChange={handleChange}
+            onChange={(e) => setLatitude(e.target.value)}
             type="text"
-            // values={values.email}
+            values={latitude}
             placeholder="Latitude"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
@@ -315,9 +452,9 @@ const FormAspekUmum = (props) => {
           <InputForm
             titleForm="Nama Kebun"
             titleName="gardenName"
-            // onChange={handleChange}
+            onChange={(e) => setGardenName(e.target.value)}
             type="text"
-            // values={values.email}
+            values={gardenName}
             placeholder="Nama Perusahaan Perkebunan"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
@@ -331,9 +468,9 @@ const FormAspekUmum = (props) => {
           <InputForm
             titleForm="Nama Pabrik"
             titleName="factoryName"
-            // onChange={handleChange}
+            onChange={(e) => setFactoryName(e.target.value)}
             type="text"
-            // values={values.email}
+            values={factoryName}
             placeholder="Nama Perusahaan Perkebunan"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
@@ -348,9 +485,9 @@ const FormAspekUmum = (props) => {
           <InputForm
             titleForm="Kota/Kabupaten"
             titleName="cityId"
-            // onChange={handleChange}
+            onChange={(e) => setCityId(e.target.value)}
             type="text"
-            // values={values.email}
+            values={cityId}
             placeholder="Pilih Kota / Kab"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
@@ -360,9 +497,9 @@ const FormAspekUmum = (props) => {
           <InputForm
             titleForm="Kecamatan"
             titleName="districtId"
-            // onChange={handleChange}
+            onChange={(e) => setDistrictId(e.target.value)}
             type="text"
-            // values={values.email}
+            values={districtId}
             placeholder="Pilih Kecamatan"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
@@ -372,9 +509,9 @@ const FormAspekUmum = (props) => {
           <InputForm
             titleForm="Kelurahan/Desa"
             titleName="villageId"
-            // onChange={handleChange}
+            onChange={(e) => setVillageId(e.target.value)}
             type="text"
-            // values={values.email}
+            values={villageId}
             placeholder="Pilih Kel/Desa"
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
@@ -394,7 +531,7 @@ const FormAspekUmum = (props) => {
               <div className={`${mng["base__formlabel_twin"]} ${mng["base__formlabel_twin-firstfull"]}`} key={i}>
               {
                 i > 0 ?
-                <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => legalitasRemoveLabel(i)}>
+                <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => removeLabel(i, legalitas, setLegalitas)}>
                   do_not_disturb_on
                 </span>
                 :
@@ -404,7 +541,7 @@ const FormAspekUmum = (props) => {
                 items.map((item,ii) => (
                   <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
                     <span className={mng.base__inputtitle}>{item.title}</span>
-                    <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => legalitasChange(e, i, ii)}/>
+                    <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, legalitas, setLegalitas, i, ii)}/>
                   </label>
                 ))
               }
@@ -428,7 +565,7 @@ const FormAspekUmum = (props) => {
               <div className={`${mng["base__formlabel_twin"]} ${mng["base__formlabel_twin-firstfull"]}`} key={i}>
               {
                 i > 0 ?
-                <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => izinRemoveLabel(i)}>
+                <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => removeLabel(i, izin, setIzin)}>
                   do_not_disturb_on
                 </span>
                 :
@@ -443,7 +580,7 @@ const FormAspekUmum = (props) => {
                         <InputForm
                           titleForm={item.title}
                           titleName={item.title}
-                          onChange={(e) => izinChange(e, i, ii)}
+                          onChange={(e) => formRegularChange(e, izin, setIzin, i, ii)}
                           type="text"
                           placeholder={item.placeholder}
                           className={`${
@@ -455,7 +592,7 @@ const FormAspekUmum = (props) => {
                     ) : (
                       <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
                         <span className={mng.base__inputtitle}>{item.title}</span>
-                        <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => izinChange(e, i, ii)}/>
+                        <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, izin, setIzin, i, ii)}/>
                       </label>
                     )
                   }
@@ -480,7 +617,7 @@ const FormAspekUmum = (props) => {
           </div>
         */}
 
-        <button className={`${mng["base__btnsimpan"]} ${"float-right mt-1"}`} onClick={storeData} disabled={!btnValid}>
+        <button className={`${mng["base__btnsimpan"]} ${"float-right mt-1"}`} onClick={storeData}>
           Simpan dan Lanjutkan
         </button>
       </div>

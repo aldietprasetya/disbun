@@ -1,5 +1,5 @@
 import React from 'react';
-import RegisterPage from '../../../components/pages/auth/register';
+import RegisterPage from 'src/components/pages/auth/register';
 import Head from 'next/head';
 
 const register = () => {

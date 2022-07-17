@@ -74,7 +74,7 @@ const InfografisPage = () => {
       const res = await axiosInstance.get(
         `/dtw-control/v1/summary?date=${validDate}`,
       );
-      if (res.data.success) {
+      if (res.data.status == 'success') {
         setDataSummaryDtwControl(res.data.data);
       }
     } catch (error) {
@@ -87,7 +87,7 @@ const InfografisPage = () => {
       const res = await axiosInstance.get(
         `/dtw-control/v1/visitor?date=${validDate}&surveySession=${timePercentageVisit}`,
       );
-      if (res.data.success) {
+      if (res.data.status == 'success') {
         setDataChartTotalVisitor(res.data.data.totalVisitorFromDtwCapacity);
         setDataChartPercentageVisitor(res.data.data.persentageVisitorFromDtw);
       }
@@ -101,7 +101,7 @@ const InfografisPage = () => {
       const res = await axiosInstance.get(
         `/dtw-capacity/v1/visitor-capacity?date=${validDate}`,
       );
-      if (res.data.success) {
+      if (res.data.status == 'success') {
         setDataCrowdAgaistCapacity(res.data.data.crowdAgainstCapacity);
         setDataVisitorCapacity(res.data.data.visitorCapacity);
       }

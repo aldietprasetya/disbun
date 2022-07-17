@@ -29,7 +29,7 @@ const LoginPage = () => {
   const [selectedEmail, setSelectedEmail] = useState('');
 
   const loginSchema = Yup.object().shape({
-    email: Yup.string().email('Invalid email').required('Required'),
+    email: Yup.string().required('Required'),
     password: Yup.string().required('Required'),
   });
 
@@ -43,34 +43,27 @@ const LoginPage = () => {
       try {
         setLoading(true);
         const res = await axios.post(
-          `${appConfig.baseUrl}/users`,
+          `${appConfig.baseUrl}/authentications`,
           {
-            email: values.email,
+            username: values.email,
             password: values.password,
           },
-          {
-            auth: {
-              username: appConfig.usernameBasicAuth,
-              password: appConfig.passwordBasicAuth,
-            },
-          },
         );
-        if (res.data.success) {
+        if (res.data.status == 'success') {
           setIsError(false);
-          const result = await axios.get(`${appConfig.baseUrl}/users`, {
+          const result = await axios.get(`${appConfig.baseUrl}/users/profile`, {
             headers: {
-              Authorization: `Bearer ${res.data.data.token}`,
+              Authorization: `Bearer ${res.data.data.accessToken}`,
             },
           });
-          console.log(result);
           dispatch(
-            login({ token: res.data.data.token, user: result.data.data }),
+            login({ token: res.data.data.accessToken, user: result.data.data }),
           );
-          if (res.data.data.role.id === 1) {
-            router.push('/');
-          } else {
-            router.push('/admin/infografis');
-          }
+          // if (res.data.data.role.id === 1) {
+          //   router.push('/');
+          // } else {
+          //   router.push('/admin/infografis');
+          // }
         } else {
           setIsError(true);
           enqueueSnackbar(res.data.message, {
@@ -193,6 +186,7 @@ const LoginPage = () => {
                 disabled={
                   values === initialValues || errors.email || errors.password
                 }
+                type='button'
                 onClick={handleSubmit}
                 className="w-full rounded-md bg-primary-green p-4 text-sm font-bold text-white disabled:bg-[#D5DBDA]"
               >

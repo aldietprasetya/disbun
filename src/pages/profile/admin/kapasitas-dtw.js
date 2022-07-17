@@ -62,7 +62,7 @@ const PengaturanKapasitasDtw = () => {
         dtwCapacities: dataToPost,
       });
 
-      if (res.data.success) {
+      if (res.data.status == 'success') {
         enqueueSnackbar(res.data.message, {
           anchorOrigin: {
             vertical: 'top',

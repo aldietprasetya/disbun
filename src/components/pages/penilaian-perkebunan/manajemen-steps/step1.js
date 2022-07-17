@@ -690,7 +690,7 @@ const FormManajemenStep1 = () => {
             }
           </div>
 
-          <div className={`${mng["base__btn"]}`} onClick={handleBtnKredit}>
+          <div className={`${mng["base__btn"]}`} onClick={handleBtnJenisInvest}>
             + Tambah Data Investasi Tahun Lainnya
           </div>
 
