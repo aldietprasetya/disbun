@@ -1,8 +1,10 @@
 import Head from 'next/head'
 import React, { useState, useEffect } from 'react'
 import {useRouter} from 'next/router'
+import _ from 'lodash';
 import InputForm from '../admin/infografis/InputForm';
 import mng from '../../../styles/Managemen.module.scss'
+import ChildStore from './store/olah'
 
 const preventDefault = f => e => {
   e.preventDefault()
@@ -12,6 +14,14 @@ const preventDefault = f => e => {
 
 const FormAspekPengolahan = () => {
   const [isError, setIsError] = useState(false);
+
+  const router = useRouter()
+
+  const [initialLoad, setInitialLoad] = useState(true)
+  const [btnValid, setBtnValid] = useState(false)
+  const [data, setData] = useState(null)
+  const [dataPass, setDataPass] = useState({})
+  const [dataSubmit, setDataSubmit] = useState({})
 
   ////////////////////////// Jenis dan Kapasitas ////////////////////////////////
 
@@ -23,62 +33,12 @@ const FormAspekPengolahan = () => {
     setJenisKapasitas([...jenisKapasitas,[ { 'sectionTitle': '', 'sectionData': [ {'title':'Jenis UPH','type':'text','placeholder':'Jenis UPH','value':''}, {'title':'Jumlah (unit)','type':'text','placeholder':'Luas/Volume','value':''}, {'title':'Luas bangunan (m2)','type':'text','placeholder':'Luas','value':''}, ] }, { 'sectionTitle': 'Total Kapasitas', 'sectionData': [ {'title':'Terpasang (kg/hari)','type':'text','placeholder':'Jumlah','value':''}, {'title':'terpakai (kg/hari)','type':'text','placeholder':'Jumlah','value':''}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''}, ] }, ]])
   }
 
-  function jenisKapasitasRemoveLabel(i) {
-    setJenisKapasitas(jenisKapasitas.filter((item, idx) => idx != i))
-  }
-
-  function jenisKapasitasChange(e, index, index2, index3) {
-    let stet = jenisKapasitas
-    let set = setJenisKapasitas
-    const { name, value } = e.target;
-    const list = [...stet];
-    list.forEach((item, i) => {
-      if (i == index) {
-        item.forEach((item2, ii) => {
-          if (ii == index2) {
-            item2.sectionData.forEach((item3, iii) => {
-              if (iii == index3) {
-                item3.value = value
-              }
-            });
-          }
-        });
-      }
-    });
-    set(list);
-  }
-
   ////////////////////////// Sumber Bahan Baku ////////////////////////////////
 
   const [bahanBaku, setBahanBaku] = useState([[ { 'sectionTitle': '', 'sectionData': [ {'title':'Jenis UPH','type':'text','placeholder':'Jenis Tanaman','value':'','isOpt':false}, ] }, { 'sectionTitle': 'Asal Bahan Baku', 'sectionData': [ {'title':'Kab/Kota','type':'text','placeholder':'Pilih Kab/Kota','value':'','isOpt':true}, {'title':'Volume','type':'text','placeholder':'Volume','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false}, ] }, ]])
 
   function handleBtnAddJenisBahanBaku() {
     setBahanBaku([...bahanBaku,[ { 'sectionTitle': '', 'sectionData': [ {'title':'Jenis UPH','type':'text','placeholder':'Jenis Tanaman','value':'','isOpt':false}, ] }, { 'sectionTitle': 'Asal Bahan Baku', 'sectionData': [ {'title':'Kab/Kota','type':'text','placeholder':'Pilih Kab/Kota','value':'','isOpt':true}, {'title':'Volume','type':'text','placeholder':'Volume','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false}, ] }, ]])
-  }
-
-  function bahanBakuRemoveLabel(i) {
-    setBahanBaku(bahanBaku.filter((item, idx) => idx != i))
-  }
-
-  function bahanBakuChange(e, index, index2, index3) {
-    let stet = bahanBaku
-    let set = setBahanBaku
-    const { name, value } = e.target;
-    const list = [...stet];
-    list.forEach((item, i) => {
-      if (i == index) {
-        item.forEach((item2, ii) => {
-          if (ii == index2) {
-            item2.sectionData.forEach((item3, iii) => {
-              if (iii == index3) {
-                item3.value = value
-              }
-            });
-          }
-        });
-      }
-    });
-    set(list);
   }
 
   ////////////////////////// Pemasaran ////////////////////////////////
@@ -89,27 +49,6 @@ const FormAspekPengolahan = () => {
 
   function handleBtnAddPemasaran() {
     setPemasaran([...pemasaran,[ {'title':'Komoditas','placeholder':'Jenis Komoditas','type':'text','value':'','isOpt':false}, {'title':'Jenis Mutu','placeholder':'Jenis Mutu','type':'text','value':'','isOpt':false}, {'title':'Lokal/Ekspor','type':'text','placeholder':'Pilih Jenis Pemasaran','value':'','isOpt':true}, {'title':'Biaya Produksi (Rp/Kg)','type':'text','placeholder':'Nilai Produksi','value':'','isOpt':false}, {'title':'Harga Jual (Rp/Kg)','type':'text','placeholder':'Nilai Jual','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false}, ]])
-  }
-
-  function pemasaranRemoveLabel(i) {
-    setPemasaran(pemasaran.filter((item, idx) => idx != i))
-  }
-
-  function pemasaranChange(e, index, index2) {
-    let stet = pemasaran
-    let set = setPemasaran
-    const { name, value } = e.target;
-    const list = [...stet];
-    list.forEach((item, i) => {
-      if (i == index) {
-        item.forEach((item2, ii) => {
-          if (ii == index2) {
-            item2.value = value
-          }
-        });
-      }
-    });
-    set(list);
   }
 
   ////////////////////////// Jenis Mutu Akhir ////////////////////////////////
@@ -139,7 +78,7 @@ const FormAspekPengolahan = () => {
           ]
         ]
       },
-    ]
+    ],
   ])
 
   function handleBtnAddMutu() {
@@ -161,18 +100,30 @@ const FormAspekPengolahan = () => {
       {
         'sectionTitle': 'Hasil Olah',
         'sectionData': [
-          {'title':'Jenis Mutu Akhir','type':'text','placeholder':'Jumlah','value':''},
-          {'title':'Volume Produksi (kg)','type':'text','placeholder':'Volume','value':''}
+          [
+            {'title':'Jenis Mutu Akhir','type':'text','placeholder':'Jumlah','value':''},
+            {'title':'Volume Produksi (kg)','type':'text','placeholder':'Volume','value':''}
+          ]
         ]
       },
     ]])
+  }
+
+  function handleBtnAddMutuOlah(i) {
+
+    // console.log(mutu[i][2].sectionData)
+
+    // setMutu([...mutu[i][2].sectionData,[
+    //   {'title':'Jenis Mutu Akhir','type':'text','placeholder':'Jumlah','value':''},
+    //   {'title':'Volume Produksi (kg)','type':'text','placeholder':'Volume','value':''}
+    // ]])
   }
 
   function mutuRemoveLabel(i) {
     setMutu(mutu.filter((item, idx) => idx != i))
   }
 
-  function mutuChange(e, index, index2, index3) {
+  function mutuChange(e, index, index2, index3, index4) {
     let stet = mutu
     let set = setMutu
     const { name, value } = e.target;
@@ -183,7 +134,15 @@ const FormAspekPengolahan = () => {
           if (ii == index2) {
             item2.sectionData.forEach((item3, iii) => {
               if (iii == index3) {
-                item3.value = value
+                if (Array.isArray(item3)) {
+                  item3.forEach((item4, iiii) => {
+                    if (iiii == index4) {
+                      item4.value = value
+                    }
+                  })
+                } else {
+                  item3.value = value
+                }
               }
             });
           }
@@ -246,15 +205,147 @@ const FormAspekPengolahan = () => {
 
   ////////////////////////// OTHER FUNCTION ////////////////////////////////
 
-  const [btnValid, setBtnValid] = useState(false)
+  function removeLabel(i,state,setState) {
+    setState(state.filter((item, idx) => idx != i))
+  }
 
-  const router = useRouter()
+  function formRegularChange(e, state, setState, index, index2) {
+    const { name, value } = e.target;
+    const list = [...state];
+    list.forEach((item, i) => {
+      if (i == index) {
+        item.forEach((item2, ii) => {
+          if (ii == index2) {
+            item2.value = value
+          }
+        });
+      }
+    });
+    setState(list);
+  }
+
+  function formSectionChange(e, state, setState, index, index2, index3) {
+    const { name, value } = e.target;
+    const list = [...state];
+    list.forEach((item, i) => {
+      if (i == index) {
+        item.forEach((item2, ii) => {
+          if (ii == index2) {
+            item2.sectionData.forEach((item3, iii) => {
+              if (iii == index3) {
+                item3.value = value
+              }
+            });
+          }
+        });
+      }
+    });
+    setState(list);
+  }
+
+  useEffect(() => {
+    if (initialLoad) {
+      let retrievedObject = JSON.parse(localStorage.getItem('olahReport'));
+
+      if (!_.isEmpty(retrievedObject)) {
+        setJenisKapasitas(retrievedObject.capacity)
+        setBahanBaku(retrievedObject.material)
+        setPemasaran(retrievedObject.marketing)
+        setMutu(retrievedObject.quality)
+      }
+    }
+    setInitialLoad(false)
+  }, [initialLoad])
+
+  useEffect(() => {
+    setDataSubmit({
+      'capacity': jenisKapasitas,
+      'material':bahanBaku,
+      'quality':mutu,
+      'marketing':pemasaran
+    })
+
+  }, [jenisKapasitas,bahanBaku,mutu,pemasaran])
+
+  useEffect(() => {
+    if (!_.isEmpty(dataSubmit)) {
+      setDataPass(dataSubmit)
+    }
+  },[dataPass,dataSubmit])
 
   const storeData = preventDefault(() => {
-    localStorage.setItem("dataSubmit", JSON.stringify(dataSubmit));
-    router.push({
-      pathname: "/beranda/laporan/konfirmasi"
-    })
+    localStorage.setItem("manajementOlah", JSON.stringify(dataSubmit));
+
+    let data = {
+      capacity: [],
+      material: [],
+      quality: [],
+      marketing: [],
+    }
+
+    jenisKapasitas.forEach((item, i) => {
+      let rencanaInv = {}
+      item.forEach((e, i, arr) => {
+        rencanaInv.uphType = arr[0].sectionData[0].value
+        rencanaInv.buildingArea = arr[0].sectionData[1].value
+        rencanaInv.total = arr[0].sectionData[2].value
+        rencanaInv.installed = arr[1].sectionData[0].value
+        rencanaInv.used = arr[1].sectionData[1].value
+        rencanaInv.description = arr[1].sectionData[2].value
+      });
+      data.capacity.push(rencanaInv)
+    });
+
+    bahanBaku.forEach((item, i) => {
+      let rencanaInv = {}
+      item.forEach((e, i, arr) => {
+        rencanaInv.uphType = arr[0].sectionData[0].value
+        rencanaInv.cityId = arr[1].sectionData[0].value
+        rencanaInv.volume = arr[1].sectionData[1].value
+        rencanaInv.description = arr[1].sectionData[2].value
+      });
+      data.material.push(rencanaInv)
+    });
+
+    pemasaran.forEach((item, i) => {
+      let rencanaInv = {}
+      item.forEach(() => {
+        rencanaInv.comodity = item[0].value
+        rencanaInv.qualityType = item[1].value
+        rencanaInv.cost = item[2].value
+        rencanaInv.price = item[3].value
+        rencanaInv.targetMarketId = item[4].value
+        rencanaInv.description = item[5].value
+      });
+      data.marketing.push(rencanaInv)
+    });
+
+    mutu.forEach((item, i) => {
+      let rencanaInv = {}
+      item.forEach((e, i, arr) => {
+        let a = []
+        if (Array.isArray(e.sectionData)) {
+          let b = {
+            qualityType: arr[2].sectionData[0][0].value,
+            volume: arr[2].sectionData[0][1].value
+          }
+          a.push(b)
+        }
+
+        rencanaInv.uphType = arr[0].sectionData[0].value
+        rencanaInv.selfMaterial = arr[1].sectionData[0].value
+        rencanaInv.internalMaterial = arr[1].sectionData[1].value
+        rencanaInv.broughtMaterial = arr[1].sectionData[2].value
+        rencanaInv.processingResult = a
+      });
+      data.quality.push(rencanaInv)
+    });
+
+    localStorage.setItem("dataSubmitOlah", JSON.stringify(data));
+
+    // router.push({
+    //   pathname: "/beranda/laporan/konfirmasi"
+    // })
   })
 
   return (
@@ -262,6 +353,8 @@ const FormAspekPengolahan = () => {
       <Head>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
       </Head>
+
+      <ChildStore/>
 
       <form>
 
@@ -274,7 +367,7 @@ const FormAspekPengolahan = () => {
                 <div className={`${mng["base__formlabel_twin"]}`} key={i}>
                   {
                     i > 0 ?
-                    <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => jenisKapasitasRemoveLabel(i)}>
+                    <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => removeLabel(i, jenisKapasitas, setJenisKapasitas)}>
                       do_not_disturb_on
                     </span>
                     :
@@ -289,7 +382,7 @@ const FormAspekPengolahan = () => {
                           item.sectionData.map((child,iii) => (
                             <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={iii}>
                               <span className={mng.base__inputtitle}>{child.title}</span>
-                              <input className={mng.base__inputbase} type={child.type} min='0' placeholder={child.placeholder} value={child.value} onChange={(e) => jenisKapasitasChange(e, i, ii, iii)}/>
+                              <input className={mng.base__inputbase} type={child.type} min='0' placeholder={child.placeholder} value={child.value} onChange={(e) => formSectionChange(e, jenisKapasitas, setJenisKapasitas, i, ii, iii)}/>
                             </label>
                           ))
                         }
@@ -317,7 +410,7 @@ const FormAspekPengolahan = () => {
                 <div className={`${mng["base__formlabel_unique3"]}`} key={i}>
                   {
                     i > 0 ?
-                    <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => bahanBakuRemoveLabel(i)}>
+                    <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => removeLabel(i, bahanBaku, setBahanBaku)}>
                       do_not_disturb_on
                     </span>
                     :
@@ -337,7 +430,7 @@ const FormAspekPengolahan = () => {
                                     <InputForm
                                       titleForm={child.title}
                                       titleName={child.title}
-                                      onChange={(e) => bahanBakuChange(e, i, ii)}
+                                      onChange={(e) => formSectionChange(e, bahanBaku, setBahanBaku, i, ii, iii)}
                                       type="text"
                                       placeholder={child.placeholder}
                                       className={`${
@@ -349,7 +442,7 @@ const FormAspekPengolahan = () => {
                                 ) : (
                                   <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={iii}>
                                     <span className={mng.base__inputtitle}>{child.title}</span>
-                                    <input className={mng.base__inputbase} type={child.type} min='0' placeholder={child.placeholder} value={child.value} onChange={(e) => bahanBakuChange(e, i, ii, iii)}/>
+                                    <input className={mng.base__inputbase} type={child.type} min='0' placeholder={child.placeholder} value={child.value} onChange={(e) => formSectionChange(e, bahanBaku, setBahanBaku, i, ii, iii)}/>
                                   </label>
                                 )
                               }
@@ -393,22 +486,47 @@ const FormAspekPengolahan = () => {
                         <div className={`${mng["base__formlabel_unique5"]}`}>
                         {
                           item.sectionData.map((child,iii) => (
-                            <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={iii}>
-                              <span className={mng.base__inputtitle}>{child.title}</span>
-                              <input className={mng.base__inputbase} type={child.type} min='0' placeholder={child.placeholder} value={child.value} onChange={(e) => mutuChange(e, i, ii, iii)}/>
-                            </label>
+                            <>
+                              {
+                                Array.isArray(child) ? (
+                                  <div className="w-full flex relative mt-1">
+                                    {
+                                      iii > 0 ?
+                                      <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => mutuRemoveLabel(i)}>
+                                        do_not_disturb_on
+                                      </span>
+                                      :
+                                      <></>
+                                    }
+                                    {
+                                      child.map((child2, iiii) => (
+                                        <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={iiii}>
+                                          <span className={mng.base__inputtitle}>{child2.title}</span>
+                                          <input className={mng.base__inputbase} type={child2.type} min='0' placeholder={child2.placeholder} value={child2.value} onChange={(e) => mutuChange(e, i, ii, iii, iiii)}/>
+                                        </label>
+                                      ))
+                                    }
+                                  </div>
+                                ) : (
+                                  <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={iii}>
+                                    <span className={mng.base__inputtitle}>{child.title}</span>
+                                    <input className={mng.base__inputbase} type={child.type} min='0' placeholder={child.placeholder} value={child.value} onChange={(e) => mutuChange(e, i, ii, iii)}/>
+                                  </label>
+                                )
+                              }
+                            </>
                           ))
                         }
                         </div>
                       </div>
                     ))
                   }
+                  <div className={`${mng["base__btn"]} mb-2`} onClick={() => handleBtnAddMutuOlah(i)}>
+                    + Tambah Hasil Olah Lainnya
+                  </div>
                 </div>
               ))
             }
-          </div>
-          <div className={`${mng["base__btn"]} mb-6`} onClick={handleBtnAddMutu}>
-            + Tambah Hasil Olah Lainnya
           </div>
 
           <div className={`${mng["base__btn"]}`} onClick={handleBtnAddMutu}>
@@ -425,7 +543,7 @@ const FormAspekPengolahan = () => {
                 <div className={`${mng["base__formlabel_custom-diamond"]}`} key={i}>
                 {
                   i > 0 ?
-                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => pemasaranRemoveLabel(i)}>
+                  <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => removeLabel(i, pemasaran, setPemasaran)}>
                     do_not_disturb_on
                   </span>
                   :
@@ -435,7 +553,7 @@ const FormAspekPengolahan = () => {
                   items.map((item,ii) => (
                     <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
                       <span className={mng.base__inputtitle}>{item.title}</span>
-                      <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => pemasaranChange(e, i, ii)}/>
+                      <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, pemasaran, setPemasaran, i, ii)}/>
                     </label>
                   ))
                 }
@@ -456,7 +574,7 @@ const FormAspekPengolahan = () => {
             </div>
           */}
 
-          <button className={`${mng["base__btnsimpan"]} ${"float-right mt-1"}`} onClick={storeData} disabled={!btnValid}>
+          <button className={`${mng["base__btnsimpan"]} ${"float-right mt-1"}`} onClick={storeData}>
             Simpan dan Lanjutkan
           </button>
         </div>

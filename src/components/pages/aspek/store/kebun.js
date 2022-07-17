@@ -157,10 +157,11 @@ const storeKebun = props => {
       })
 
       retrievedDataApi.other.forEach((e, i) => {
+        console.log(e)
         const formData = [
-          [ {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false}, ]
+          [ {'title':'Jenis Areal Lain-lain','placeholder':'Jenis Areal','type':'text','value':'','isOpt':false}, {'title':'Kec/Desa','placeholder':'Pilih Kec/Desa','type':'text','value':'','isOpt':true}, {'title':'Luas yang Digunakan (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Masukkan Nilai Biaya','value':'','isOpt':false}, ]
         ]
-        setToForm(formData,replicateData.plant, e)
+        setToForm(formData,replicateData.other, e)
       })
 
       retrievedDataApi.newPlanting.forEach((e, i) => {
@@ -174,7 +175,7 @@ const storeKebun = props => {
         const formData = [
           [ {'title':'Jenis Tanaman','placeholder':'Jenis Tanaman','type':'text','value':'','isOpt':false}, {'title':'TBM (Ha)','placeholder':'Luas Lahan dalam Ha','type':'text','value':'','isOpt':false}, {'title':'TM (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false}, {'title':'TTR (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':false} ]
         ]
-        setToForm(formData,replicateData.plant, e)
+        setToForm(formData,replicateData.composition, e)
       })
 
       retrievedDataApi.fertilization.forEach((e, i) => {
