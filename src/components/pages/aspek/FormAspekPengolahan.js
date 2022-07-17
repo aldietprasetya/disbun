@@ -343,9 +343,9 @@ const FormAspekPengolahan = () => {
 
     localStorage.setItem("dataSubmitOlah", JSON.stringify(data));
 
-    // router.push({
-    //   pathname: "/beranda/laporan/konfirmasi"
-    // })
+    router.push({
+      pathname: "/pelaporan-perkebunan/aspek-sosial/"
+    })
   })
 
   return (
