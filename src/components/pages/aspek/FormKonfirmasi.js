@@ -1,16 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import Image from 'next/image'
+import { useReactToPrint } from 'react-to-print';
 import mng from '../../../styles/Managemen.module.scss'
+import { ComponentToPrint } from './print';
 
 const konfirmasi = (props) => {
+
+  const componentRef = useRef();
+  const handleBtnPreview = useReactToPrint({
+    content: () => componentRef.current,
+  });
+
   function handleBtnDraft() {
     alert('Simpan di Draft')
   }
   function handleBtnAjukan() {
     alert('Ajukan')
-  }
-  function handleBtnPreview() {
-    alert('Preview')
   }
 
   return (
@@ -32,6 +37,12 @@ const konfirmasi = (props) => {
           Ajukan
         </button>
       </div>
+
+
+      <ComponentToPrint ref={componentRef} />
+        <div className='absolute top-0 opacity-0 z-0 scale-0'>
+        <ComponentToPrint ref={componentRef} />
+        </div>
     </>
   );
 };

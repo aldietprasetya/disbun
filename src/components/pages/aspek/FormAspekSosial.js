@@ -32,9 +32,7 @@ const FormAspekSosial = () => {
 
   ////////////////////////// KAWASAN LINDUNG ////////////////////////////////
 
-  const [kawasanLindung, setKawasanLindung] = useState([
-    [ {'title':'Luas Kawasan Lindung (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''}, {'title':'Dikelola Sejak tahun','placeholder':'YYYY','type':'text','value':''}, {'title':'Usaha Pelestarian','type':'textarea','placeholder':'Tulis usaha pelestarian yang dilakukan.','value':''} ]
-  ])
+  const [kawasanLindung, setKawasanLindung] = useState([])
 
   ////////////////////////// KONSERVASI ////////////////////////////////
 

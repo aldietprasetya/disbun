@@ -16,6 +16,9 @@ module.exports = {
         base: '16px',
         md: '15px',
       },
+      listStyleType: {
+        alpha: 'lower-alpha',
+      },
       colors: {
         transparent: 'transparent',
         current: 'currentColor',

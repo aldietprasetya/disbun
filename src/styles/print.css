@@ -1,0 +1,17 @@
+@page {
+  size: A4;
+  margin: 11mm 17mm 17mm 17mm;
+}
+
+@media print {
+  html, body {
+    width: 210mm;
+    height: 297mm;
+  }
+  .Managemen_base__print {
+    clear: both;
+    page-break-after: always;
+  }
+  thead {display: table-header-group;}
+  tfoot {display: table-footer-group;}
+}

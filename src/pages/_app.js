@@ -17,4 +17,6 @@ const App = ({ Component, pageProps }) => {
   );
 };
 
+import '../styles/print.css'
+
 export default App;

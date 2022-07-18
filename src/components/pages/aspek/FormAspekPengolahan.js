@@ -25,9 +25,7 @@ const FormAspekPengolahan = () => {
 
   ////////////////////////// Jenis dan Kapasitas ////////////////////////////////
 
-  const [jenisKapasitas, setJenisKapasitas] = useState([
-    [ { 'sectionTitle': '', 'sectionData': [ {'title':'Jenis UPH','type':'text','placeholder':'Jenis UPH','value':''}, {'title':'Jumlah (unit)','type':'text','placeholder':'Luas/Volume','value':''}, {'title':'Luas bangunan (m2)','type':'text','placeholder':'Luas','value':''}, ] }, { 'sectionTitle': 'Total Kapasitas', 'sectionData': [ {'title':'Terpasang (kg/hari)','type':'text','placeholder':'Jumlah','value':''}, {'title':'terpakai (kg/hari)','type':'text','placeholder':'Jumlah','value':''}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''}, ] }, ]
-  ])
+  const [jenisKapasitas, setJenisKapasitas] = useState([])
 
   function handleBtnAddJenisKapasitas() {
     setJenisKapasitas([...jenisKapasitas,[ { 'sectionTitle': '', 'sectionData': [ {'title':'Jenis UPH','type':'text','placeholder':'Jenis UPH','value':''}, {'title':'Jumlah (unit)','type':'text','placeholder':'Luas/Volume','value':''}, {'title':'Luas bangunan (m2)','type':'text','placeholder':'Luas','value':''}, ] }, { 'sectionTitle': 'Total Kapasitas', 'sectionData': [ {'title':'Terpasang (kg/hari)','type':'text','placeholder':'Jumlah','value':''}, {'title':'terpakai (kg/hari)','type':'text','placeholder':'Jumlah','value':''}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''}, ] }, ]])
@@ -35,7 +33,7 @@ const FormAspekPengolahan = () => {
 
   ////////////////////////// Sumber Bahan Baku ////////////////////////////////
 
-  const [bahanBaku, setBahanBaku] = useState([[ { 'sectionTitle': '', 'sectionData': [ {'title':'Jenis UPH','type':'text','placeholder':'Jenis Tanaman','value':'','isOpt':false}, ] }, { 'sectionTitle': 'Asal Bahan Baku', 'sectionData': [ {'title':'Kab/Kota','type':'text','placeholder':'Pilih Kab/Kota','value':'','isOpt':true}, {'title':'Volume','type':'text','placeholder':'Volume','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false}, ] }, ]])
+  const [bahanBaku, setBahanBaku] = useState([])
 
   function handleBtnAddJenisBahanBaku() {
     setBahanBaku([...bahanBaku,[ { 'sectionTitle': '', 'sectionData': [ {'title':'Jenis UPH','type':'text','placeholder':'Jenis Tanaman','value':'','isOpt':false}, ] }, { 'sectionTitle': 'Asal Bahan Baku', 'sectionData': [ {'title':'Kab/Kota','type':'text','placeholder':'Pilih Kab/Kota','value':'','isOpt':true}, {'title':'Volume','type':'text','placeholder':'Volume','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false}, ] }, ]])
@@ -43,9 +41,7 @@ const FormAspekPengolahan = () => {
 
   ////////////////////////// Pemasaran ////////////////////////////////
 
-  const [pemasaran, setPemasaran] = useState([
-    [ {'title':'Komoditas','placeholder':'Jenis Komoditas','type':'text','value':'','isOpt':false}, {'title':'Jenis Mutu','placeholder':'Jenis Mutu','type':'text','value':'','isOpt':false}, {'title':'Lokal/Ekspor','type':'text','placeholder':'Pilih Jenis Pemasaran','value':'','isOpt':true}, {'title':'Biaya Produksi (Rp/Kg)','type':'text','placeholder':'Nilai Produksi','value':'','isOpt':false}, {'title':'Harga Jual (Rp/Kg)','type':'text','placeholder':'Nilai Jual','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false}, ]
-  ])
+  const [pemasaran, setPemasaran] = useState([])
 
   function handleBtnAddPemasaran() {
     setPemasaran([...pemasaran,[ {'title':'Komoditas','placeholder':'Jenis Komoditas','type':'text','value':'','isOpt':false}, {'title':'Jenis Mutu','placeholder':'Jenis Mutu','type':'text','value':'','isOpt':false}, {'title':'Lokal/Ekspor','type':'text','placeholder':'Pilih Jenis Pemasaran','value':'','isOpt':true}, {'title':'Biaya Produksi (Rp/Kg)','type':'text','placeholder':'Nilai Produksi','value':'','isOpt':false}, {'title':'Harga Jual (Rp/Kg)','type':'text','placeholder':'Nilai Jual','value':'','isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':false}, ]])
@@ -53,33 +49,7 @@ const FormAspekPengolahan = () => {
 
   ////////////////////////// Jenis Mutu Akhir ////////////////////////////////
 
-  const [mutu, setMutu] = useState([
-    [
-      {
-        'sectionTitle': '',
-        'sectionData': [
-          {'title':'Jenis UPH','type':'text','placeholder':'Jenis Tanaman','value':''}
-        ]
-      },
-      {
-        'sectionTitle': 'Asal Bahan Baku (Kg)',
-        'sectionData': [
-          {'title':'Sendiri (Kg)','type':'text','placeholder':'Jumlah','value':''},
-          {'title':'Kebun Seinduk (Kg)','type':'text','placeholder':'Jumlah','value':''},
-          {'title':'Beli (kg)','type':'text','placeholder':'Jumlah','value':''},
-        ]
-      },
-      {
-        'sectionTitle': 'Hasil Olah',
-        'sectionData': [
-          [
-            {'title':'Jenis Mutu Akhir','type':'text','placeholder':'Jumlah','value':''},
-            {'title':'Volume Produksi (kg)','type':'text','placeholder':'Volume','value':''}
-          ]
-        ]
-      },
-    ],
-  ])
+  const [mutu, setMutu] = useState([])
 
   function handleBtnAddMutu() {
     setMutu([...mutu,[

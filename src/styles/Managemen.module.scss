@@ -7,13 +7,7 @@
 }
 
 .base {
-  width: 80%;
   background: white;
-  margin-left: 2px;
-  padding-top: 28px;
-  padding-left: 40px;
-  padding-bottom: 80px;
-  padding-right: 40px;
   position: relative;
   z-index: 1;
   &__breadcrumb {
@@ -756,7 +750,10 @@
     height: 48px;
     width: 132px;
   }
+
   &__print {
+    clear: both;
+    page-break-after: always;
     &_title {
       font-weight: 800;
       font-size: 18px;
@@ -790,8 +787,6 @@
           }
           &:last-of-type {
             display: inline-block;
-            border-bottom: 1px dotted;
-            width: 220px;
             padding-left: 5px;
             margin-left: 28px;
             margin-right: 6px;
@@ -810,8 +805,6 @@
           }
           &:last-of-type {
             display: inline-block;
-            border-bottom: 1px dotted;
-            width: 220px;
             margin-left: 28px;
           }
         }
@@ -821,11 +814,24 @@
         li {
           span {
             &:last-of-type {
-              width: 150px;
+
             }
           }
         }
       }
     }
+
+    table, th, td {
+      @apply border;
+    }
+
+    th {
+      @apply py-2 px-2;
+    }
+
+    th, td {
+      @apply text-center;
+    }
   }
+
 }
