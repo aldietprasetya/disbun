@@ -38,11 +38,9 @@ const konfirmasi = (props) => {
         </button>
       </div>
 
-
-      <ComponentToPrint ref={componentRef} />
-        <div className='absolute top-0 opacity-0 z-0 scale-0'>
+      <div className='absolute top-0 opacity-0 z-0 scale-0'>
         <ComponentToPrint ref={componentRef} />
-        </div>
+      </div>
     </>
   );
 };
