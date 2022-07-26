@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import React, { useState, useEffect } from 'react'
 import {useRouter} from 'next/router'
+import _ from 'lodash';
 import InputFileButton from 'src/components/customInput/InputFileButton';
 import InputForm from '../admin/infografis/InputForm';
 import mng from 'src/styles/Managemen.module.scss'
@@ -12,6 +13,14 @@ const preventDefault = f => e => {
 
 const FormSosial = () => {
   const [isError, setIsError] = useState(false);
+
+  const router = useRouter()
+
+  const [initialLoad, setInitialLoad] = useState(true)
+  const [btnValid, setBtnValid] = useState(false)
+  const [data, setData] = useState(null)
+  const [dataPass, setDataPass] = useState({})
+  const [dataSubmit, setDataSubmit] = useState([])
 
   ////////////////////////// INPUT FORM STATE ////////////////////////////////
 
@@ -403,10 +412,441 @@ const FormSosial = () => {
     setState(list);
   }
 
-  const [btnValid, setBtnValid] = useState(false)
+  useEffect(() => {
+    if (initialLoad) {
+      let retrievedObject = JSON.parse(localStorage.getItem('sosialNilai'));
+
+      if (!_.isEmpty(retrievedObject)) {
+
+        let replicateData = {
+          "socialGarden": [],
+          "plantDensity": [],
+          "plantHomogenity": [],
+          "optAttack": [],
+          "economicInstitution": [],
+          "seedSupplySupport": [],
+          "societyTraining": [],
+          "societyScholarship": [],
+          "mutualActivity": [],
+          "traditionActivity": [],
+          "conflict": [],
+        }
+
+        retrievedObject.seedSupplySupport.forEach((e, i) => {
+          const formData = _.cloneDeep(jenisBibit)
+          let moveArr = []
+          let moveFormArr = []
+          Object.keys(e).forEach(key => {
+            moveArr.push(e[key])
+          });
+          formData.forEach((form,i2) => {
+            form.forEach((formData, i3) => {
+              formData.sectionData.forEach((secData, i4, arr) => {
+                moveFormArr.push(secData)
+                moveFormArr.forEach((item,iItem) => {
+                  secData.value = moveArr[iItem]
+                })
+              })
+            })
+            replicateData.seedSupplySupport.push(form)
+          })
+        })
+
+        retrievedObject.optAttack.forEach((e, i) => {
+          const formData = _.cloneDeep(opt)
+          let moveArr = []
+          let moveFormArr = []
+          Object.keys(e).forEach(key => {
+            moveArr.push(e[key])
+          });
+          formData.forEach((form,i2) => {
+            form.forEach((formData, i3) => {
+              formData.sectionData.forEach((secData, i4, arr) => {
+                moveFormArr.push(secData)
+                moveFormArr.forEach((item,iItem) => {
+                  secData.value = moveArr[iItem]
+                })
+              })
+            })
+            replicateData.optAttack.push(form)
+          })
+        })
+
+        retrievedObject.plantDensity.forEach((e, i) => {
+          const formData = _.cloneDeep(rapatTanaman)
+          let moveArr = []
+          let moveFormArr = []
+          Object.keys(e).forEach(key => {
+            moveArr.push(e[key])
+          });
+          formData.forEach((form,i2) => {
+            form.forEach((formData, i3) => {
+              formData.sectionData.forEach((secData, i4, arr) => {
+                moveFormArr.push(secData)
+                moveFormArr.forEach((item,iItem) => {
+                  secData.value = moveArr[iItem]
+                })
+              })
+            })
+            replicateData.plantDensity.push(form)
+          })
+        })
+
+        retrievedObject.plantHomogenity.forEach((e, i) => {
+          const formData = _.cloneDeep(seragamTanaman)
+          let moveArr = []
+          let moveFormArr = []
+          Object.keys(e).forEach(key => {
+            moveArr.push(e[key])
+          });
+          formData.forEach((form,i2) => {
+            form.forEach((formData, i3) => {
+              formData.sectionData.forEach((secData, i4, arr) => {
+                moveFormArr.push(secData)
+                moveFormArr.forEach((item,iItem) => {
+                  secData.value = moveArr[iItem]
+                })
+              })
+            })
+            replicateData.plantHomogenity.push(form)
+          })
+        })
+
+        retrievedObject.traditionActivity.forEach((dt,i,arr) => {
+          const formKegiatangAdat = _.cloneDeep(kegiatangAdat)
+          formKegiatangAdat.forEach((dtFrm, i) => {
+            dtFrm[0].value = dt.activityType
+            dtFrm[1].value = dt.participationType
+            dtFrm[2].value = dt.location
+            replicateData.traditionActivity.push(dtFrm)
+          })
+        })
+
+        retrievedObject.conflict.forEach((dt,i,arr) => {
+          const formKonflik = _.cloneDeep(konflik)
+          formKonflik.forEach((dtFrm, i) => {
+            dtFrm[0].value = dt.conflictType
+            dtFrm[1].value = dt.conflictSouce
+            dtFrm[2].value = dt.conflictCount
+            dtFrm[3].value = dt.solution
+            dtFrm[4].value = dt.description
+            replicateData.conflict.push(dtFrm)
+          })
+        })
+
+        retrievedObject.mutualActivity.forEach((dt,i,arr) => {
+          const formKegiatangRoyong = _.cloneDeep(kegiatangRoyong)
+          formKegiatangRoyong.forEach((dtFrm, i) => {
+            dtFrm[0].value = dt.activityType
+            dtFrm[1].value = dt.participationType
+            dtFrm[2].value = dt.peopleCount
+            dtFrm[3].value = dt.location
+            dtFrm[4].value = dt.description
+            replicateData.mutualActivity.push(dtFrm)
+          })
+        })
+
+        retrievedObject.socialGarden.forEach((dt,i,arr) => {
+          const formLuasKebun = _.cloneDeep(luasKebun)
+          formLuasKebun.forEach((dtFrm, i) => {
+            dtFrm[0].value = dt.plantType
+            dtFrm[1].value = dt.districtId
+            dtFrm[2].value = dt.cityId
+            dtFrm[3].value = dt.totalTargetArea
+            dtFrm[4].value = dt.currentTargetArea
+            dtFrm[5].value = dt.realArea
+            replicateData.socialGarden.push(dtFrm)
+          })
+        })
+
+        retrievedObject.economicInstitution.forEach((dt,i,arr) => {
+          const formLembagaEko = _.cloneDeep(lembagaEko)
+          formLembagaEko.forEach((dtFrm, i) => {
+            dtFrm[0].value = dt.institutionType
+            dtFrm[1].value = dt.count
+            dtFrm[2].value = dt.description
+            replicateData.economicInstitution.push(dtFrm)
+          })
+        })
+
+        retrievedObject.societyTraining.forEach((dt,i,arr) => {
+          const formLatihSekitar = _.cloneDeep(latihSekitar)
+          formLatihSekitar.forEach((dtFrm, i) => {
+            dtFrm[0].value = dt.trainingType
+            dtFrm[1].value = dt.peopleCount
+            dtFrm[2].value = dt.duration
+            dtFrm[3].value = dt.description
+            replicateData.societyTraining.push(dtFrm)
+          })
+        })
+
+        retrievedObject.societyScholarship.forEach((dt,i,arr) => {
+          const formBeasiswa = _.cloneDeep(beasiswa)
+          formBeasiswa.forEach((dtFrm, i) => {
+            dtFrm[0].value = dt.scholarshipType
+            dtFrm[1].value = dt.peopleCount
+            dtFrm[2].value = dt.duration
+            dtFrm[3].value = dt.description
+            replicateData.societyScholarship.push(dtFrm)
+          })
+        })
+
+        setLuasKebun(replicateData.socialGarden)
+        setRapatTanaman(replicateData.plantDensity)
+        setSeragamTanaman(replicateData.plantHomogenity)
+        setOpt(replicateData.optAttack)
+        setLembagaEko(replicateData.economicInstitution)
+        setJenisBibit(replicateData.seedSupplySupport)
+        setLatihSekitar(replicateData.societyTraining)
+        setBeasiswa(replicateData.societyScholarship)
+        setKegiatangRoyong(replicateData.mutualActivity)
+        setKegiatangAdat(replicateData.traditionActivity)
+        setKonflik(replicateData.conflict)
+
+        setAsalBenih(retrievedObject.gardenQuality.seedSource)
+        setFaskes(retrievedObject.social.healthFacility)
+        setTenagaMedis(retrievedObject.social.hasMedicalPersonel)
+        setFaspin(retrievedObject.social.educationalFacility)
+        setFasjal(retrievedObject.social.roadFacility)
+        setFasol(retrievedObject.social.sportFacility)
+        setKegiatanMitra(retrievedObject.businessPartnership.partnershipActivity)
+        setPresentase(retrievedObject.businessPartnership.partnershipPercentage)
+        setKegiatanLancar(retrievedObject.businessPartnership.employeeCooperativeDescription)
+
+        setBangunFaskesOpt(retrievedObject.social.buildHealthFacility)
+        setKualitasFasketOpt(retrievedObject.social.upgradeHealthFacility)
+        setTenagaMedisOpt(retrievedObject.social.medicalPersonelType)
+        setBangunFaspinOpt(retrievedObject.social.buildEducationalFacility)
+        setKualitasFaspinOpt(retrievedObject.social.upgradeEducationalFacility)
+        setBangunFasjalOpt(retrievedObject.social.buildRoadFacility)
+        setKualitasFasjalOpt(retrievedObject.social.upgradeRoadFacility)
+        setAlatFasjalOpt(retrievedObject.social.provideRoadInstrument)
+        setBangunFasolOpt(retrievedObject.social.buildSportFacility)
+        setKualitasFasolOpt(retrievedObject.social.upgradeSportFacility)
+        setAlatFasolOpt(retrievedObject.social.provideSportTrainer)
+        setBangunFasbudOpt(retrievedObject.social.buildArtFacility)
+        setKualitasFasbudOpt(retrievedObject.social.upgradeArtFacility)
+        setAlatFasbudOpt(retrievedObject.social.provideArtTrainer)
+        setSertifikatBenihOpt(retrievedObject.gardenQuality.hasP3GI)
+        setPembinaanKebonOpt(retrievedObject.gardenDevelopment.hasGardenDevelopment)
+        seKopMasyarakatOpt(retrievedObject.businessPartnership.hasCooperative)
+        seKopKaryawantOpt(retrievedObject.businessPartnership.hasCooperativePartnership)
+        sePembinaanDilakukan(retrievedObject.gardenDevelopment.developmentPattern)
+        sePembinaanFrekuensi(retrievedObject.gardenDevelopment.developmentFrequency)
+        seMitraOpt(retrievedObject.businessPartnership.hasEmployeeCooperative)
+      }
+    }
+    setInitialLoad(false)
+  }, [initialLoad])
+
+  useEffect(() => {
+
+    let data = {
+      "social": {
+            "buildHealthFacility": bangunFaskesOpt,
+            "upgradeHealthFacility": kualitasFaskesOpt,
+            "healthFacility": faskes,
+            "hasMedicalPersonel": tenagaMedisOpt,
+            "medicalPersonelType": tenagaMedis,
+            "buildEducationalFacility": bangunFaspinOpt,
+            "upgradeEducationalFacility": kualitasFaspinOpt,
+            "educationalFacility": faspin,
+            "buildRoadFacility": bangunFasjalOpt,
+            "upgradeRoadFacility": kualitasFasjalOpt,
+            "roadFacility": fasjal,
+            "provideRoadInstrument": alatFasjalOpt,
+            "buildSportFacility": bangunFasolOpt,
+            "upgradeSportFacility": kualitasFasolOpt,
+            "sportFacility": fasol,
+            "provideSportTrainer": alatFasolOpt,
+            "buildArtFacility": bangunFasbudOpt,
+            "upgradeArtFacility": kualitasFasbudOpt,
+            "provideArtTrainer": alatFasbudOpt
+        },
+      "socialGarden": [],
+      "gardenQuality": {
+            "seedSource": asalBenih,
+            "hasP3GI": sertifikatBenihOpt,
+            "file": {}
+        },
+      "plantDensity": [],
+      "plantHomogenity": [],
+      "optAttack": [],
+      "gardenDevelopment": {
+          "hasGardenDevelopment": pembinaanKebonOpt,
+          "developmentPattern": pembinaanDilakukan,
+          "developmentFrequency": pembinaanFrekuensi
+        },
+      "businessPartnership": {
+          "hasCooperative": kopMasyarakatOpt,
+          "hasCooperativePartnership": kopKaryawantOpt,
+          "partnershipActivity": kegiatanMitra,
+          "partnershipPercentage": presentase,
+          "hasEmployeeCooperative": mitraOpt,
+          "employeeCooperativeDescription": kegiatanLancar
+        },
+      "economicInstitution": [],
+      "seedSupplySupport": [],
+      "societyTraining": [],
+      "societyScholarship": [],
+      "mutualActivity": [],
+      "traditionActivity": [],
+      "conflict": []
+    }
+
+    jenisBibit.forEach((item, i) => {
+      let dataTemp = {}
+      item.forEach((e, i, arr) => {
+        dataTemp.seedType = arr[0].sectionData[0].value
+        dataTemp.distributedSeedWeight = arr[0].sectionData[1].value
+        dataTemp.peopleCount = arr[0].sectionData[2].value
+        dataTemp.freeSeedWeight = arr[1].sectionData[0].value
+        dataTemp.fullPaidWeight = arr[1].sectionData[1].value
+        dataTemp.partialPaidWeight = arr[1].sectionData[2].value
+        dataTemp.description = arr[1].sectionData[3].value
+      });
+      data.seedSupplySupport.push(dataTemp)
+    });
+
+    opt.forEach((item, i) => {
+      let dataTemp = {}
+      item.forEach((e, i, arr) => {
+        dataTemp.plantType = arr[0].sectionData[0].value
+        dataTemp.opt100percnetage = arr[1].sectionData[0].value
+        dataTemp.opt80_100percentage = arr[1].sectionData[1].value
+        dataTemp.opt60_80percentage = arr[1].sectionData[2].value
+        dataTemp.opt60percentage = arr[1].sectionData[3].value
+        dataTemp.total = arr[1].sectionData[4].value
+      });
+      data.optAttack.push(dataTemp)
+    });
+
+    rapatTanaman.forEach((item, i) => {
+      let dataTemp = {}
+      item.forEach((e, i, arr) => {
+        dataTemp.plantType = arr[0].sectionData[0].value
+        dataTemp.density100percnetage = arr[1].sectionData[0].value
+        dataTemp.density80_100percentage = arr[1].sectionData[1].value
+        dataTemp.density60_80percentage = arr[1].sectionData[2].value
+        dataTemp.density60percentage = arr[1].sectionData[3].value
+        dataTemp.total = arr[1].sectionData[4].value
+      });
+      data.plantDensity.push(dataTemp)
+    });
+
+    seragamTanaman.forEach((item, i) => {
+      let dataTemp = {}
+      item.forEach((e, i, arr) => {
+        dataTemp.plantType = arr[0].sectionData[0].value
+        dataTemp.homogenity100percnetage = arr[1].sectionData[0].value
+        dataTemp.homogenity80_100percentage = arr[1].sectionData[1].value
+        dataTemp.homogenity60_80percentage = arr[1].sectionData[2].value
+        dataTemp.homogenity60percentage = arr[1].sectionData[3].value
+        dataTemp.total = arr[1].sectionData[4].value
+      });
+      data.plantHomogenity.push(dataTemp)
+    });
+
+    konflik.forEach((item, i) => {
+      let inv = {}
+      item.forEach(() => {
+        inv.conflictType = item[0].value
+        inv.conflictSouce = item[1].value
+        inv.conflictCount = item[2].value
+        inv.solution = item[3].value
+        inv.description = item[4].value
+      });
+      data.conflict.push(inv)
+    });
+
+    kegiatangAdat.forEach((item, i) => {
+      let inv = {}
+      item.forEach(() => {
+        inv.activityType = item[0].value
+        inv.participationType = item[1].value
+        inv.location = item[2].value
+      });
+      data.traditionActivity.push(inv)
+    });
+
+    kegiatangRoyong.forEach((item, i) => {
+      let inv = {}
+      item.forEach(() => {
+        inv.activityType = item[0].value
+        inv.participationType = item[1].value
+        inv.peopleCount = item[2].value
+        inv.location = item[3].value
+        inv.description = item[4].value
+      });
+      data.mutualActivity.push(inv)
+    });
+
+    luasKebun.forEach((item, i) => {
+      let inv = {}
+      item.forEach(() => {
+        inv.plantType = item[0].value
+        inv.districtId = item[1].value
+        inv.cityId = item[2].value
+        inv.totalTargetArea = item[3].value
+        inv.currentTargetArea = item[4].value
+        inv.realArea = item[5].value
+      });
+      data.socialGarden.push(inv)
+    });
+
+    console.log(data)
+
+    lembagaEko.forEach((item, i) => {
+      let inv = {}
+      item.forEach(() => {
+        inv.institutionType = item[0].value
+        inv.count = item[1].value
+        inv.description = item[2].value
+      });
+      data.economicInstitution.push(inv)
+    });
+
+    latihSekitar.forEach((item, i) => {
+      let inv = {}
+      item.forEach(() => {
+        inv.trainingType = item[0].value
+        inv.peopleCount = item[1].value
+        inv.duration = item[2].value
+        inv.description = item[3].value
+      });
+      data.societyTraining.push(inv)
+    });
+
+    beasiswa.forEach((item, i) => {
+      let inv = {}
+      item.forEach(() => {
+        inv.scholarshipType = item[0].value
+        inv.peopleCount = item[1].value
+        inv.duration = item[2].value
+        inv.description = item[3].value
+      });
+      data.societyScholarship.push(inv)
+    });
+
+    setDataSubmit(data)
+
+  }, [asalBenih,faskes,tenagaMedis,faspin,fasjal,fasol,kegiatanMitra,presentase
+    ,kegiatanLancar,bangunFaskesOpt,kualitasFaskesOpt,tenagaMedisOpt,bangunFaspinOpt
+    ,kualitasFaspinOpt,bangunFasjalOpt,kualitasFasjalOpt,alatFasjalOpt,bangunFasolOpt
+    ,kualitasFasolOpt,alatFasolOpt,bangunFasbudOpt,kualitasFasbudOpt,alatFasbudOpt
+    ,sertifikatBenihOpt,pembinaanKebonOpt,kopMasyarakatOpt,kopKaryawantOpt
+    ,pembinaanDilakukan,pembinaanFrekuensi,mitraOpt,luasKebun,rapatTanaman
+    ,seragamTanaman,opt,lembagaEko,jenisBibit,latihSekitar,beasiswa,kegiatangRoyong
+    ,kegiatangAdat,konflik])
+
+  useEffect(() => {
+    if (!_.isEmpty(dataSubmit)) {
+      setDataPass(dataSubmit)
+    }
+  },[dataPass,dataSubmit])
 
   const storeData = preventDefault(() => {
-
+    localStorage.setItem("sosialNilai", JSON.stringify(dataSubmit));
   })
 
   function clearData() {
@@ -430,6 +870,8 @@ const FormSosial = () => {
                 radioButton={true}
                 radioName="bangunFaskesOpt"
                 onClick={() => setBangunFaskesOpt('Iya')}
+                radioValue={bangunFaskesOpt}
+                selected={bangunFaskesOpt == 'Iya'}
                 label="Iya"
               />
             </div>
@@ -438,6 +880,8 @@ const FormSosial = () => {
                 radioButton={true}
                 radioName="bangunFaskesOpt"
                 onClick={() => setBangunFaskesOpt('Tidak')}
+                radioValue={bangunFaskesOpt}
+                selected={bangunFaskesOpt == 'Tidak'}
                 label="Tidak"
               />
             </div>
@@ -450,6 +894,8 @@ const FormSosial = () => {
                 radioButton={true}
                 radioName="kualitasFaskesOpt"
                 onClick={() => setKualitasFasketOpt('Iya')}
+                radioValue={kualitasFaskesOpt}
+                selected={kualitasFaskesOpt == 'Iya'}
                 label="Iya"
               />
             </div>
@@ -458,18 +904,21 @@ const FormSosial = () => {
                 radioButton={true}
                 radioName="kualitasFaskesOpt"
                 onClick={() => setKualitasFasketOpt('Tidak')}
+                radioValue={kualitasFaskesOpt}
+                selected={kualitasFaskesOpt == 'Tidak'}
                 label="Tidak"
               />
             </div>
           </label>
           {kualitasFaskesOpt == 'Iya' ? (
-            <div kualitasFaskesOpt="mt-6">
+            <div className="mt-6">
               <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`}>
                 <InputForm
                   titleForm="Pilih fasilitas kesehatan yang tersedia"
                   titleName="Pilih fasilitas kesehatan yang tersedia"
-                  onChange={(e) => setFaskes(e)}
+                  onChange={(e) => setFaskes(e.target.value)}
                   type="text"
+                  values={faskes}
                   placeholder="pilih fasilitas kesehatan"
                   className={`${
                     isError && 'border-primary-red-1 bg-primary-red-2'
@@ -489,6 +938,8 @@ const FormSosial = () => {
                 radioButton={true}
                 radioName="tenagaMedisOpt"
                 onClick={() => setTenagaMedisOpt('Iya')}
+                radioValue={tenagaMedisOpt}
+                selected={tenagaMedisOpt == 'Iya'}
                 label="Iya"
               />
             </div>
@@ -497,18 +948,21 @@ const FormSosial = () => {
                 radioButton={true}
                 radioName="tenagaMedisOpt"
                 onClick={() => setTenagaMedisOpt('Tidak')}
+                radioValue={tenagaMedisOpt}
+                selected={tenagaMedisOpt == 'Tidak'}
                 label="Tidak"
               />
             </div>
           </label>
           {tenagaMedisOpt == 'Iya' ? (
-            <div kualitasFaskesOpt="mt-6">
+            <div className="mt-6">
               <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`}>
                 <InputForm
                   titleForm="Pilih jenis tenaga medis yang tersedia"
                   titleName="Pilih jenis tenaga medis yang tersedia"
-                  onChange={(e) => setTenagaMedis(e)}
+                  onChange={(e) => setTenagaMedis(e.target.value)}
                   type="text"
+                  values={tenagaMedis}
                   placeholder="pilih jenis tenaga medis"
                   className={`${
                     isError && 'border-primary-red-1 bg-primary-red-2'
@@ -529,6 +983,8 @@ const FormSosial = () => {
                 radioButton={true}
                 radioName="bangunFaspinOpt"
                 onClick={() => setBangunFaspinOpt('Iya')}
+                radioValue={bangunFaspinOpt}
+                selected={bangunFaspinOpt == 'Iya'}
                 label="Iya"
               />
             </div>
@@ -537,6 +993,8 @@ const FormSosial = () => {
                 radioButton={true}
                 radioName="bangunFaspinOpt"
                 onClick={() => setBangunFaspinOpt('Tidak')}
+                radioValue={bangunFaspinOpt}
+                selected={bangunFaspinOpt == 'Tidak'}
                 label="Tidak"
               />
             </div>
@@ -549,6 +1007,8 @@ const FormSosial = () => {
                 radioButton={true}
                 radioName="kualitasFaspinOpt"
                 onClick={() => setKualitasFaspinOpt('Iya')}
+                radioValue={kualitasFaspinOpt}
+                selected={kualitasFaspinOpt == 'Iya'}
                 label="Iya"
               />
             </div>
@@ -557,18 +1017,21 @@ const FormSosial = () => {
                 radioButton={true}
                 radioName="kualitasFaspinOpt"
                 onClick={() => setKualitasFaspinOpt('Tidak')}
+                radioValue={kualitasFaspinOpt}
+                selected={kualitasFaspinOpt == 'Tidak'}
                 label="Tidak"
               />
             </div>
           </label>
           {kualitasFaspinOpt == 'Iya' ? (
-            <div kualitasFaskesOpt="mt-6">
+            <div className="mt-6">
               <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`}>
                 <InputForm
                   titleForm="Pilih fasilitas Pendidikan yang tersedia"
                   titleName="Pilih fasilitas Pendidikan yang tersedia"
-                  onChange={(e) => setFaspin(e)}
+                  onChange={(e) => setFaspin(e.target.value)}
                   type="text"
+                  values={faspin}
                   placeholder="pilih fasilitas pendidikan"
                   className={`${
                     isError && 'border-primary-red-1 bg-primary-red-2'
@@ -589,6 +1052,8 @@ const FormSosial = () => {
                 radioButton={true}
                 radioName="bangunFasjalOpt"
                 onClick={() => setBangunFasjalOpt('Iya')}
+                radioValue={bangunFasjalOpt}
+                selected={bangunFasjalOpt == 'Iya'}
                 label="Iya"
               />
             </div>
@@ -597,6 +1062,8 @@ const FormSosial = () => {
                 radioButton={true}
                 radioName="bangunFasjalOpt"
                 onClick={() => setBangunFasjalOpt('Tidak')}
+                radioValue={bangunFasjalOpt}
+                selected={bangunFasjalOpt == 'Tidak'}
                 label="Tidak"
               />
             </div>
@@ -609,6 +1076,8 @@ const FormSosial = () => {
                 radioButton={true}
                 radioName="kualitasFasjalOpt"
                 onClick={() => setKualitasFasjalOpt('Iya')}
+                radioValue={kualitasFasjalOpt}
+                selected={kualitasFasjalOpt == 'Iya'}
                 label="Iya"
               />
             </div>
@@ -617,15 +1086,17 @@ const FormSosial = () => {
                 radioButton={true}
                 radioName="kualitasFasjalOpt"
                 onClick={() => setKualitasFasjalOpt('Tidak')}
+                radioValue={kualitasFasjalOpt}
+                selected={kualitasFasjalOpt == 'Tidak'}
                 label="Tidak"
               />
             </div>
           </label>
           {kualitasFasjalOpt == 'Iya' ? (
-            <div kualitasFaskesOpt="mt-6">
+            <div className="mt-6">
               <label className={mng.base__formlabel}>
                 <span className={mng.base__inputtitle}>Jeaskan peningkatan fasilitas jalan umum yang dilakukan perusahaan</span>
-                <input type="text" placeholder="jelaskan" value={mnjLingkungan} className={mng.base__inputbase} onChange={(e) => setFasjal(e.target.value)}/>
+                <input type="text" placeholder="jelaskan" value={fasjal} className={mng.base__inputbase} onChange={(e) => setFasjal(e.target.value)}/>
               </label>
             </div>
           ) : (
@@ -639,6 +1110,8 @@ const FormSosial = () => {
                 radioButton={true}
                 radioName="alatFasjalOpt"
                 onClick={() => setAlatFasjalOpt('Iya')}
+                radioValue={alatFasjalOpt}
+                selected={alatFasjalOpt == 'Iya'}
                 label="Iya"
               />
             </div>
@@ -647,6 +1120,8 @@ const FormSosial = () => {
                 radioButton={true}
                 radioName="alatFasjalOpt"
                 onClick={() => setAlatFasjalOpt('Tidak')}
+                radioValue={alatFasjalOpt}
+                selected={alatFasjalOpt == 'Tidak'}
                 label="Tidak"
               />
             </div>
@@ -660,6 +1135,8 @@ const FormSosial = () => {
                 radioButton={true}
                 radioName="bangunFasolOpt"
                 onClick={() => setBangunFasolOpt('Iya')}
+                radioValue={bangunFasolOpt}
+                selected={bangunFasolOpt == 'Iya'}
                 label="Iya"
               />
             </div>
@@ -668,6 +1145,8 @@ const FormSosial = () => {
                 radioButton={true}
                 radioName="bangunFasolOpt"
                 onClick={() => setBangunFasolOpt('Tidak')}
+                radioValue={bangunFasolOpt}
+                selected={bangunFasolOpt == 'Tidak'}
                 label="Tidak"
               />
             </div>
@@ -680,6 +1159,8 @@ const FormSosial = () => {
                 radioButton={true}
                 radioName="kualitasFasolOpt"
                 onClick={() => setKualitasFasolOpt('Iya')}
+                radioValue={kualitasFasolOpt}
+                selected={kualitasFasolOpt == 'Iya'}
                 label="Iya"
               />
             </div>
@@ -688,18 +1169,21 @@ const FormSosial = () => {
                 radioButton={true}
                 radioName="kualitasFasolOpt"
                 onClick={() => setKualitasFasolOpt('Tidak')}
+                radioValue={kualitasFasolOpt}
+                selected={kualitasFasolOpt == 'Tidak'}
                 label="Tidak"
               />
             </div>
           </label>
           {kualitasFasolOpt == 'Iya' ? (
-            <div kualitasFaskesOpt="mt-6">
+            <div className="mt-6">
               <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`}>
                 <InputForm
                   titleForm="Pilih fasilitas Olahraga yang tersedia"
                   titleName="Pilih fasilitas Olahraga yang tersedia"
-                  onChange={(e) => setFasol(e)}
+                  onChange={(e) => setFasol(e.target.value)}
                   type="text"
+                  values={fasol}
                   placeholder="pilih fasilitas olahraga"
                   className={`${
                     isError && 'border-primary-red-1 bg-primary-red-2'
@@ -719,6 +1203,8 @@ const FormSosial = () => {
                 radioButton={true}
                 radioName="alatFasolOpt"
                 onClick={() => setAlatFasolOpt('Iya')}
+                radioValue={alatFasolOpt}
+                selected={alatFasolOpt == 'Iya'}
                 label="Iya"
               />
             </div>
@@ -727,6 +1213,8 @@ const FormSosial = () => {
                 radioButton={true}
                 radioName="alatFasolOpt"
                 onClick={() => setAlatFasolOpt('Tidak')}
+                radioValue={alatFasolOpt}
+                selected={alatFasolOpt == 'Tidak'}
                 label="Tidak"
               />
             </div>
@@ -740,6 +1228,8 @@ const FormSosial = () => {
                 radioButton={true}
                 radioName="bangunFasbudOpt"
                 onClick={() => setBangunFasbudOpt('Iya')}
+                radioValue={bangunFasbudOpt}
+                selected={bangunFasbudOpt == 'Iya'}
                 label="Iya"
               />
             </div>
@@ -748,6 +1238,8 @@ const FormSosial = () => {
                 radioButton={true}
                 radioName="bangunFasbudOpt"
                 onClick={() => setBangunFasbudOpt('Tidak')}
+                radioValue={bangunFasbudOpt}
+                selected={bangunFasbudOpt == 'Tidak'}
                 label="Tidak"
               />
             </div>
@@ -760,6 +1252,8 @@ const FormSosial = () => {
                 radioButton={true}
                 radioName="kualitasFasbudOpt"
                 onClick={() => setKualitasFasbudOpt('Iya')}
+                radioValue={kualitasFasbudOpt}
+                selected={kualitasFasbudOpt == 'Iya'}
                 label="Iya"
               />
             </div>
@@ -768,6 +1262,8 @@ const FormSosial = () => {
                 radioButton={true}
                 radioName="kualitasFasbudOpt"
                 onClick={() => setKualitasFasbudOpt('Tidak')}
+                radioValue={kualitasFasbudOpt}
+                selected={kualitasFasbudOpt == 'Tidak'}
                 label="Tidak"
               />
             </div>
@@ -780,6 +1276,8 @@ const FormSosial = () => {
                 radioButton={true}
                 radioName="alatFasbudOpt"
                 onClick={() => setAlatFasbudOpt('Iya')}
+                radioValue={alatFasbudOpt}
+                selected={alatFasbudOpt == 'Iya'}
                 label="Iya"
               />
             </div>
@@ -788,6 +1286,8 @@ const FormSosial = () => {
                 radioButton={true}
                 radioName="alatFasbudOpt"
                 onClick={() => setAlatFasbudOpt('Tidak')}
+                radioValue={alatFasbudOpt}
+                selected={alatFasbudOpt == 'Tidak'}
                 label="Tidak"
               />
             </div>
@@ -842,6 +1342,8 @@ const FormSosial = () => {
                 radioButton={true}
                 radioName="sertifikatBenihOpt"
                 onClick={() => setSertifikatBenihOpt('Ada')}
+                radioValue={sertifikatBenihOpt}
+                selected={sertifikatBenihOpt == 'Ada'}
                 label="Ada"
               />
             </div>
@@ -850,12 +1352,14 @@ const FormSosial = () => {
                 radioButton={true}
                 radioName="sertifikatBenihOpt"
                 onClick={() => setSertifikatBenihOpt('Tidak')}
+                radioValue={sertifikatBenihOpt}
+                selected={sertifikatBenihOpt == 'Tidak'}
                 label="Tidak"
               />
             </div>
           </label>
           {sertifikatBenihOpt == 'Tidak' ? (
-            <div kualitasFaskesOpt="mt-6">
+            <div className="mt-6">
               <div className="flex w-full items-center justify-between mb-3">
                 <div>
                   <div className=" text-sm font-semibold">
@@ -994,6 +1498,8 @@ const FormSosial = () => {
                 radioButton={true}
                 radioName="pembinaanKebonOpt"
                 onClick={() => setPembinaanKebonOpt('Iya')}
+                radioValue={pembinaanKebonOpt}
+                selected={pembinaanKebonOpt == 'Iya'}
                 label="Iya"
               />
             </div>
@@ -1002,13 +1508,15 @@ const FormSosial = () => {
                 radioButton={true}
                 radioName="pembinaanKebonOpt"
                 onClick={() => setPembinaanKebonOpt('Tidak')}
+                radioValue={pembinaanKebonOpt}
+                selected={pembinaanKebonOpt == 'Tidak'}
                 label="Tidak"
               />
             </div>
           </label>
           {pembinaanKebonOpt == 'Iya' ? (
             <>
-              <div kualitasFaskesOpt="mt-6">
+              <div className="mt-6">
                 <label className={mng.base__formlabel}>
                   <span className={mng.base__inputtitle}>Bagaimana pola pembinaan yang dilakukan? (pilih salah satu)</span>
                   <div className="inline-flex items-center">
@@ -1016,6 +1524,8 @@ const FormSosial = () => {
                       radioButton={true}
                       radioName="pembinaanDilakukan"
                       onClick={() => sePembinaanDilakukan('Pendampingan')}
+                      radioValue={pembinaanDilakukan}
+                      selected={pembinaanDilakukan == 'Pendampingan'}
                       label="Pendampingan"
                     />
                   </div>
@@ -1024,12 +1534,14 @@ const FormSosial = () => {
                       radioButton={true}
                       radioName="pembinaanDilakukan"
                       onClick={() => sePembinaanDilakukan('Lainnya')}
+                      radioValue={pembinaanDilakukan}
+                      selected={pembinaanDilakukan == 'Lainnya'}
                       label="Lainnya"
                     />
                   </div>
                 </label>
               </div>
-              <div kualitasFaskesOpt="mt-6">
+              <div className="mt-6">
                 <label className={mng.base__formlabel}>
                   <span className={mng.base__inputtitle}>Berapa lama frekuensi pembinaan? (pilih salah satu)</span>
                   <div className="inline-flex items-center">
@@ -1037,6 +1549,8 @@ const FormSosial = () => {
                       radioButton={true}
                       radioName="pembinaanFrekuensi"
                       onClick={() => sePembinaanFrekuensi('Dua minggu sekali')}
+                      radioValue={pembinaanFrekuensi}
+                      selected={pembinaanFrekuensi == 'Dua minggu sekali'}
                       label="Dua minggu sekali"
                     />
                   </div>
@@ -1045,6 +1559,8 @@ const FormSosial = () => {
                       radioButton={true}
                       radioName="pembinaanFrekuensi"
                       onClick={() => sePembinaanFrekuensi('Satu minggu sekali')}
+                      radioValue={pembinaanFrekuensi}
+                      selected={pembinaanFrekuensi == 'Satu minggu sekali'}
                       label="Satu minggu sekali"
                     />
                   </div>
@@ -1066,6 +1582,8 @@ const FormSosial = () => {
                 radioButton={true}
                 radioName="kopMasyarakatOpt"
                 onClick={() => seKopMasyarakatOpt('Ada')}
+                radioValue={kopMasyarakatOpt}
+                selected={kopMasyarakatOpt == 'Ada'}
                 label="Ada"
               />
             </div>
@@ -1074,13 +1592,15 @@ const FormSosial = () => {
                 radioButton={true}
                 radioName="kopMasyarakatOpt"
                 onClick={() => seKopMasyarakatOpt('Tidak')}
+                radioValue={kopMasyarakatOpt}
+                selected={kopMasyarakatOpt == 'Tidak'}
                 label="Tidak"
               />
             </div>
           </label>
           {kopMasyarakatOpt == 'Ada' ? (
             <>
-              <div kualitasFaskesOpt="mt-6">
+              <div className="mt-6">
                 <label className={mng.base__formlabel}>
                   <span className={mng.base__inputtitle}>Apabila, apakah sudah bermitra?</span>
                   <div className="inline-flex items-center">
@@ -1088,6 +1608,8 @@ const FormSosial = () => {
                       radioButton={true}
                       radioName="mitraOpt"
                       onClick={() => seMitraOpt('Sudah')}
+                      radioValue={mitraOpt}
+                      selected={mitraOpt == 'Sudah'}
                       label="Sudah"
                     />
                   </div>
@@ -1096,19 +1618,21 @@ const FormSosial = () => {
                       radioButton={true}
                       radioName="mitraOpt"
                       onClick={() => seMitraOpt('Belum')}
+                      radioValue={mitraOpt}
+                      selected={mitraOpt == 'Belum'}
                       label="Belum"
                     />
                   </div>
                 </label>
                 {
                   mitraOpt == 'Sudah' ? (
-                    <div kualitasFaskesOpt="mt-6">
+                    <div className="mt-6">
                       <label className={mng.base__formlabel}>
                         <span className={mng.base__inputtitle}>sebutkan jenis kegiatan yang dimitrakan</span>
                         <input type="text" placeholder="jelaskan" value={kegiatanMitra} className={mng.base__inputbase} onChange={(e) => setKegiatanMitra(e.target.value)}/>
                       </label>
                       <label className={mng.base__formlabel}>
-                        <span className={mng.base__inputtitle}>sebutkan jenis kegiatan yang dimitrakan</span>
+                        <span className={mng.base__inputtitle}>Berapa perkiraan presentase dari total belanja perusahaan yang dimitrakan pada koperasi masyarakat tersebut?</span>
                         <input type="text" placeholder="jelaskan" value={presentase} className={mng.base__inputbase} onChange={(e) => setPresentase(e.target.value)}/>
                       </label>
                     </div>
@@ -1130,6 +1654,8 @@ const FormSosial = () => {
                 radioButton={true}
                 radioName="kopKaryawantOpt"
                 onClick={() => seKopKaryawantOpt('Ada')}
+                radioValue={kopKaryawantOpt}
+                selected={kopKaryawantOpt == 'Ada'}
                 label="Ada"
               />
             </div>
@@ -1138,13 +1664,15 @@ const FormSosial = () => {
                 radioButton={true}
                 radioName="kopKaryawantOpt"
                 onClick={() => seKopKaryawantOpt('Tidak')}
+                radioValue={kopKaryawantOpt}
+                selected={kopKaryawantOpt == 'Tidak'}
                 label="Tidak"
               />
             </div>
           </label>
           {kopKaryawantOpt == 'Ada' ? (
             <>
-              <div kualitasFaskesOpt="mt-6">
+              <div className="mt-6">
                 <label className={mng.base__formlabel}>
                   <span className={mng.base__inputtitle}>Apakah kegiatan tersebut berjalan lancar?</span>
                   <input type="text" placeholder="jelaskan" value={kegiatanLancar} className={mng.base__inputbase} onChange={(e) => setKegiatanLancar(e.target.value)}/>
@@ -1413,7 +1941,7 @@ const FormSosial = () => {
             </div>
           */}
 
-          <button className={`${mng["base__btnsimpan"]} ${"float-right mt-1"}`} onClick={storeData} disabled={!btnValid}>
+          <button className={`${mng["base__btnsimpan"]} ${"float-right mt-1"}`} onClick={storeData}>
             Simpan dan Lanjutkan
           </button>
         </div>

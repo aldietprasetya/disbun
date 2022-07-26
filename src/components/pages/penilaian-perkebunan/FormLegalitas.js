@@ -1,5 +1,7 @@
 import Head from 'next/head'
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'
+import {useRouter} from 'next/router'
+import _ from 'lodash';
 import InputForm from '../admin/infografis/InputForm';
 import InputFileButton from 'src/components/customInput/InputFileButton';
 import mng from '../../../styles/Managemen.module.scss'
@@ -11,6 +13,14 @@ const preventDefault = f => e => {
 
 const FormLegalitas = () => {
   const [isError, setIsError] = useState(false);
+
+  const router = useRouter()
+
+  const [initialLoad, setInitialLoad] = useState(true)
+  const [btnValid, setBtnValid] = useState(false)
+  const [data, setData] = useState(null)
+  const [dataPass, setDataPass] = useState({})
+  const [dataSubmit, setDataSubmit] = useState({})
 
   ////////////////////////// INPUT FORM STATE ////////////////////////////////
 
@@ -194,10 +204,476 @@ const FormLegalitas = () => {
     setState(list);
   }
 
-  const [btnValid, setBtnValid] = useState(false)
+  useEffect(() => {
+    if (initialLoad) {
+      let retrievedObject = JSON.parse(localStorage.getItem('legalitasNilai'));
+
+      if (!_.isEmpty(retrievedObject)) {
+
+        let replicateData = {
+          "identitas": [],
+          "kantorPusat": [],
+          "kantorWakil": [],
+          "lokasi": [],
+          "lingkupUsaha": [],
+          "skRencana": [],
+          "skTugas": [],
+          "skUsahaBudi": [],
+          "skUsahaIndustri": [],
+          "skUsahaTani": [],
+          "skUsahaDaftar": [],
+          "skUsahaKebun": [],
+          "iklim": [],
+          "hkUsaha": [],
+          "hguProses": [],
+          "kelolaLingkungan": [],
+          "dataTahun": [],
+          "tanahIklim": [],
+          "gambut": [],
+        }
+
+        const formIdentitas = _.cloneDeep(identitas)
+        formIdentitas.forEach((dtFrm, i) => {
+          dtFrm[0].value = retrievedObject.companyName
+          dtFrm[1].value = retrievedObject.companyStatusId
+          replicateData.identitas.push(dtFrm)
+        })
+
+        const formKantorPusat = _.cloneDeep(kantorPusat)
+        formKantorPusat.forEach((dtFrm, i) => {
+          dtFrm[0].value = retrievedObject.centerAddress
+          dtFrm[1].value = retrievedObject.centerPhone
+          dtFrm[2].value = retrievedObject.centerFax
+          replicateData.kantorPusat.push(dtFrm)
+        })
+
+        const formKantorWakil = _.cloneDeep(kantorWakil)
+        formKantorWakil.forEach((dtFrm, i) => {
+          dtFrm[0].value = retrievedObject.representativeAddress
+          dtFrm[1].value = retrievedObject.representativePhone
+          dtFrm[2].value = retrievedObject.representativeFax
+          replicateData.kantorWakil.push(dtFrm)
+        })
+
+        const formLokasi = _.cloneDeep(lokasi)
+        formLokasi.forEach((dtFrm, i) => {
+          dtFrm[0].value = retrievedObject.gardenCity
+          dtFrm[1].value = retrievedObject.gardenDistrict
+          dtFrm[2].value = retrievedObject.gardenVillage
+          replicateData.lokasi.push(dtFrm)
+        })
+
+        const formLingkup = _.cloneDeep(lingkupUsaha)
+        formLingkup.forEach((dtFrm, i) => {
+          dtFrm[0].value = retrievedObject.comodity
+          dtFrm[1].value = retrievedObject.comodityProcessing
+          dtFrm[2].value = retrievedObject.processingProduct
+          replicateData.lingkupUsaha.push(dtFrm)
+        })
+
+        const formSkRencana = _.cloneDeep(skRencana)
+        formSkRencana.forEach((dtFrm, i) => {
+          dtFrm[0].value = retrievedObject.skPirTrans.no
+          dtFrm[1].value = retrievedObject.skPirTrans.date
+          dtFrm[2].value = retrievedObject.skPirTrans.licensor
+          dtFrm[3].value = retrievedObject.skPirTrans.file
+          replicateData.skRencana.push(dtFrm)
+        })
+
+        const formSkTugas = _.cloneDeep(skTugas)
+        formSkTugas.forEach((dtFrm, i) => {
+          dtFrm[0].value = retrievedObject.skPirBun.no
+          dtFrm[1].value = retrievedObject.skPirBun.date
+          dtFrm[2].value = retrievedObject.skPirBun.licensor
+          dtFrm[3].value = retrievedObject.skPirBun.file
+          replicateData.skTugas.push(dtFrm)
+        })
+
+        const formSkUsahaBudi = _.cloneDeep(skUsahaBudi)
+        formSkUsahaBudi.forEach((dtFrm, i) => {
+          dtFrm[0].value = retrievedObject.iup.no
+          dtFrm[1].value = retrievedObject.iup.date
+          dtFrm[2].value = retrievedObject.iup.licensor
+          dtFrm[3].value = retrievedObject.iup.file
+          replicateData.skUsahaBudi.push(dtFrm)
+        })
+
+        const formSkUsahaIndustri = _.cloneDeep(skUsahaIndustri)
+        formSkUsahaIndustri.forEach((dtFrm, i) => {
+          dtFrm[0].value = retrievedObject.skBpkm.no
+          dtFrm[1].value = retrievedObject.skBpkm.date
+          dtFrm[2].value = retrievedObject.skBpkm.licensor
+          dtFrm[3].value = retrievedObject.skBpkm.file
+          replicateData.skUsahaIndustri.push(dtFrm)
+        })
+
+        const formSkUsahaTani = _.cloneDeep(skUsahaTani)
+        formSkUsahaTani.forEach((dtFrm, i) => {
+          dtFrm[0].value = retrievedObject.spup.no
+          dtFrm[1].value = retrievedObject.spup.date
+          dtFrm[2].value = retrievedObject.spup.licensor
+          dtFrm[3].value = retrievedObject.spup.file
+          replicateData.skUsahaTani.push(dtFrm)
+        })
+
+        const formSkUsahaDaftar = _.cloneDeep(skUsahaDaftar)
+        formSkUsahaDaftar.forEach((dtFrm, i) => {
+          dtFrm[0].value = retrievedObject.skBudidayaPerkebunan.no
+          dtFrm[1].value = retrievedObject.skBudidayaPerkebunan.date
+          dtFrm[2].value = retrievedObject.skBudidayaPerkebunan.licensor
+          dtFrm[3].value = retrievedObject.skBudidayaPerkebunan.file
+          replicateData.skUsahaDaftar.push(dtFrm)
+        })
+
+        const formSkUsahaKebun = _.cloneDeep(skUsahaKebun)
+        formSkUsahaKebun.forEach((dtFrm, i) => {
+          dtFrm[0].value = retrievedObject.skIndustriPerkebunan.no
+          dtFrm[1].value = retrievedObject.skIndustriPerkebunan.date
+          dtFrm[2].value = retrievedObject.skIndustriPerkebunan.licensor
+          dtFrm[3].value = retrievedObject.skIndustriPerkebunan.file
+          replicateData.skUsahaKebun.push(dtFrm)
+        })
+
+        const formIklim = _.cloneDeep(iklim)
+        formIklim.forEach((dtFrm, i) => {
+          dtFrm[0].value = retrievedObject.climates[0].climateType
+          dtFrm[1].value = retrievedObject.climates[0].rainfallSource
+          replicateData.iklim.push(dtFrm)
+        })
+
+        retrievedObject.legalities.forEach((e, i) => {
+          const formData = _.cloneDeep(hkUsaha)
+          formData.forEach((form,ii) => {
+            form.forEach((ee, iii) => {
+              ee.value = e[Object.keys(e)[iii]]
+            })
+            replicateData.hkUsaha.push(form)
+          })
+        })
+
+        retrievedObject.pendingLegalities.forEach((e, i) => {
+          const formData = _.cloneDeep(hguProses)
+          formData.forEach((form,ii) => {
+            form.forEach((ee, iii) => {
+              ee.value = e[Object.keys(e)[iii]]
+            })
+            replicateData.hguProses.push(form)
+          })
+        })
+
+        retrievedObject.landSuitabilities.forEach((e, i) => {
+          const formData = _.cloneDeep(sesuaiLahan)
+          let moveArr = []
+          let moveFormArr = []
+          Object.keys(e).forEach(key => {
+            moveArr.push(e[key])
+          });
+          formData.forEach((form,i2) => {
+            form.forEach((formData, i3) => {
+              formData.sectionData.forEach((secData, i4, arr) => {
+                moveFormArr.push(secData)
+                moveFormArr.forEach((item,iItem) => {
+                  secData.value = moveArr[iItem]
+                })
+              })
+            })
+            replicateData.kelolaLingkungan.push(form)
+          })
+        })
+
+        retrievedObject.climates.forEach((e, i) => {
+          const formData = _.cloneDeep(dataTahun)
+          let moveArr = []
+          let moveFormArr = []
+          Object.keys(e).forEach(key => {
+            moveArr.push(e[key])
+          });
+          formData.forEach((form,i2) => {
+            form.forEach((formData, i3) => {
+              formData.sectionData.forEach((secData, i4, arr) => {
+                moveFormArr.push(secData)
+                moveFormArr.forEach((item,iItem) => {
+                  secData.value = moveArr[iItem]
+                })
+              })
+            })
+            replicateData.dataTahun.push(form)
+          })
+        })
+
+        const formGambut = _.cloneDeep(gambut)
+        formGambut.forEach((dtFrm, i) => {
+          dtFrm[0].value = retrievedObject.land.peatDepth
+          dtFrm[1].value = retrievedObject.land.decompositionLevel
+          dtFrm[2].value = retrievedObject.land.landUnderPeat
+          replicateData.gambut.push(dtFrm)
+        })
+
+        setPeriodeThnPenilaian(retrievedObject.periodId)
+        setNamaKebun(retrievedObject.gardenId)
+
+        setIdentitas(replicateData.identitas)
+        setKantorPusat(replicateData.kantorPusat)
+        setKantorWakil(replicateData.kantorWakil)
+
+        setLokasi(replicateData.lokasi)
+
+        setLingkupUsaha(replicateData.lingkupUsaha)
+
+        setHkUsaha(replicateData.hkUsaha)
+
+        setHguProses(replicateData.hguProses)
+
+        setSkRencana(replicateData.skRencana)
+
+        setSkTugas(replicateData.skTugas)
+
+        setSkUsahaBudi(replicateData.skUsahaBudi)
+
+        setSkUsahaIndustri(replicateData.skUsahaIndustri)
+
+        setSkUsahaTani(replicateData.skUsahaTani)
+
+        setSkUsahaDaftar(replicateData.skUsahaDaftar)
+
+        setSkUsahaKebun(replicateData.skUsahaKebun)
+
+        setTanahIklim([ [{ 'sectionTitle': 'Tanah', 'sectionData': [{ 'title': 'Jenis Tanah', 'type': 'text', 'placeholder': 'Pilih Jenis Tanah', 'value': retrievedObject.land.landType, 'isOpt': 'opt' }, { 'title': 'Ketinggian dari Muka air laut (m)', 'type': 'text', 'placeholder': 'Nilai Ketinggian', 'value': retrievedObject.land.msal, 'isOpt': 'normal' }, ] }, { 'sectionTitle': 'Lereng Datar (0-8 %)', 'sectionData': [{ 'title': 'Luas (Ha)', 'type': 'text', 'placeholder': 'Luas Lahan dalam Ha', 'value': retrievedObject.land.flatArea, 'isOpt': 'normal' }, { 'title': 'Persentase (%)', 'type': 'text', 'placeholder': 'Persentase', 'value': retrievedObject.land.flatPercentage, 'isOpt': 'normal' }, { 'title': 'Keterangan', 'type': 'text', 'placeholder': 'Keterangan', 'value': retrievedObject.land.flatDescription, 'isOpt': 'normal' }, ] }, { 'sectionTitle': 'Lereng Landai (8-15 %)', 'sectionData': [{ 'title': 'Luas (Ha)', 'type': 'text', 'placeholder': 'Luas Lahan dalam Ha', 'value': retrievedObject.land.slopeArea, 'isOpt': 'normal' }, { 'title': 'Persentase (%)', 'type': 'text', 'placeholder': 'Persentase', 'value': retrievedObject.land.slopePercentage, 'isOpt': 'normal' }, { 'title': 'Keterangan', 'type': 'text', 'placeholder': 'Keterangan', 'value': retrievedObject.land.slopeDescription, 'isOpt': 'normal' }, ] }, { 'sectionTitle': 'Lereng Berombak (15-24 %)', 'sectionData': [{ 'title': 'Luas (Ha)', 'type': 'text', 'placeholder': 'Luas Lahan dalam Ha', 'value': retrievedObject.land.midArea, 'isOpt': 'normal' }, { 'title': 'Persentase (%)', 'type': 'text', 'placeholder': 'Persentase', 'value': retrievedObject.land.midPercentage, 'isOpt': 'normal' }, { 'title': 'Keterangan', 'type': 'text', 'placeholder': 'Keterangan', 'value': retrievedObject.land.midDescription, 'isOpt': 'normal' }, ] }, { 'sectionTitle': 'Lereng Berbukit (24-45 %)', 'sectionData': [{ 'title': 'Luas (Ha)', 'type': 'text', 'placeholder': 'Luas Lahan dalam Ha', 'value': retrievedObject.land.steeptArea, 'isOpt': 'normal' }, { 'title': 'Persentase (%)', 'type': 'text', 'placeholder': 'Persentase', 'value': retrievedObject.land.steepPercentage, 'isOpt': 'normal' }, { 'title': 'Keterangan', 'type': 'text', 'placeholder': 'Keterangan', 'value': retrievedObject.land.steepDescription, 'isOpt': 'normal' }, ] }, { 'sectionTitle': 'Lereng Bergunung (>45 %)', 'sectionData': [{ 'title': 'Luas (Ha)', 'type': 'text', 'placeholder': 'Luas Lahan dalam Ha', 'value': retrievedObject.land.verySteepArea, 'isOpt': 'normal' }, { 'title': 'Persentase (%)', 'type': 'text', 'placeholder': 'Persentase', 'value': retrievedObject.land.verySteepPercentage, 'isOpt': 'normal' }, { 'title': 'Keterangan', 'type': 'text', 'placeholder': 'Keterangan', 'value': retrievedObject.land.verySteepDescription, 'isOpt': 'normal' }, ] }, { 'sectionTitle': '', 'sectionData': [{ 'title': 'Tekstur Tanah', 'type': 'text', 'placeholder': 'Tekstur Tanah', 'value': retrievedObject.land.texture, 'isOpt': 'normal' }, { 'title': 'Drainase', 'type': 'text', 'placeholder': 'Kondisi Drainase', 'value': retrievedObject.land.drainage, 'isOpt': 'normal' }, { 'title': 'Kedalaman efektif solum (m)', 'type': 'text', 'placeholder': 'Nilai Kedalaman dalam meter', 'value': retrievedObject.land.solumDepth, 'isOpt': 'normal' }, { 'title': 'Sumber Informasi', 'type': 'text', 'placeholder': 'Sumber Informasi', 'value': retrievedObject.land.source, 'isOpt': 'normal' }, ] }] ])
+        setGambut(replicateData.gambut)
+
+        setIklim(replicateData.iklim)
+
+        setSesuaiLahan(replicateData.kelolaLingkungan)
+
+        setDataTahun(replicateData.dataTahun)
+      }
+    }
+    setInitialLoad(false)
+  }, [initialLoad])
+
+  useEffect(() => {
+    let data = {
+      "companyName": identitas[0][0].value,
+      "periodId": periodeThnPenilaian,
+      "companyStatusId": identitas[0][1].value,
+      "centerAddress": kantorPusat[0][0].value,
+      "centerPhone": kantorPusat[0][1].value,
+      "centerFax": kantorPusat[0][2].value,
+      "representativeAddress": kantorWakil[0][0].value,
+      "representativePhone": kantorWakil[0][1].value,
+      "representativeFax": kantorWakil[0][2].value,
+      "gardenId": namaKebun,
+
+      "gardenCity": lokasi[0][0].value,
+      "gardenDistrict": lokasi[0][1].value,
+      "gardenVillage": lokasi[0][2].value,
+
+      "comodity": lingkupUsaha[0][0].value,
+      "comodityProcessing": lingkupUsaha[0][1].value,
+      "processingProduct": lingkupUsaha[0][2].value,
+      "legalities": [],
+      "pendingLegalities": [],
+      "skPirTrans": {},
+      "skPirBun": {},
+      "iup": {},
+      "skBpkm": {},
+      "spup": {},
+      "skBudidayaPerkebunan": {},
+      "skIndustriPerkebunan": {},
+      "land": {},
+      "landSuitabilities": [],
+      "climates": []
+    }
+
+    hkUsaha.forEach((item, i) => {
+      let inv = {}
+      item.forEach(() => {
+        inv.skHguNo = item[0].value
+        inv.skHguDate = item[1].value
+        inv.plantType = item[2].value
+        inv.area = item[3].value
+        inv.expDate = item[4].value
+        inv.hguTypeId = item[5].value
+        inv.certifHguNo = item[6].value
+        inv.file = {}
+      });
+      data.legalities.push(inv)
+    });
+
+    hguProses.forEach((item, i) => {
+      let inv = {}
+      item.forEach(() => {
+        inv.skHguNo = item[0].value
+        inv.description = item[1].value
+        inv.file = {}
+      });
+      data.pendingLegalities.push(inv)
+    });
+
+    skRencana.forEach((item, i) => {
+      data.skPirTrans.no = item[0].value
+      data.skPirTrans.date = item[1].value
+      data.skPirTrans.licensor = item[2].value
+      data.skPirTrans.file = {}
+    });
+
+    skTugas.forEach((item, i) => {
+      data.skPirBun.no = item[0].value
+      data.skPirBun.date = item[1].value
+      data.skPirBun.licensor = item[2].value
+      data.skPirBun.file = {}
+    });
+
+    skUsahaBudi.forEach((item, i) => {
+      data.iup.no = item[0].value
+      data.iup.date = item[1].value
+      data.iup.licensor = item[2].value
+      data.iup.file = {}
+    });
+
+    skUsahaIndustri.forEach((item, i) => {
+      data.skBpkm.no = item[0].value
+      data.skBpkm.date = item[1].value
+      data.skBpkm.licensor = item[2].value
+      data.skBpkm.file = {}
+    });
+
+    skUsahaTani.forEach((item, i) => {
+      data.spup.no = item[0].value
+      data.spup.date = item[1].value
+      data.spup.licensor = item[2].value
+      data.spup.file = {}
+    });
+
+    skUsahaDaftar.forEach((item, i) => {
+      data.skBudidayaPerkebunan.no = item[0].value
+      data.skBudidayaPerkebunan.date = item[1].value
+      data.skBudidayaPerkebunan.licensor = item[2].value
+      data.skBudidayaPerkebunan.file = {}
+    });
+
+    skUsahaKebun.forEach((item, i) => {
+      data.skIndustriPerkebunan.no = item[0].value
+      data.skIndustriPerkebunan.date = item[1].value
+      data.skIndustriPerkebunan.licensor = item[2].value
+      data.skIndustriPerkebunan.file = {}
+    });
+
+    sesuaiLahan.forEach((item, i) => {
+      let dataTemp = {}
+      item.forEach((e, i, arr) => {
+        dataTemp.comodity = arr[0].sectionData[0].value
+        dataTemp.s1Location = arr[1].sectionData[0].value
+        dataTemp.s1Area = arr[1].sectionData[1].value
+        dataTemp.s1Publisher = arr[1].sectionData[2].value
+        dataTemp.s2Location = arr[2].sectionData[0].value
+        dataTemp.s2Area = arr[2].sectionData[1].value
+        dataTemp.s2Publisher = arr[2].sectionData[2].value
+        dataTemp.s3Location = arr[3].sectionData[0].value
+        dataTemp.s3Area = arr[3].sectionData[1].value
+        dataTemp.s3Publisher = arr[3].sectionData[2].value
+      });
+      data.landSuitabilities.push(dataTemp)
+    });
+
+    dataTahun.forEach((item, i) => {
+      let dataTemp = {}
+      item.forEach((e, i, arr) => {
+        dataTemp.climateType = iklim[0][0].value
+        dataTemp.rainfallSource = iklim[0][1].value
+        dataTemp.year = arr[0].sectionData[0].value
+
+        dataTemp.januaryRainfall = arr[1].sectionData[0].value
+        dataTemp.januaryRainfallDays = arr[1].sectionData[1].value
+
+        dataTemp.februaryRainfall = arr[2].sectionData[0].value
+        dataTemp.februaryRainfallDays = arr[2].sectionData[1].value
+
+        dataTemp.marchRainfall = arr[3].sectionData[0].value
+        dataTemp.marchRainfallDays = arr[3].sectionData[1].value
+
+        dataTemp.aprilRainfall = arr[4].sectionData[0].value
+        dataTemp.aprilRainfallDays = arr[4].sectionData[1].value
+
+        dataTemp.mayRainfall = arr[5].sectionData[0].value
+        dataTemp.mayRainfallDays = arr[5].sectionData[1].value
+
+        dataTemp.juneRainfall = arr[6].sectionData[0].value
+        dataTemp.juneRainfallDays = arr[6].sectionData[1].value
+
+        dataTemp.julyRainfall = arr[7].sectionData[0].value
+        dataTemp.julyRainfallDays = arr[7].sectionData[1].value
+
+        dataTemp.augustRainfall = arr[8].sectionData[0].value
+        dataTemp.augustRainfallDays = arr[8].sectionData[1].value
+
+        dataTemp.septemberRainfall = arr[9].sectionData[0].value
+        dataTemp.septemberRainfallDays = arr[9].sectionData[1].value
+
+        dataTemp.octoberRainfall = arr[10].sectionData[0].value
+        dataTemp.octoberRainfallDays = arr[10].sectionData[1].value
+
+        dataTemp.novemberRainfall = arr[11].sectionData[0].value
+        dataTemp.novemberRainfallDays = arr[11].sectionData[1].value
+
+        dataTemp.decemberRainfall = arr[12].sectionData[0].value
+        dataTemp.decemberRainfallDays = arr[12].sectionData[1].value
+
+        dataTemp.avgRainfallHigh = arr[13].sectionData[0].value
+        dataTemp.avgRainfallLow = arr[13].sectionData[1].value
+        dataTemp.avgDayHigh = arr[13].sectionData[2].value
+        dataTemp.avgDayLow = arr[13].sectionData[3].value
+      });
+      data.climates.push(dataTemp)
+    });
+
+    tanahIklim.forEach((item, i) => {
+      item.forEach((e, i, arr) => {
+        data.land.landType = arr[0].sectionData[0].value
+        data.land.msal = arr[0].sectionData[1].value
+        data.land.flatArea = arr[1].sectionData[0].value
+        data.land.flatPercentage = arr[1].sectionData[1].value
+        data.land.flatDescription = arr[1].sectionData[2].value
+        data.land.slopeArea = arr[2].sectionData[0].value
+        data.land.slopePercentage = arr[2].sectionData[1].value
+        data.land.slopeDescription = arr[2].sectionData[2].value
+        data.land.midArea = arr[3].sectionData[0].value
+        data.land.midPercentage = arr[3].sectionData[1].value
+        data.land.midDescription = arr[3].sectionData[2].value
+        data.land.steeptArea = arr[4].sectionData[0].value
+        data.land.steepPercentage = arr[4].sectionData[1].value
+        data.land.steepDescription = arr[4].sectionData[2].value
+        data.land.verySteepArea = arr[5].sectionData[0].value
+        data.land.verySteepPercentage = arr[5].sectionData[1].value
+        data.land.verySteepDescription = arr[5].sectionData[2].value
+        data.land.texture = arr[6].sectionData[0].value
+        data.land.drainage = arr[6].sectionData[1].value
+        data.land.solumDepth = arr[6].sectionData[2].value
+        data.land.source = arr[6].sectionData[3].value
+      })
+    });
+
+    gambut.forEach((item, i) => {
+      data.land.peatDepth = item[0].value
+      data.land.decompositionLevel = item[1].value
+      data.land.landUnderPeat = item[2].value
+    })
+
+    setDataSubmit(data)
+
+  }, [identitas,periodeThnPenilaian,namaKebun,kantorPusat,kantorWakil
+    ,lokasi,lingkupUsaha,hkUsaha,hguProses,skRencana,skTugas,skUsahaBudi
+    ,skUsahaIndustri,skUsahaTani,skUsahaDaftar,skUsahaKebun
+    ,tanahIklim,gambut,iklim,sesuaiLahan,dataTahun])
+
+  useEffect(() => {
+    if (!_.isEmpty(dataSubmit)) {
+      setDataPass(dataSubmit)
+    }
+  },[dataPass,dataSubmit])
 
   const storeData = preventDefault(() => {
-
+    localStorage.setItem("legalitasNilai", JSON.stringify(dataSubmit));
   })
 
   function clearData() {
@@ -221,6 +697,7 @@ const FormLegalitas = () => {
               titleName="Periode Tahun Penilaian"
               onChange={(e) => setPeriodeThnPenilaian(e.target.value)}
               type="text"
+              values={periodeThnPenilaian}
               placeholder="Pilih Periode Tahun Penilaian"
               className={`${
                 isError && 'border-primary-red-1 bg-primary-red-2'
@@ -246,6 +723,7 @@ const FormLegalitas = () => {
                               titleName={item.title}
                               onChange={(e) => formRegularChange(e, identitas, setIdentitas, i, ii)}
                               type="text"
+                              values={item.value}
                               placeholder={item.placeholder}
                               className={`${
                                 isError && 'border-primary-red-1 bg-primary-red-2'
@@ -285,6 +763,7 @@ const FormLegalitas = () => {
                               phoneNumber="true"
                               onChange={(e) => formRegularChange(e, kantorPusat, setKantorPusat, i, ii)}
                               type="text"
+                              values={item.value}
                               placeholder={item.placeholder}
                               className={`${
                                 isError && 'border-primary-red-1 bg-primary-red-2'
@@ -322,6 +801,7 @@ const FormLegalitas = () => {
                               phoneNumber="true"
                               onChange={(e) => formRegularChange(e, kantorWakil, setKantorWakil, i, ii)}
                               type="text"
+                              values={item.value}
                               placeholder={item.placeholder}
                               className={`${
                                 isError && 'border-primary-red-1 bg-primary-red-2'
@@ -343,51 +823,13 @@ const FormLegalitas = () => {
             }
           </div>
 
-
-          <div className="flex flex-col">
-            {
-              identitas.map((items, i) => (
-                <div className={`${mng["base__formlabel_twin"]}`} key={i}>
-                {
-                  items.map((item,ii) => (
-                    <>
-                      {
-                        item.isOpt ? (
-                          <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
-                            <InputForm
-                              titleForm={item.title}
-                              titleName={item.title}
-                              onChange={(e) => formRegularChange(e, identitas, setIdentitas, i, ii)}
-                              type="text"
-                              placeholder={item.placeholder}
-                              className={`${
-                                isError && 'border-primary-red-1 bg-primary-red-2'
-                              }`}
-                              selectionArea={true}
-                            />
-                          </label>
-                        ) : (
-                          <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
-                            <span className={mng.base__inputtitle}>{item.title}</span>
-                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, identitas, setIdentitas, i, ii)}/>
-                          </label>
-                        )
-                      }
-                    </>
-                  ))
-                }
-                </div>
-              ))
-            }
-          </div>
-
-
           <label className={`${mng["base__formlabel"]}`}>
             <InputForm
               titleForm="Nama Kebun/Pabrik"
               titleName="Nama Kebun/Pabrik"
               onChange={(e) => setNamaKebun(e.target.value)}
               type="text"
+              values={namaKebun}
               placeholder="Nama Perusahaan Perkebunan"
               className={`${
                 isError && 'border-primary-red-1 bg-primary-red-2'
@@ -409,6 +851,7 @@ const FormLegalitas = () => {
                         titleName={item.title}
                         onChange={(e) => formRegularChange(e, lokasi, setLokasi, i, ii)}
                         type="text"
+                        values={item.value}
                         placeholder={item.placeholder}
                         className={`${
                           isError && 'border-primary-red-1 bg-primary-red-2'
@@ -485,6 +928,7 @@ const FormLegalitas = () => {
                               titleName={item.title}
                               onChange={(e) => formRegularChange(e, hkUsaha, setHkUsaha, i, ii)}
                               type="text"
+                              values={item.value}
                               placeholder={item.placeholder}
                               className={`${
                                 isError && 'border-primary-red-1 bg-primary-red-2'
@@ -499,6 +943,7 @@ const FormLegalitas = () => {
                               titleName={item.title}
                               onChange={(e) => formRegularChange(e, hkUsaha, setHkUsaha, i, ii)}
                               type="date"
+                              values={item.value}
                               placeholder={item.placeholder}
                               id="datePicker"
                               className={`${
@@ -588,56 +1033,6 @@ const FormLegalitas = () => {
         <div className={`${mng["base__formsection"]}`}>
           <p className={`${mng["base__formtitle"]} ${'mt-4'}`}>Perizinan Usaha Perkebunan</p>
 
-          <div className="flex flex-col">
-            {
-              skRencana.map((items, i) => (
-                <div className={`${mng["base__formlabel_twin"]} ${mng["base__formlabel_twin-firstfull"]}`} key={i}>
-                {
-                  items.map((item,ii) => (
-                    <>
-                      {
-                        item.isOpt == 'cal' ? (
-                          <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
-                            <InputForm
-                              titleForm={item.title}
-                              titleName={item.title}
-                              onChange={(e) => formRegularChange(e, skRencana, setSkRencana, i, ii)}
-                              type="date"
-                              placeholder={item.placeholder}
-                              id="datePicker"
-                              className={`${
-                                isError && 'border-primary-red-1 bg-primary-red-2'
-                              } w-full rounded  bg-white-2 py-3 px-4  text-small uppercase text-primary-gray-4`}
-                              iconEmail="true"
-                            />
-                          </label>
-                        ) : item.isOpt == 'unggah' ? (
-                          <div className="flex w-full items-center justify-between mb-3">
-                            <div>
-                              <div className=" text-sm font-semibold">
-                                Lampiran Berkas HGU Dalam Proses
-                              </div>
-                              <div className="text-[11px] text-[#B3B3B3]">
-                                Format dokumen: .jpg .jpeg .png
-                              </div>
-                            </div>
-                            <InputFileButton />
-                          </div>
-                        ) : (
-                          <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
-                            <span className={mng.base__inputtitle}>{item.title}</span>
-                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, skRencana, setSkRencana, i, ii)}/>
-                          </label>
-                        )
-                      }
-                    </>
-                  ))
-                }
-                </div>
-              ))
-            }
-          </div>
-
           {/* No. sK atas Rencana Pembangunan Perkebunan PIR-Trans (SKRP3) */}
           <div className="flex flex-col">
             {
@@ -654,6 +1049,7 @@ const FormLegalitas = () => {
                               titleName={item.title}
                               onChange={(e) => formRegularChange(e, skRencana, setSkRencana, i, ii)}
                               type="date"
+                              values={item.value}
                               placeholder={item.placeholder}
                               id="datePicker"
                               className={`${
@@ -705,6 +1101,7 @@ const FormLegalitas = () => {
                               titleName={item.title}
                               onChange={(e) => formRegularChange(e, skTugas, setSkTugas, i, ii)}
                               type="date"
+                              values={item.value}
                               placeholder={item.placeholder}
                               id="datePicker"
                               className={`${
@@ -756,6 +1153,7 @@ const FormLegalitas = () => {
                               titleName={item.title}
                               onChange={(e) => formRegularChange(e, skUsahaBudi, setSkUsahaBudi, i, ii)}
                               type="date"
+                              values={item.value}
                               placeholder={item.placeholder}
                               id="datePicker"
                               className={`${
@@ -807,6 +1205,7 @@ const FormLegalitas = () => {
                               titleName={item.title}
                               onChange={(e) => formRegularChange(e, skUsahaIndustri, setSkUsahaIndustri, i, ii)}
                               type="date"
+                              values={item.value}
                               placeholder={item.placeholder}
                               id="datePicker"
                               className={`${
@@ -858,6 +1257,7 @@ const FormLegalitas = () => {
                               titleName={item.title}
                               onChange={(e) => formRegularChange(e, skUsahaTani, setSkUsahaTani, i, ii)}
                               type="date"
+                              values={item.value}
                               placeholder={item.placeholder}
                               id="datePicker"
                               className={`${
@@ -909,6 +1309,7 @@ const FormLegalitas = () => {
                               titleName={item.title}
                               onChange={(e) => formRegularChange(e, skUsahaDaftar, setSkUsahaDaftar, i, ii)}
                               type="date"
+                              values={item.value}
                               placeholder={item.placeholder}
                               id="datePicker"
                               className={`${
@@ -960,6 +1361,7 @@ const FormLegalitas = () => {
                               titleName={item.title}
                               onChange={(e) => formRegularChange(e, skUsahaKebun, setSkUsahaKebun, i, ii)}
                               type="date"
+                              values={item.value}
                               placeholder={item.placeholder}
                               id="datePicker"
                               className={`${
@@ -1021,6 +1423,7 @@ const FormLegalitas = () => {
                                       titleName={child.title}
                                       onChange={(e) => formSectionChange(e, tanahIklim, setTanahIklim, i, ii, iii)}
                                       type="text"
+                                      values={item.value}
                                       placeholder={child.placeholder}
                                       className={`${
                                         isError && 'border-primary-red-1 bg-primary-red-2'
@@ -1076,6 +1479,7 @@ const FormLegalitas = () => {
                               titleName={item.title}
                               onChange={(e) => formRegularChange(e, gambut, setGambut, i, ii)}
                               type="text"
+                              values={item.value}
                               placeholder={item.placeholder}
                               className={`${
                                 isError && 'border-primary-red-1 bg-primary-red-2'
@@ -1162,6 +1566,7 @@ const FormLegalitas = () => {
                               titleName={item.title}
                               onChange={(e) => formRegularChange(e, iklim, setIklim, i, ii)}
                               type="text"
+                              values={item.value}
                               placeholder={item.placeholder}
                               className={`${
                                 isError && 'border-primary-red-1 bg-primary-red-2'
@@ -1247,7 +1652,7 @@ const FormLegalitas = () => {
             </div>
           */}
 
-          <button className={`${mng["base__btnsimpan"]} ${"float-right mt-1"}`} onClick={storeData} disabled={!btnValid}>
+          <button className={`${mng["base__btnsimpan"]} ${"float-right mt-1"}`} onClick={storeData}>
             Simpan dan Lanjutkan
           </button>
         </div>

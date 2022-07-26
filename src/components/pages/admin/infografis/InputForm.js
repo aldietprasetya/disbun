@@ -26,6 +26,7 @@ function InputForm({
   label = '',
   radioButton = '',
   id = '',
+  selected = false,
 }) {
   return (
     <>
@@ -135,6 +136,8 @@ function InputForm({
               name={radioName}
               id={radioId}
               value={radioValue}
+              defaultChecked={selected}
+              checked={selected}
               onClick={onClick}
             />
             <label className="">{label}</label>

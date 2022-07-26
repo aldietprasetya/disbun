@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import React, { useState, useEffect } from 'react'
 import {useRouter} from 'next/router'
+import _ from 'lodash';
 import InputFileButton from 'src/components/customInput/InputFileButton';
 import InputForm from '../../admin/infografis/InputForm';
 import mng from 'src/styles/Managemen.module.scss'
@@ -12,6 +13,14 @@ const preventDefault = f => e => {
 
 const FormManajemenStep3 = () => {
   const [isError, setIsError] = useState(false);
+
+  const router = useRouter()
+
+  const [initialLoad, setInitialLoad] = useState(true)
+  const [btnValid, setBtnValid] = useState(false)
+  const [data, setData] = useState(null)
+  const [dataPass, setDataPass] = useState({})
+  const [dataSubmit, setDataSubmit] = useState([])
 
   ////////////////////////// INPUT FORM STATE ////////////////////////////////
 
@@ -351,11 +360,688 @@ const FormManajemenStep3 = () => {
     setState(list);
   }
 
-  const [btnValid, setBtnValid] = useState(false)
+  useEffect(() => {
+    if (initialLoad) {
+      localStorage.removeItem("mnjPart3Nilai");
+      let retrievedObject = JSON.parse(localStorage.getItem('mnjPart3NilaiReport'));
 
-  const storeData = preventDefault(() => {
+      if (!_.isEmpty(retrievedObject)) {
 
-  })
+        let replicateData = {
+          "jaminSehat": [],
+          "formJmlKaryawanFasilitas": [],
+          "orgKaryawan": [],
+          "jmlKaryawanJmsostek": [],
+          "bonusKaryawan": [],
+          "bonusKaryawanHarian": [],
+          "saranaPendidikan": [],
+
+          "localDistribution": [],
+          "exportDistribution": [],
+          "sellingDestination": [],
+          "sellingLocation": [],
+          "marketingManagement": [],
+          "localSelling": [],
+          "exportSelling": [],
+          "pricing": [],
+        }
+
+        setTimeout(() => {
+
+          retrievedObject.pricing.forEach((dt,index) => {
+            const formstr = _.cloneDeep(harga)
+            formstr.forEach((dtFrm, i) => {
+              dtFrm[0].sectionData.forEach((secData, ii, arr) => {
+                arr[0].value = dt.comodity
+              })
+              dtFrm[1].sectionData.forEach((secData, ii, arr) => {
+                arr[0].value = dt.details[0].firstCost
+                arr[1].value = dt.details[0].secondCost
+                arr[2].value = dt.details[0].thirdCost
+              })
+              dtFrm[2].sectionData.forEach((secData, ii, arr) => {
+                arr[0].value = dt.details[1].firstCost
+                arr[1].value = dt.details[1].secondCost
+                arr[2].value = dt.details[1].thirdCost
+              })
+              dtFrm[3].sectionData.forEach((secData, ii, arr) => {
+                arr[0].value = dt.details[2].firstCost
+                arr[1].value = dt.details[2].secondCost
+                arr[2].value = dt.details[2].thirdCost
+              })
+              dtFrm[4].sectionData.forEach((secData, ii, arr) => {
+                arr[0].value = dt.details[3].firstCost
+                arr[1].value = dt.details[3].secondCost
+                arr[2].value = dt.details[3].thirdCost
+              })
+              dtFrm[5].sectionData.forEach((secData, ii, arr) => {
+                arr[0].value = dt.details[4].firstCost
+                arr[1].value = dt.details[4].secondCost
+                arr[2].value = dt.details[4].thirdCost
+              })
+              dtFrm[6].sectionData.forEach((secData, ii, arr) => {
+                arr[0].value = dt.details[5].firstCost
+                arr[1].value = dt.details[5].secondCost
+                arr[2].value = dt.details[5].thirdCost
+              })
+              dtFrm[7].sectionData.forEach((secData, ii, arr) => {
+                arr[0].value = dt.details[6].firstCost
+                arr[1].value = dt.details[6].secondCost
+                arr[2].value = dt.details[6].thirdCost
+              })
+              replicateData.pricing.push(dtFrm)
+            })
+          })
+
+          retrievedObject.exportSelling.forEach((dt,index) => {
+            const formstr = _.cloneDeep(ekspor)
+            formstr.forEach((dtFrm, i) => {
+              dtFrm[0].sectionData.forEach((secData, ii, arr) => {
+                arr[0].value = dt.comodity
+              })
+              dtFrm[1].sectionData.forEach((secData, ii, arr) => {
+                arr[0].value = dt.details[0].productionType
+                arr[1].value = dt.details[0].firstVolume
+                arr[2].value = dt.details[0].firstValue
+                arr[3].value = dt.details[0].secondVolume
+                arr[4].value = dt.details[0].secondValue
+                arr[5].value = dt.details[0].thirdVolume
+                arr[6].value = dt.details[0].thirdValue
+              })
+              replicateData.exportSelling.push(dtFrm)
+            })
+          })
+
+          retrievedObject.localSelling.forEach((dt,index) => {
+            const formstr = _.cloneDeep(lokal)
+            formstr.forEach((dtFrm, i) => {
+              dtFrm[0].sectionData.forEach((secData, ii, arr) => {
+                arr[0].value = dt.comodity
+              })
+              dtFrm[1].sectionData.forEach((secData, ii, arr) => {
+                arr[0].value = dt.details[0].productionType
+                arr[1].value = dt.details[0].firstVolume
+                arr[2].value = dt.details[0].firstValue
+                arr[3].value = dt.details[0].secondVolume
+                arr[4].value = dt.details[0].secondValue
+                arr[5].value = dt.details[0].thirdVolume
+                arr[6].value = dt.details[0].thirdValue
+              })
+              replicateData.localSelling.push(dtFrm)
+            })
+          })
+
+          retrievedObject.marketingManagement.forEach((dt,index) => {
+            const formstr = _.cloneDeep(komoditasNilaiUsaha)
+            formstr.forEach((dtFrm, i) => {
+              dtFrm[0].sectionData.forEach((secData, ii, arr) => {
+                arr[0].value = dt.comodity
+              })
+              dtFrm[1].sectionData.forEach((secData, ii, arr) => {
+                arr[0].value = dt.firstExchange
+                arr[1].value = dt.firstDescription
+              })
+              dtFrm[2].sectionData.forEach((secData, ii, arr) => {
+                arr[0].value = dt.secondExchange
+                arr[1].value = dt.secondDescription
+              })
+              dtFrm[3].sectionData.forEach((secData, ii, arr) => {
+                arr[0].value = dt.thirdExchange
+                arr[1].value = dt.thirdDescription
+              })
+              replicateData.marketingManagement.push(dtFrm)
+            })
+          })
+
+          retrievedObject.sellingDestination.forEach((dt,index) => {
+            const formstr = _.cloneDeep(jualHasil)
+            formstr.forEach((dtFrm, i) => {
+              dtFrm[0].sectionData.forEach((secData, ii, arr) => {
+                arr[0].value = dt.comodity
+              })
+              dtFrm[1].sectionData.forEach((secData, ii, arr) => {
+                arr[0].value = dt.firstLocalDestionation
+                arr[1].value = dt.firstExportDestionation
+              })
+              dtFrm[2].sectionData.forEach((secData, ii, arr) => {
+                arr[0].value = dt.secondLocalDestionation
+                arr[1].value = dt.secondExportDestionation
+              })
+              dtFrm[3].sectionData.forEach((secData, ii, arr) => {
+                arr[0].value = dt.thirdLocalDestionation
+                arr[1].value = dt.thirdExportDestionation
+              })
+              replicateData.sellingDestination.push(dtFrm)
+            })
+          })
+
+          retrievedObject.sellingLocation.forEach((e,index) => {
+            const formstr = _.cloneDeep(lokasiPemasaran)
+            formstr.forEach((dtFrm, i) => {
+              dtFrm[0].value = e.comodity
+              dtFrm[1].value = e.firstYear
+              dtFrm[2].value = e.firstYearCityId
+              dtFrm[3].value = e.secondYear
+              dtFrm[4].value = e.secondYearCityId
+              dtFrm[5].value = e.thirdYear
+              dtFrm[6].value = e.thirdYearCityId
+              replicateData.sellingLocation.push(dtFrm)
+            })
+          })
+
+          retrievedObject.exportDistribution.forEach((e, i) => {
+            const formstr = _.cloneDeep(jualEkspor)
+            formstr.forEach((dtFrm, i) => {
+              dtFrm[0].value = e.comodity
+              dtFrm[1].value = e.enterprise_customer
+              dtFrm[2].value = e.enterprise_agency_customer
+              dtFrm[3].value = e.anotherMethod
+              replicateData.exportDistribution.push(dtFrm)
+            })
+          })
+
+          retrievedObject.localDistribution.forEach((e, i) => {
+            const formstr = _.cloneDeep(jualLokal)
+            formstr.forEach((dtFrm, i) => {
+              dtFrm[0].value = e.comodity
+              dtFrm[1].value = e.enterprise_customer
+              dtFrm[2].value = e.enterprise_agency_customer
+              dtFrm[3].value = e.anotherMethod
+              replicateData.localDistribution.push(dtFrm)
+            })
+          })
+
+          const formSaranaPendidikan = _.cloneDeep(saranaPendidikan)
+          formSaranaPendidikan.forEach((dtFrm, i) => {
+            dtFrm[0].sectionData.forEach((secData, ii, arr) => {
+              arr[0].value = retrievedObject.employeeFacility.sdDistance
+              arr[1].value = retrievedObject.employeeFacility.sdTravelTime
+            })
+            dtFrm[1].sectionData.forEach((secData, ii, arr) => {
+              arr[0].value = retrievedObject.employeeFacility.sltpDistance
+              arr[1].value = retrievedObject.employeeFacility.sltpTravelTime
+            })
+            dtFrm[2].sectionData.forEach((secData, ii, arr) => {
+              arr[0].value = retrievedObject.employeeFacility.sltaDistance
+              arr[1].value = retrievedObject.employeeFacility.sltaTravelTime
+            })
+            dtFrm[3].sectionData.forEach((secData, ii, arr) => {
+              arr[0].value = retrievedObject.employeeFacility.collegeDistance
+              arr[1].value = retrievedObject.employeeFacility.collegeTravelTime
+            })
+            replicateData.saranaPendidikan.push(dtFrm)
+          })
+
+          const formBonusKaryawanHarian = _.cloneDeep(bonusKaryawanHarian)
+          formBonusKaryawanHarian.forEach((dtFrm, i) => {
+            dtFrm[0].sectionData.forEach((secData, ii, arr) => {
+              arr[0].value = retrievedObject.bonus.details[0].bonusNominal
+              arr[1].value = retrievedObject.bonus.details[0].bonusRecipentPercentage
+              arr[2].value = retrievedObject.bonus.details[0].thrNominal
+              arr[3].value = retrievedObject.bonus.details[0].thrRecipentPercentage
+            })
+            dtFrm[1].sectionData.forEach((secData, ii, arr) => {
+              arr[0].value = retrievedObject.bonus.details[1].bonusNominal
+              arr[1].value = retrievedObject.bonus.details[1].bonusRecipentPercentage
+              arr[2].value = retrievedObject.bonus.details[1].thrNominal
+              arr[3].value = retrievedObject.bonus.details[1].thrRecipentPercentage
+            })
+            dtFrm[2].sectionData.forEach((secData, ii, arr) => {
+              arr[0].value = retrievedObject.bonus.details[2].bonusNominal
+              arr[1].value = retrievedObject.bonus.details[2].bonusRecipentPercentage
+              arr[2].value = retrievedObject.bonus.details[2].thrNominal
+              arr[3].value = retrievedObject.bonus.details[2].thrRecipentPercentage
+            })
+            replicateData.bonusKaryawanHarian.push(dtFrm)
+          })
+
+          const formBonusKaryawan = _.cloneDeep(bonusKaryawan)
+          formBonusKaryawan.forEach((dtFrm, i) => {
+            dtFrm[0].sectionData.forEach((secData, ii, arr) => {
+              arr[0].value = retrievedObject.bonus.details[0].bonusNominal
+              arr[1].value = retrievedObject.bonus.details[0].bonusRecipentPercentage
+              arr[2].value = retrievedObject.bonus.details[0].thrNominal
+              arr[3].value = retrievedObject.bonus.details[0].thrRecipentPercentage
+            })
+            dtFrm[1].sectionData.forEach((secData, ii, arr) => {
+              arr[0].value = retrievedObject.bonus.details[1].bonusNominal
+              arr[1].value = retrievedObject.bonus.details[1].bonusRecipentPercentage
+              arr[2].value = retrievedObject.bonus.details[1].thrNominal
+              arr[3].value = retrievedObject.bonus.details[1].thrRecipentPercentage
+            })
+            dtFrm[2].sectionData.forEach((secData, ii, arr) => {
+              arr[0].value = retrievedObject.bonus.details[2].bonusNominal
+              arr[1].value = retrievedObject.bonus.details[2].bonusRecipentPercentage
+              arr[2].value = retrievedObject.bonus.details[2].thrNominal
+              arr[3].value = retrievedObject.bonus.details[2].thrRecipentPercentage
+            })
+            replicateData.bonusKaryawan.push(dtFrm)
+          })
+
+          const formJmlKaryawanJmsostek = _.cloneDeep(jmlKaryawanJmsostek)
+          formJmlKaryawanJmsostek.forEach((dtFrm, i) => {
+            dtFrm[0].value = retrievedObject.employeeCooperative.empolyeeCount
+            dtFrm[1].value = retrievedObject.employeeCooperative.employeePercentage
+            replicateData.jmlKaryawanJmsostek.push(dtFrm)
+          })
+
+          const formOrgKaryawan = _.cloneDeep(orgKaryawan)
+          formOrgKaryawan.forEach((dtFrm, i) => {
+            dtFrm[0].value = retrievedObject.employeeOrganization.organizationName
+            dtFrm[1].value = retrievedObject.employeeOrganization.activity
+            replicateData.orgKaryawan.push(dtFrm)
+          })
+
+          const formJaminSehat = _.cloneDeep(jaminSehat)
+          formJaminSehat.forEach((dtFrm, i) => {
+            dtFrm[0].sectionData[0].value = retrievedObject.healthBenefit.permanentEmployeeReimbursement
+            dtFrm[1].sectionData[0].value = retrievedObject.healthBenefit.contractEmployeeReimbursement
+            replicateData.jaminSehat.push(dtFrm)
+          })
+
+          const formJmlKaryawanFasilitas = _.cloneDeep(jmlKaryawanFasilitas)
+          formJmlKaryawanFasilitas.forEach((dtFrm, i) => {
+            dtFrm[0].value = retrievedObject.housingBenefit.employeePercentage
+            dtFrm[1].value = retrievedObject.housingBenefit.housingPercentage
+            dtFrm[2].value = retrievedObject.housingBenefit.reimbursementPercentage
+            replicateData.formJmlKaryawanFasilitas.push(dtFrm)
+          })
+
+
+          setJmlKaryawanFasilitas(replicateData.formJmlKaryawanFasilitas)
+          setJaminSehat(replicateData.jaminSehat)
+          setOrgKaryawan(replicateData.orgKaryawan)
+          setJmlKaryawanJmsostek(replicateData.jmlKaryawanJmsostek)
+          setBonusKaryawan(replicateData.bonusKaryawan)
+          setBonusKaryawanHarian(replicateData.bonusKaryawanHarian)
+          setSaranaPendidikan(replicateData.saranaPendidikan)
+
+          setJualLokal(replicateData.localDistribution)
+          setJualEkspor(replicateData.exportDistribution)
+
+          setLokasiPemasaran(replicateData.sellingLocation)
+          setJualHasil(replicateData.sellingDestination)
+
+          setKomoditasNilaiUsaha(replicateData.marketingManagement)
+          setLokal(replicateData.localSelling)
+          setEkspor(replicateData.exportSelling)
+          setHarga(replicateData.pricing)
+
+          setPerlengakapanSelamat(retrievedObject.healthBenefit.safetyEquipmentType)
+          setPerlengakapanGunakan(retrievedObject.healthBenefit.hasSafetyTraining)
+
+          setJenisJamsostek(retrievedObject.healthBenefit.jamsostekType)
+
+          setUsahaKoperasiDilaksanakan(retrievedObject.employeeCooperative.usahaKoperasiDilaksanakan)
+          setAlasanTidakKoperasi(retrievedObject.employeeCooperative.reason)
+
+          setJenisAset(retrievedObject.employeeCooperative.assetType)
+
+          setKesepakatanKerja(retrievedObject.employeeOrganization.kkbActivity)
+
+          setJenisRumahIbadah(retrievedObject.employeeOrganization.worshipPlaceType)
+
+          setJenisFasilitasOlahraga(retrievedObject.employeeOrganization.sportFacilityType)
+          setJenisFasilitasHiburan(retrievedObject.employeeOrganization.entertainmentFacilityType)
+
+          setSistemPromosi(retrievedObject.promotion.description)
+
+          setGantiKesehatanOpt(retrievedObject.healthBenefit.hasReimbursement)
+
+          setKeselamatanKerjaOpt(retrievedObject.healthBenefit.hasWrittenTerm)
+          setKeselamatanKerjaSosialisasikanOpt(retrievedObject.healthBenefit.isTermSocialized)
+          setPerlengkapanKeselamatanKerjaOpt(retrievedObject.healthBenefit.hasSafetyEquipment)
+          setPerlengkapanDigunakanOpt(retrievedObject.healthBenefit.isSafetyEquipmentUsed)
+          setPelatihanSelamatOpt(retrievedObject.healthBenefit.hasSafetyTraining)
+          setRekamanCelakaOpt(retrievedObject.healthBenefit.hasAccidentRecording)
+
+          setJaminanSosialOpt(retrievedObject.healthBenefit.employeeJoinJamsostek)
+
+          setKoperasiBdnHukumOpt(retrievedObject.employeeCooperative.hasCooperative)
+          setKoperasiSesuaiOpt(retrievedObject.employeeCooperative.obeyRule)
+
+          setHibahJualSahamOpt(retrievedObject.employeeCooperative.cooperativeHasShare)
+          setAsetDigunakanOpt(retrievedObject.employeeCooperative.cooperativeUsingAsset)
+
+          setOrgKaryawanOpt(retrievedObject.employeeOrganization.hasEmployeeOrganization)
+          setKesepakatanKerjaOpt(retrievedObject.employeeOrganization.hasKkb)
+
+          setPoliklinikOpt(retrievedObject.employeeOrganization.hasHospital)
+          setTenagaMedisOpt(retrievedObject.employeeOrganization.hasMedicalPersonel)
+
+          setTunjanganPendidikanOpt(retrievedObject.employeeOrganization.hasEducationalAllowance)
+
+          setRumahIbadahOpt(retrievedObject.employeeOrganization.hasWorshipPlace)
+
+          setFasilitasOlahragaOpt(retrievedObject.employeeOrganization.hasSportFacility)
+          setFasilitasHiburanOpt(retrievedObject.employeeOrganization.hasEntertainmentFacility)
+
+          setBursaOpt(retrievedObject.promotion.hasPromotionSystem)
+          setSistemPromosiOpt(retrievedObject.promotion.hasPromotionSystem)
+
+          setBentukPemasaran(retrievedObject.marketingManagement[0].marketingType)
+          setBiayaSewaOpt(retrievedObject.housingBenefit.hasReimbursement)
+          setBonusOpt(retrievedObject.bonus.hasBonus)
+
+
+          // setPenentuanHargaJualProd(retrievedObject.reportInformation[3].frequency)
+          //
+          // setTidakJamsostek(retrievedObject.reportInformation[1].frequency)
+          //
+
+
+        }, 250)
+      }
+    }
+    setInitialLoad(false)
+  }, [initialLoad])
+
+  useEffect(() => {
+    let data = {
+      "healthBenefit": {
+          "hasReimbursement": gantiKesehatanOpt,
+          "permanentEmployeeReimbursement": jaminSehat[0][0].sectionData[0].value,
+          "contractEmployeeReimbursement": jaminSehat[0][1].sectionData[0].value,
+          "hasWrittenTerm": keselamatanKerjaOpt,
+          "termFile": {},
+          "isTermSocialized": keselamatanKerjaSosialisasikanOpt,
+          "pamphletFile": {},
+          "hasSafetyEquipment": perlengkapanKeselamatanKerjaOpt,
+          "safetyEquipmentType": perlengakapanSelamat,
+          "isSafetyEquipmentUsed": perlengkapanDigunakanOpt,
+          "safetyEquipmentUsage": perlengakapanGunakan,
+          "hasSafetyTraining": pelatihanSelamatOpt,
+          "recordingFile": {},
+          "hasAccidentRecording": rekamanCelakaOpt,
+          "employeeJoinJamsostek": jaminanSosialOpt,
+          "jamsostekType": jenisJamsostek
+      },
+      "housingBenefit": {
+          "hasReimbursement": biayaSewaOpt,
+          "employeePercentage": jmlKaryawanFasilitas[0][0].value,
+          "housingPercentage": jmlKaryawanFasilitas[0][1].value,
+          "reimbursementPercentage": jmlKaryawanFasilitas[0][2].value
+      },
+      "bonus": {
+        "hasBonus": bonusOpt,
+        "details": [
+          {
+              "employmentType": "Karyawan",
+              "year": 1,
+              "bonusNominal": bonusKaryawan[0][0].sectionData[0].value,
+              "bonusRecipentPercentage": bonusKaryawan[0][0].sectionData[1].value,
+              "thrNominal": bonusKaryawan[0][0].sectionData[2].value,
+              "thrRecipentPercentage": bonusKaryawan[0][0].sectionData[3].value
+          },
+          {
+              "employmentType": "Karyawan",
+              "year": 2,
+              "bonusNominal": bonusKaryawan[0][1].sectionData[0].value,
+              "bonusRecipentPercentage": bonusKaryawan[0][1].sectionData[1].value,
+              "thrNominal": bonusKaryawan[0][1].sectionData[2].value,
+              "thrRecipentPercentage": bonusKaryawan[0][1].sectionData[3].value
+          },
+          {
+              "employmentType": "Karyawan",
+              "year": 3,
+              "bonusNominal": bonusKaryawan[0][2].sectionData[0].value,
+              "bonusRecipentPercentage": bonusKaryawan[0][2].sectionData[1].value,
+              "thrNominal": bonusKaryawan[0][2].sectionData[2].value,
+              "thrRecipentPercentage": bonusKaryawan[0][2].sectionData[3].value
+          },
+          {
+              "employmentType": "Harian Lepas",
+              "year": 1,
+              "bonusNominal": bonusKaryawanHarian[0][0].sectionData[0].value,
+              "bonusRecipentPercentage": bonusKaryawanHarian[0][0].sectionData[1].value,
+              "thrNominal": bonusKaryawanHarian[0][0].sectionData[2].value,
+              "thrRecipentPercentage": bonusKaryawanHarian[0][0].sectionData[3].value
+          },
+          {
+              "employmentType": "Harian Lepas",
+              "year": 2,
+              "bonusNominal": bonusKaryawanHarian[0][1].sectionData[0].value,
+              "bonusRecipentPercentage": bonusKaryawanHarian[0][1].sectionData[1].value,
+              "thrNominal": bonusKaryawanHarian[0][1].sectionData[2].value,
+              "thrRecipentPercentage": bonusKaryawanHarian[0][1].sectionData[3].value
+          },
+          {
+              "employmentType": "Harian Lepas",
+              "year": 3,
+              "bonusNominal": bonusKaryawanHarian[0][2].sectionData[0].value,
+              "bonusRecipentPercentage": bonusKaryawanHarian[0][2].sectionData[1].value,
+              "thrNominal": bonusKaryawanHarian[0][2].sectionData[2].value,
+              "thrRecipentPercentage": bonusKaryawanHarian[0][2].sectionData[3].value
+          }
+        ]
+      },
+      "promotion": {
+          "hasPromotionSystem": sistemPromosiOpt,
+          "description": sistemPromosi
+      },
+      "employeeOrganization": {
+          "hasEmployeeOrganization": orgKaryawanOpt,
+          "hasKkb": kesepakatanKerjaOpt,
+          "organizationName": orgKaryawan[0][0].value,
+          "activity": orgKaryawan[0][1].value,
+          "kkbActivity": kesepakatanKerja
+      },
+      "employeeCooperative": {
+          "hasCooperative": koperasiBdnHukumOpt,
+          "cooperativeType": usahaKoperasiDilaksanakan,
+          "empolyeeCount": jmlKaryawanJmsostek[0][0].value,
+          "employeePercentage": jmlKaryawanJmsostek[0][1].value,
+          "obeyRule": koperasiSesuaiOpt,
+          "reason": alasanTidakKoperasi,
+          "cooperativeHasShare": hibahJualSahamOpt,
+          "cooperativeUsingAsset": asetDigunakanOpt,
+          "assetType": jenisAset
+      },
+      "employeeFacility": {
+            "hasHospital": poliklinikOpt,
+            "hasMedicalPersonel": tenagaMedisOpt,
+            "hasWorshipPlace": rumahIbadahOpt,
+            "worshipPlaceType": jenisRumahIbadah,
+            "hasSportFacility": fasilitasOlahragaOpt,
+            "sportFacilityType": jenisFasilitasOlahraga,
+            "hasEntertainmentFacility": fasilitasHiburanOpt,
+            "entertainmentFacilityType": jenisFasilitasHiburan,
+            "hasEducationalAllowance": tunjanganPendidikanOpt,
+            "sdDistance": saranaPendidikan[0][0].sectionData[0].value,
+            "sdTravelTime": saranaPendidikan[0][0].sectionData[1].value,
+            "sltpDistance": saranaPendidikan[0][1].sectionData[0].value,
+            "sltpTravelTime": saranaPendidikan[0][1].sectionData[1].value,
+            "sltaDistance": saranaPendidikan[0][2].sectionData[0].value,
+            "sltaTravelTime": saranaPendidikan[0][2].sectionData[1].value,
+            "collegeDistance": saranaPendidikan[0][3].sectionData[0].value,
+            "collegeTravelTime": saranaPendidikan[0][3].sectionData[1].value
+        },
+      "localDistribution": [],
+      "exportDistribution": [],
+      "sellingDestination": [],
+      "sellingLocation": [],
+      "marketingManagement": [],
+      "localSelling": [],
+      "exportSelling": [],
+      "pricing": [],
+    }
+
+    harga.forEach((item, i, arr) => {
+      let inv = {
+        "comodity": arr[0][0].sectionData[0].value,
+        "details": [
+          {
+              "costType": arr[0][1].sectionTitle,
+              "firstCost": arr[0][1].sectionData[0].value,
+              "secondCost": arr[0][1].sectionData[1].value,
+              "thirdCost": arr[0][1].sectionData[2].value
+          },
+          {
+              "costType": arr[0][2].sectionTitle,
+              "firstCost": arr[0][2].sectionData[0].value,
+              "secondCost": arr[0][2].sectionData[1].value,
+              "thirdCost": arr[0][2].sectionData[2].value
+          },
+          {
+              "costType": arr[0][3].sectionTitle,
+              "firstCost": arr[0][3].sectionData[0].value,
+              "secondCost": arr[0][3].sectionData[1].value,
+              "thirdCost": arr[0][3].sectionData[2].value
+          },
+          {
+              "costType": arr[0][4].sectionTitle,
+              "firstCost": arr[0][4].sectionData[0].value,
+              "secondCost": arr[0][4].sectionData[1].value,
+              "thirdCost": arr[0][4].sectionData[2].value
+          },
+          {
+              "costType": arr[0][5].sectionTitle,
+              "firstCost": arr[0][5].sectionData[0].value,
+              "secondCost": arr[0][5].sectionData[1].value,
+              "thirdCost": arr[0][5].sectionData[2].value
+          },
+          {
+              "costType": arr[0][6].sectionTitle,
+              "firstCost": arr[0][6].sectionData[0].value,
+              "secondCost": arr[0][6].sectionData[1].value,
+              "thirdCost": arr[0][6].sectionData[2].value
+          },
+          {
+              "costType": arr[0][7].sectionTitle,
+              "firstCost": arr[0][7].sectionData[0].value,
+              "secondCost": arr[0][7].sectionData[1].value,
+              "thirdCost": arr[0][7].sectionData[2].value
+          }
+        ]
+      }
+      data.pricing.push(inv)
+    });
+
+    ekspor.forEach((item, i) => {
+      let inv = {}
+      inv.details = []
+      item.forEach((e, i, arr) => {
+        if (e.sectionData.length < 2) {
+          inv.comodity = arr[0].sectionData[0].value
+        } else {
+          let detailObj = {
+            "productionType": arr[1].sectionData[0].value,
+            "firstVolume": arr[1].sectionData[1].value,
+            "firstValue": arr[1].sectionData[2].value,
+            "secondVolume": arr[1].sectionData[3].value,
+            "secondValue": arr[1].sectionData[4].value,
+            "thirdVolume": arr[1].sectionData[5].value,
+            "thirdValue": arr[1].sectionData[6].value,
+          }
+          inv.details.push(detailObj)
+        }
+      });
+      data.exportSelling.push(inv)
+    });
+
+    lokal.forEach((item, i) => {
+      let inv = {}
+      inv.details = []
+      item.forEach((e, i, arr) => {
+        if (e.sectionData.length < 2) {
+          inv.comodity = arr[0].sectionData[0].value
+        } else {
+          let detailObj = {
+            "productionType": arr[1].sectionData[0].value,
+            "firstVolume": arr[1].sectionData[1].value,
+            "firstValue": arr[1].sectionData[2].value,
+            "secondVolume": arr[1].sectionData[3].value,
+            "secondValue": arr[1].sectionData[4].value,
+            "thirdVolume": arr[1].sectionData[5].value,
+            "thirdValue": arr[1].sectionData[6].value,
+          }
+          inv.details.push(detailObj)
+        }
+      });
+      data.localSelling.push(inv)
+    });
+
+    jualHasil.forEach((item, i) => {
+      let inv = {}
+      item.forEach((e, i, arr) => {
+        inv.comodity = arr[0].sectionData[0].value
+        inv.firstLocalDestionation = arr[1].sectionData[0].value
+        inv.firstExportDestionation = arr[1].sectionData[1].value
+        inv.secondLocalDestionation = arr[2].sectionData[0].value
+        inv.secondExportDestionation = arr[2].sectionData[1].value
+        inv.thirdLocalDestionation = arr[3].sectionData[0].value
+        inv.thirdExportDestionation = arr[3].sectionData[1].value
+      });
+      data.sellingDestination.push(inv)
+    });
+
+    komoditasNilaiUsaha.forEach((item, i) => {
+      let inv = {}
+      item.forEach((e, i, arr) => {
+        inv.marketingType = bentukPemasaran
+        inv.isJoiningComodityExchange = bursaOpt
+        inv.comodity = arr[0].sectionData[0].value
+        inv.firstExchange = arr[1].sectionData[0].value
+        inv.firstDescription = arr[1].sectionData[1].value
+        inv.secondExchange = arr[2].sectionData[0].value
+        inv.secondDescription = arr[2].sectionData[1].value
+        inv.thirdExchange = arr[3].sectionData[0].value
+        inv.thirdDescription = arr[3].sectionData[1].value
+      });
+      data.marketingManagement.push(inv)
+    });
+
+    lokasiPemasaran.forEach((item, i) => {
+      let inv = {}
+      item.forEach(() => {
+        inv.comodity = item[0].value
+        inv.firstYear = item[1].value
+        inv.firstYearCityId = item[2].value
+        inv.secondYear = item[3].value
+        inv.secondYearCityId = item[4].value
+        inv.thirdYear = item[5].value
+        inv.thirdYearCityId = item[6].value
+      });
+      data.sellingLocation.push(inv)
+    });
+
+    jualLokal.forEach((item, i) => {
+      let inv = {}
+      item.forEach(() => {
+        inv.comodity = item[0].value
+        inv.enterprise_customer = item[1].value
+        inv.enterprise_agency_customer = item[2].value
+        inv.anotherMethod = item[3].value
+      });
+      data.localDistribution.push(inv)
+    });
+
+    jualEkspor.forEach((item, i) => {
+      let inv = {}
+      item.forEach(() => {
+        inv.comodity = item[0].value
+        inv.enterprise_customer = item[1].value
+        inv.enterprise_agency_customer = item[2].value
+        inv.anotherMethod = item[3].value
+      });
+      data.exportDistribution.push(inv)
+    });
+
+    setDataSubmit(data)
+
+  }, [perlengakapanSelamat,perlengakapanGunakan,jenisJamsostek,tidakJamsostek,usahaKoperasiDilaksanakan,alasanTidakKoperasi,jenisAset,kesepakatanKerja
+    ,jenisRumahIbadah,jenisFasilitasOlahraga,jenisFasilitasHiburan,bentukPemasaran,sistemPromosi,penentuanHargaJualProd,gantiKesehatanOpt,keselamatanKerjaOpt
+    ,keselamatanKerjaSosialisasikanOpt,perlengkapanKeselamatanKerjaOpt,perlengkapanDigunakanOpt,pelatihanSelamatOpt,rekamanCelakaOpt,jaminanSosialOpt,biayaSewaOpt
+    ,bonusOpt,koperasiBdnHukumOpt,koperasiSesuaiOpt,hibahJualSahamOpt,asetDigunakanOpt,orgKaryawanOpt,kesepakatanKerjaOpt,poliklinikOpt,tenagaMedisOpt
+    ,tunjanganPendidikanOpt,rumahIbadahOpt,fasilitasOlahragaOpt,fasilitasHiburanOpt,bursaOpt,sistemPromosiOpt,jaminSehat,jmlKaryawanJmsostek
+    ,jmlKaryawanFasilitas,bonusKaryawan,bonusKaryawanHarian,orgKaryawan,komoditasNilaiUsaha,karyawanAnggKoperasi,saranaPendidikan,lokal,ekspor,harga
+    ,jualLokal,jualEkspor,jualHasil,lokasiPemasaran])
+
+  useEffect(() => {
+    if (!_.isEmpty(dataSubmit)) {
+      localStorage.setItem("mnjPart3Nilai", JSON.stringify(dataSubmit));
+    }
+  },[dataPass,dataSubmit])
 
   function clearData() {
 
@@ -378,6 +1064,8 @@ const FormManajemenStep3 = () => {
                 radioButton={true}
                 radioName="gantiKesehatanOpt"
                 onClick={() => setGantiKesehatanOpt('Iya')}
+                radioValue={gantiKesehatanOpt}
+                selected={gantiKesehatanOpt == 'Iya'}
                 label="Iya"
               />
             </div>
@@ -386,6 +1074,8 @@ const FormManajemenStep3 = () => {
                 radioButton={true}
                 radioName="gantiKesehatanOpt"
                 onClick={() => setGantiKesehatanOpt('Tidak')}
+                radioValue={gantiKesehatanOpt}
+                selected={gantiKesehatanOpt == 'Tidak'}
                 label="Tidak"
               />
             </div>
@@ -426,6 +1116,8 @@ const FormManajemenStep3 = () => {
                 radioButton={true}
                 radioName="keselamatanKerjaOpt"
                 onClick={() => setKeselamatanKerjaOpt('Ada')}
+                radioValue={keselamatanKerjaOpt}
+                selected={keselamatanKerjaOpt == 'Ada'}
                 label="Ada"
               />
             </div>
@@ -434,6 +1126,8 @@ const FormManajemenStep3 = () => {
                 radioButton={true}
                 radioName="keselamatanKerjaOpt"
                 onClick={() => setKeselamatanKerjaOpt('Tidak')}
+                radioValue={keselamatanKerjaOpt}
+                selected={keselamatanKerjaOpt == 'Tidak'}
                 label="Tidak"
               />
             </div>
@@ -459,6 +1153,8 @@ const FormManajemenStep3 = () => {
                     radioButton={true}
                     radioName="keselamatanKerjaSosialisasikanOpt"
                     onClick={() => setKeselamatanKerjaSosialisasikanOpt('Sudah')}
+                    radioValue={keselamatanKerjaSosialisasikanOpt}
+                    selected={keselamatanKerjaSosialisasikanOpt == 'Sudah'}
                     label="Sudah"
                   />
                 </div>
@@ -467,6 +1163,8 @@ const FormManajemenStep3 = () => {
                     radioButton={true}
                     radioName="keselamatanKerjaSosialisasikanOpt"
                     onClick={() => setKeselamatanKerjaSosialisasikanOpt('Belum')}
+                    radioValue={keselamatanKerjaSosialisasikanOpt}
+                    selected={keselamatanKerjaSosialisasikanOpt == 'Belum'}
                     label="Belum"
                   />
                 </div>
@@ -493,6 +1191,8 @@ const FormManajemenStep3 = () => {
                 radioButton={true}
                 radioName="perlengkapanKeselamatanKerjaOpt"
                 onClick={() => setPerlengkapanKeselamatanKerjaOpt('Ada')}
+                radioValue={perlengkapanKeselamatanKerjaOpt}
+                selected={perlengkapanKeselamatanKerjaOpt == 'Ada'}
                 label="Ada"
               />
             </div>
@@ -501,6 +1201,8 @@ const FormManajemenStep3 = () => {
                 radioButton={true}
                 radioName="perlengkapanKeselamatanKerjaOpt"
                 onClick={() => setPerlengkapanKeselamatanKerjaOpt('Tidak')}
+                radioValue={perlengkapanKeselamatanKerjaOpt}
+                selected={perlengkapanKeselamatanKerjaOpt == 'Tidak'}
                 label="Tidak"
               />
             </div>
@@ -521,6 +1223,8 @@ const FormManajemenStep3 = () => {
                 radioButton={true}
                 radioName="perlengkapanDigunakanOpt"
                 onClick={() => setPerlengkapanDigunakanOpt('Ada')}
+                radioValue={perlengkapanDigunakanOpt}
+                selected={perlengkapanDigunakanOpt == 'Ada'}
                 label="Ada"
               />
             </div>
@@ -529,6 +1233,8 @@ const FormManajemenStep3 = () => {
                 radioButton={true}
                 radioName="perlengkapanDigunakanOpt"
                 onClick={() => setPerlengkapanDigunakanOpt('Tidak')}
+                radioValue={perlengkapanDigunakanOpt}
+                selected={perlengkapanDigunakanOpt == 'Tidak'}
                 label="Tidak"
               />
             </div>
@@ -549,6 +1255,8 @@ const FormManajemenStep3 = () => {
                 radioButton={true}
                 radioName="pelatihanSelamatOpt"
                 onClick={() => setPelatihanSelamatOpt('Ada')}
+                radioValue={pelatihanSelamatOpt}
+                selected={pelatihanSelamatOpt == 'Ada'}
                 label="Ada"
               />
             </div>
@@ -557,6 +1265,8 @@ const FormManajemenStep3 = () => {
                 radioButton={true}
                 radioName="pelatihanSelamatOpt"
                 onClick={() => setPelatihanSelamatOpt('Tidak')}
+                radioValue={pelatihanSelamatOpt}
+                selected={pelatihanSelamatOpt == 'Tidak'}
                 label="Tidak"
               />
             </div>
@@ -584,6 +1294,8 @@ const FormManajemenStep3 = () => {
                 radioButton={true}
                 radioName="rekamanCelakaOpt"
                 onClick={() => setRekamanCelakaOpt('Ada')}
+                radioValue={rekamanCelakaOpt}
+                selected={rekamanCelakaOpt == 'Ada'}
                 label="Ada"
               />
             </div>
@@ -592,6 +1304,8 @@ const FormManajemenStep3 = () => {
                 radioButton={true}
                 radioName="rekamanCelakaOpt"
                 onClick={() => setRekamanCelakaOpt('Tidak')}
+                radioValue={rekamanCelakaOpt}
+                selected={rekamanCelakaOpt == 'Tidak'}
                 label="Tidak"
               />
             </div>
@@ -605,6 +1319,8 @@ const FormManajemenStep3 = () => {
                 radioButton={true}
                 radioName="jaminanSosialOpt"
                 onClick={() => setJaminanSosialOpt('Iya')}
+                radioValue={jaminanSosialOpt}
+                selected={jaminanSosialOpt == 'Iya'}
                 label="Iya"
               />
             </div>
@@ -613,6 +1329,8 @@ const FormManajemenStep3 = () => {
                 radioButton={true}
                 radioName="jaminanSosialOpt"
                 onClick={() => setJaminanSosialOpt('Tidak')}
+                radioValue={jaminanSosialOpt}
+                selected={jaminanSosialOpt == 'Tidak'}
                 label="Tidak"
               />
             </div>
@@ -624,6 +1342,7 @@ const FormManajemenStep3 = () => {
                   titleForm='Jenis Jamsostek yang diikuti'
                   titleName='Jenis Jamsostek yang diikuti'
                   onChange={(e) => setJenisJamsostek(e.target.value)}
+                  values={jenisJamsostek}
                   type="text"
                   placeholder='pilih jenis jamsostek'
                   className={`${
@@ -664,6 +1383,8 @@ const FormManajemenStep3 = () => {
                 radioButton={true}
                 radioName="biayaSewaOpt"
                 onClick={() => setBiayaSewaOpt('Iya')}
+                radioValue={biayaSewaOpt}
+                selected={biayaSewaOpt == 'Iya'}
                 label="Iya"
               />
             </div>
@@ -672,6 +1393,8 @@ const FormManajemenStep3 = () => {
                 radioButton={true}
                 radioName="biayaSewaOpt"
                 onClick={() => setBiayaSewaOpt('Tidak')}
+                radioValue={biayaSewaOpt}
+                selected={biayaSewaOpt == 'Tidak'}
                 label="Tidak"
               />
             </div>
@@ -703,6 +1426,8 @@ const FormManajemenStep3 = () => {
                 radioButton={true}
                 radioName="bonusOpt"
                 onClick={() => setBonusOpt('Iya')}
+                radioValue={biayaSewaOpt}
+                selected={biayaSewaOpt == 'Iya'}
                 label="Iya"
               />
             </div>
@@ -711,6 +1436,8 @@ const FormManajemenStep3 = () => {
                 radioButton={true}
                 radioName="bonusOpt"
                 onClick={() => setBonusOpt('Tidak')}
+                radioValue={biayaSewaOpt}
+                selected={biayaSewaOpt == 'Tidak'}
                 label="Tidak"
               />
             </div>
@@ -791,6 +1518,8 @@ const FormManajemenStep3 = () => {
                 radioButton={true}
                 radioName="koperasiBdnHukumOpt"
                 onClick={() => setKoperasiBdnHukumOpt('Iya')}
+                radioValue={koperasiBdnHukumOpt}
+                selected={koperasiBdnHukumOpt == 'Iya'}
                 label="Iya"
               />
             </div>
@@ -799,6 +1528,8 @@ const FormManajemenStep3 = () => {
                 radioButton={true}
                 radioName="koperasiBdnHukumOpt"
                 onClick={() => setKoperasiBdnHukumOpt('Tidak')}
+                radioValue={koperasiBdnHukumOpt}
+                selected={koperasiBdnHukumOpt == 'Tidak'}
                 label="Tidak"
               />
             </div>
@@ -810,6 +1541,7 @@ const FormManajemenStep3 = () => {
                   titleForm='Jenis usaha koperasi yang sudah dilaksanakan'
                   titleName='Jenis usaha koperasi yang sudah dilaksanakan'
                   onChange={(e) => setUsahaKoperasiDilaksanakan(e.target.value)}
+                  values={usahaKoperasiDilaksanakan}
                   type="text"
                   placeholder='pilih jenis jamsostek'
                   className={`${
@@ -826,6 +1558,8 @@ const FormManajemenStep3 = () => {
                     radioButton={true}
                     radioName="koperasiSesuaiOpt"
                     onClick={() => setKoperasiSesuaiOpt('Iya')}
+                    radioValue={koperasiSesuaiOpt}
+                    selected={koperasiSesuaiOpt == 'Iya'}
                     label="Iya"
                   />
                 </div>
@@ -834,6 +1568,8 @@ const FormManajemenStep3 = () => {
                     radioButton={true}
                     radioName="koperasiSesuaiOpt"
                     onClick={() => setKoperasiSesuaiOpt('Tidak')}
+                    radioValue={koperasiSesuaiOpt}
+                    selected={koperasiSesuaiOpt == 'Tidak'}
                     label="Tidak"
                   />
                 </div>
@@ -885,6 +1621,8 @@ const FormManajemenStep3 = () => {
                 radioButton={true}
                 radioName="hibahJualSahamOpt"
                 onClick={() => setHibahJualSahamOpt('Ada')}
+                radioValue={hibahJualSahamOpt}
+                selected={hibahJualSahamOpt == 'Ada'}
                 label="Ada"
               />
             </div>
@@ -893,6 +1631,8 @@ const FormManajemenStep3 = () => {
                 radioButton={true}
                 radioName="hibahJualSahamOpt"
                 onClick={() => setHibahJualSahamOpt('Tidak')}
+                radioValue={hibahJualSahamOpt}
+                selected={hibahJualSahamOpt == 'Tidak'}
                 label="Tidak"
               />
             </div>
@@ -906,6 +1646,8 @@ const FormManajemenStep3 = () => {
                 radioButton={true}
                 radioName="asetDigunakanOpt"
                 onClick={() => setAsetDigunakanOpt('Ada')}
+                radioValue={asetDigunakanOpt}
+                selected={asetDigunakanOpt == 'Ada'}
                 label="Ada"
               />
             </div>
@@ -914,6 +1656,8 @@ const FormManajemenStep3 = () => {
                 radioButton={true}
                 radioName="asetDigunakanOpt"
                 onClick={() => setAsetDigunakanOpt('Tidak')}
+                radioValue={asetDigunakanOpt}
+                selected={asetDigunakanOpt == 'Tidak'}
                 label="Tidak"
               />
             </div>
@@ -939,6 +1683,8 @@ const FormManajemenStep3 = () => {
                 radioButton={true}
                 radioName="orgKaryawanOpt"
                 onClick={() => setOrgKaryawanOpt('Sudah')}
+                radioValue={orgKaryawanOpt}
+                selected={orgKaryawanOpt == 'Sudah'}
                 label="Sudah"
               />
             </div>
@@ -947,6 +1693,8 @@ const FormManajemenStep3 = () => {
                 radioButton={true}
                 radioName="orgKaryawanOpt"
                 onClick={() => setOrgKaryawanOpt('Belum')}
+                radioValue={orgKaryawanOpt}
+                selected={orgKaryawanOpt == 'Belum'}
                 label="Belum"
               />
             </div>
@@ -977,6 +1725,8 @@ const FormManajemenStep3 = () => {
                 radioButton={true}
                 radioName="kesepakatanKerjaOpt"
                 onClick={() => setKesepakatanKerjaOpt('Sudah')}
+                radioValue={kesepakatanKerjaOpt}
+                selected={kesepakatanKerjaOpt == 'Sudah'}
                 label="Sudah"
               />
             </div>
@@ -985,6 +1735,8 @@ const FormManajemenStep3 = () => {
                 radioButton={true}
                 radioName="kesepakatanKerjaOpt"
                 onClick={() => setKesepakatanKerjaOpt('Belum')}
+                radioValue={kesepakatanKerjaOpt}
+                selected={kesepakatanKerjaOpt == 'Belum'}
                 label="Belum"
               />
             </div>
@@ -1011,6 +1763,8 @@ const FormManajemenStep3 = () => {
                 radioButton={true}
                 radioName="poliklinikOpt"
                 onClick={() => setPoliklinikOpt('Ada')}
+                radioValue={poliklinikOpt}
+                selected={poliklinikOpt == 'Ada'}
                 label="Ada"
               />
             </div>
@@ -1019,6 +1773,8 @@ const FormManajemenStep3 = () => {
                 radioButton={true}
                 radioName="poliklinikOpt"
                 onClick={() => setPoliklinikOpt('Tidak')}
+                radioValue={poliklinikOpt}
+                selected={poliklinikOpt == 'Tidak'}
                 label="Tidak"
               />
             </div>
@@ -1030,6 +1786,8 @@ const FormManajemenStep3 = () => {
                 radioButton={true}
                 radioName="tenagaMedisOpt"
                 onClick={() => setTenagaMedisOpt('Ada')}
+                radioValue={tenagaMedisOpt}
+                selected={tenagaMedisOpt == 'Ada'}
                 label="Ada"
               />
             </div>
@@ -1038,6 +1796,8 @@ const FormManajemenStep3 = () => {
                 radioButton={true}
                 radioName="tenagaMedisOpt"
                 onClick={() => setTenagaMedisOpt('Tidak')}
+                radioValue={tenagaMedisOpt}
+                selected={tenagaMedisOpt == 'Tidak'}
                 label="Tidak"
               />
             </div>
@@ -1077,6 +1837,8 @@ const FormManajemenStep3 = () => {
                 radioButton={true}
                 radioName="tunjanganPendidikanOpt"
                 onClick={() => setTunjanganPendidikanOpt('Ada')}
+                radioValue={tunjanganPendidikanOpt}
+                selected={tunjanganPendidikanOpt == 'Ada'}
                 label="Ada"
               />
             </div>
@@ -1085,6 +1847,8 @@ const FormManajemenStep3 = () => {
                 radioButton={true}
                 radioName="tunjanganPendidikanOpt"
                 onClick={() => setTunjanganPendidikanOpt('Tidak')}
+                radioValue={tunjanganPendidikanOpt}
+                selected={tunjanganPendidikanOpt == 'Tidak'}
                 label="Tidak"
               />
             </div>
@@ -1099,6 +1863,8 @@ const FormManajemenStep3 = () => {
                 radioButton={true}
                 radioName="rumahIbadahOpt"
                 onClick={() => setRumahIbadahOpt('Ada')}
+                radioValue={rumahIbadahOpt}
+                selected={rumahIbadahOpt == 'Ada'}
                 label="Ada"
               />
             </div>
@@ -1107,6 +1873,8 @@ const FormManajemenStep3 = () => {
                 radioButton={true}
                 radioName="rumahIbadahOpt"
                 onClick={() => setRumahIbadahOpt('Tidak')}
+                radioValue={rumahIbadahOpt}
+                selected={rumahIbadahOpt == 'Tidak'}
                 label="Tidak"
               />
             </div>
@@ -1128,6 +1896,8 @@ const FormManajemenStep3 = () => {
                 radioButton={true}
                 radioName="fasilitasOlahragaOpt"
                 onClick={() => setFasilitasOlahragaOpt('Ada')}
+                radioValue={fasilitasOlahragaOpt}
+                selected={fasilitasOlahragaOpt == 'Ada'}
                 label="Ada"
               />
             </div>
@@ -1136,6 +1906,8 @@ const FormManajemenStep3 = () => {
                 radioButton={true}
                 radioName="fasilitasOlahragaOpt"
                 onClick={() => setFasilitasOlahragaOpt('Tidak')}
+                radioValue={fasilitasOlahragaOpt}
+                selected={fasilitasOlahragaOpt == 'Tidak'}
                 label="Tidak"
               />
             </div>
@@ -1156,6 +1928,8 @@ const FormManajemenStep3 = () => {
                 radioButton={true}
                 radioName="fasilitasHiburanOpt"
                 onClick={() => setFasilitasHiburanOpt('Ada')}
+                radioValue={fasilitasHiburanOpt}
+                selected={fasilitasHiburanOpt == 'Ada'}
                 label="Ada"
               />
             </div>
@@ -1164,6 +1938,8 @@ const FormManajemenStep3 = () => {
                 radioButton={true}
                 radioName="fasilitasHiburanOpt"
                 onClick={() => setFasilitasHiburanOpt('Tidak')}
+                radioValue={fasilitasHiburanOpt}
+                selected={fasilitasHiburanOpt == 'Tidak'}
                 label="Tidak"
               />
             </div>
@@ -1495,6 +2271,7 @@ const FormManajemenStep3 = () => {
                                 titleForm={item.title}
                                 titleName={item.title}
                                 onChange={(e) => formRegularChange(e, lokasiPemasaran, setLokasiPemasaran, i, ii)}
+                                values={item.value}
                                 type="text"
                                 placeholder={item.placeholder}
                                 className={`${
@@ -1527,6 +2304,7 @@ const FormManajemenStep3 = () => {
               titleForm='Bentuk pemasaran'
               titleName='Bentuk pemasaran'
               onChange={(e) => setBentukPemasaran(e.target.value)}
+              values={bentukPemasaran}
               type="text"
               placeholder='pilih yang sesuai'
               className={`${
@@ -1544,6 +2322,8 @@ const FormManajemenStep3 = () => {
                 radioButton={true}
                 radioName="bursaOpt"
                 onClick={() => setBursaOpt('Iya')}
+                radioValue={bursaOpt}
+                selected={bursaOpt == 'Iya'}
                 label="Iya"
               />
             </div>
@@ -1552,6 +2332,8 @@ const FormManajemenStep3 = () => {
                 radioButton={true}
                 radioName="bursaOpt"
                 onClick={() => setBursaOpt('Tidak')}
+                radioValue={bursaOpt}
+                selected={bursaOpt == 'Tidak'}
                 label="Tidak"
               />
             </div>
@@ -1606,6 +2388,8 @@ const FormManajemenStep3 = () => {
                 radioButton={true}
                 radioName="sistemPromosiOpt"
                 onClick={() => setSistemPromosiOpt('Iya')}
+                radioValue={sistemPromosiOpt}
+                selected={sistemPromosiOpt == 'Iya'}
                 label="Iya"
               />
             </div>
@@ -1614,6 +2398,8 @@ const FormManajemenStep3 = () => {
                 radioButton={true}
                 radioName="sistemPromosiOpt"
                 onClick={() => setSistemPromosiOpt('Tidak')}
+                radioValue={sistemPromosiOpt}
+                selected={sistemPromosiOpt == 'Tidak'}
                 label="Tidak"
               />
             </div>

@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import React, { useState, useEffect } from 'react'
 import {useRouter} from 'next/router'
+import _ from 'lodash';
 import InputFileButton from 'src/components/customInput/InputFileButton';
 import InputForm from '../admin/infografis/InputForm';
 import mng from 'src/styles/Managemen.module.scss'
@@ -12,6 +13,14 @@ const preventDefault = f => e => {
 
 const FormLingkungan = () => {
   const [isError, setIsError] = useState(false);
+
+  const router = useRouter()
+
+  const [initialLoad, setInitialLoad] = useState(true)
+  const [btnValid, setBtnValid] = useState(false)
+  const [data, setData] = useState(null)
+  const [dataPass, setDataPass] = useState({})
+  const [dataSubmit, setDataSubmit] = useState({})
 
   ////////////////////////// INPUT FORM STATE ////////////////////////////////
 
@@ -202,9 +211,218 @@ const FormLingkungan = () => {
     setState(list);
   }
 
-  const [btnValid, setBtnValid] = useState(false)
+  useEffect(() => {
+    if (initialLoad) {
+      let retrievedObject = JSON.parse(localStorage.getItem('lingkunganNilai'));
+
+      if (!_.isEmpty(retrievedObject)) {
+
+        let replicateData = {
+          "kelolaLingkungan": [],
+          "jenisKegiatan": [],
+          "pantauLingkungan": [],
+          "kegiatanLahan": [],
+        }
+
+        retrievedObject[0].criticalArea.details.forEach((e, i) => {
+          const formData = _.cloneDeep(jenisKegiatan)
+          formData.forEach((form,ii) => {
+            form.forEach((ee, iii) => {
+              ee.value = e[Object.keys(e)[iii]]
+            })
+            replicateData.jenisKegiatan.push(form)
+          })
+        })
+
+        retrievedObject[0].environmentMonitoring.details.forEach((e, i) => {
+          const formData = _.cloneDeep(pantauLingkungan)
+          formData.forEach((form,ii) => {
+            form.forEach((ee, iii) => {
+              ee.value = e[Object.keys(e)[iii]]
+            })
+            replicateData.pantauLingkungan.push(form)
+          })
+        })
+
+        retrievedObject[0].amdal.details.forEach((e, i) => {
+          const formData = _.cloneDeep(kelolaLingkungan)
+          let moveArr = []
+          Object.keys(e).forEach(key => {
+            moveArr.push(e[key])
+          });
+          formData.forEach((form,i2) => {
+            form.forEach((formData, i3) => {
+              formData.sectionData.forEach((secData, i4) => {
+                secData.value = moveArr[i4]
+              })
+            })
+            replicateData.kelolaLingkungan.push(form)
+          })
+        })
+
+        const formData = _.cloneDeep(kegiatanLahan)
+        formData.forEach((dtFrm, i) => {
+          dtFrm.forEach((dt) => {
+            dt.sectionData.forEach((data, i2) => {
+              data.value = retrievedObject[0].landClearing.details[i2].area
+            })
+          })
+          replicateData.kegiatanLahan.push(dtFrm)
+        })
+
+
+        setPetugasLingkungan(retrievedObject[0].amdal.hasAmdalPersonel)
+        setUnitPetugas(retrievedObject[0].amdal.isOrganized)
+        setSarana(retrievedObject[0].amdal.isEnvironmentalInfrastructureSuficient)
+        setKonservasi(retrievedObject[0].amdal.needConservation)
+        setKelolaLingkungan(replicateData.kelolaLingkungan)
+
+        setBerbatasan(retrievedObject[0].criticalArea.isNearCriticalArea)
+        setUpayaRehab(retrievedObject[0].criticalArea.joinReforestation)
+        setTidakPantau(retrievedObject[0].criticalArea.reason)
+        setJenisKegiatan(replicateData.jenisKegiatan)
+
+        setBukaLahan(retrievedObject[0].landClearing.didLandClearing)
+        setKegiatanLahan(replicateData.kegiatanLahan)
+
+        setPenangananKebakaran(retrievedObject[0].fireManagement.hasFireManagement)
+        setOrgPengangan(retrievedObject[0].fireManagement.organizationType)
+        setPetugasPenangananKebakaran(retrievedObject[0].fireManagement.hasFireManagementPersonel)
+        setJmlPengangan(retrievedObject[0].fireManagement.fireManagementCount)
+        setSistemPengamanan(retrievedObject[0].fireManagement.hasWarning)
+        setSistemBerfungsi(retrievedObject[0].fireManagement.isWarningUsable)
+
+        setJenisLahan(retrievedObject[0].landProcessing.landType)
+        setTeknikPengolahan(retrievedObject[0].landProcessing.technique)
+
+        setPantauLingkunganOpt(retrievedObject[0].environmentMonitoring.didEnvironmentMonitoring)
+        setTidakPantauAlasan(retrievedObject[0].environmentMonitoring.reason)
+        setPantauInstansi(retrievedObject[0].environmentMonitoring.isReported)
+        setLaporInstansi(retrievedObject[0].environmentMonitoring.reportDescription)
+        setPantauLingkungan(replicateData.pantauLingkungan)
+
+        setSertifikat(retrievedObject[0].iso14000Certification.isCertified)
+
+        setLimbahPadat(retrievedObject[0].wasteManagement.produceSolidWaste)
+        setPengangananLmbahPdt(retrievedObject[0].wasteManagement.solidWasteManagement)
+        setLimbahCair(retrievedObject[0].wasteManagement.produceLiquidWaste)
+        setPengangananLmbahCair(retrievedObject[0].wasteManagement.liquidWasteManagement)
+      }
+    }
+    setInitialLoad(false)
+  }, [initialLoad])
+
+
+  useEffect(() => {
+
+    let data = [{
+      "amdal": {
+          "hasAmdalPersonel": petugasLingkungan,
+          "isOrganized": unitPetugas,
+          "isEnvironmentalInfrastructureSuficient": sarana,
+          "needConservation": konservasi,
+          "details": []
+      },
+      "criticalArea": {
+          "isNearCriticalArea": berbatasan,
+          "joinReforestation": upayaRehab,
+          "reason": tidakPantau,
+          "details": []
+      },
+      "landClearing": {
+          "didLandClearing": bukaLahan,
+          "details": []
+      },
+      "fireManagement": {
+          "hasFireManagement": penangananKebakaran,
+          "organizationType": orgPengangan,
+          "hasFireManagementPersonel": petugasPenangananKebakaran,
+          "fireManagementCount": jmlPengangan,
+          "hasWarning": sistemPengamanan,
+          "isWarningUsable": sistemBerfungsi
+      },
+      "landProcessing": {
+          "landType": jenisLahan,
+          "technique": teknikPengolahan
+      },
+      "environmentMonitoring": {
+          "didEnvironmentMonitoring": pantauLingkunganOpt,
+          "reason": tidakPantauAlasan,
+          "isReported": pantauInstansi,
+          "reportDescription": laporInstansi,
+          "details": []
+      },
+      "iso14000Certification": {
+        "description": "Melaksanakan Standar lain selain ISO",
+        "isCertified": sertifikat,
+        "file": {}
+      },
+      "wasteManagement": {
+        "produceSolidWaste": limbahPadat,
+        "solidWasteManagement": pengangananLmbahPdt,
+        "produceLiquidWaste": limbahCair,
+        "liquidWasteManagement": pengangananLmbahCair
+      }
+    }]
+
+    jenisKegiatan.forEach((item, i) => {
+      let inv = {}
+      item.forEach(() => {
+        inv.activity = item[0].value
+        inv.frequency = item[1].value
+      });
+      data[0].criticalArea.details.push(inv)
+    });
+
+    pantauLingkungan.forEach((item, i) => {
+      let inv = {}
+      item.forEach(() => {
+        inv.description = item[0].value
+        inv.frequency = item[1].value
+        inv.method = item[2].value
+      });
+      data[0].environmentMonitoring.details.push(inv)
+    });
+
+    kelolaLingkungan.forEach((item, i) => {
+      let dataTemp = {}
+      item.forEach((e, i, arr) => {
+        dataTemp.year = arr[0].sectionData[0].value
+        dataTemp.activity = arr[1].sectionData[0].value
+        dataTemp.plannedUnit = arr[1].sectionData[1].value
+        dataTemp.realUnit = arr[1].sectionData[2].value
+      });
+      data[0].amdal.details.push(dataTemp)
+    });
+
+    kegiatanLahan.forEach((item, i) => {
+      item.forEach((e, i, arr) => {
+        e.sectionData.forEach((dt, i2, arr2) => {
+          let dataTemp = {}
+          dataTemp.clearingType = e.sectionTitle
+          dataTemp.year = dt.title
+          dataTemp.area = dt.value
+          data[0].landClearing.details.push(dataTemp)
+        })
+      });
+    });
+
+    setDataSubmit(data)
+
+  }, [tidakTerlibat,orgPengangan,jmlPengangan,teknikPengolahan,tidakPantauAlasan,tidakPantau,laporInstansi
+    ,mnjLingkungan,pengangananLmbahPdt,pengangananLmbahCair,kelolaLingkungan,jenisKegiatan,pantauLingkungan
+    ,kegiatanLahan,petugasLingkungan,unitPetugas,sarana,konservasi,berbatasan,upayaRehab,bukaLahan,penangananKebakaran
+    ,petugasPenangananKebakaran,sistemPengamanan,sistemBerfungsi,jenisLahan,pantauLingkunganOpt,pantauInstansi
+    ,sertifikat,limbahPadat,limbahCair])
+
+  useEffect(() => {
+    if (!_.isEmpty(dataSubmit)) {
+      setDataPass(dataSubmit)
+    }
+  },[dataPass,dataSubmit])
 
   const storeData = preventDefault(() => {
+    localStorage.setItem("lingkunganNilai", JSON.stringify(dataSubmit));
 
   })
 
@@ -229,6 +447,8 @@ const FormLingkungan = () => {
                 radioButton={true}
                 radioName="petugasLingkungan"
                 onClick={() => setPetugasLingkungan('Ada')}
+                radioValue={petugasLingkungan}
+                selected={petugasLingkungan == 'Ada'}
                 label="Ada"
               />
             </div>
@@ -237,6 +457,8 @@ const FormLingkungan = () => {
                 radioButton={true}
                 radioName="petugasLingkungan"
                 onClick={() => setPetugasLingkungan('Tidak')}
+                radioValue={petugasLingkungan}
+                selected={petugasLingkungan == 'Tidak'}
                 label="Tidak"
               />
             </div>
@@ -248,16 +470,20 @@ const FormLingkungan = () => {
                 <div className="inline-flex items-center">
                   <InputForm
                     radioButton={true}
-                    radioName="petugasLingkungan"
-                    onClick={() => setPetugasLingkungan('Iya')}
+                    radioName="unitPetugas"
+                    onClick={() => setUnitPetugas('Iya')}
+                    radioValue={unitPetugas}
+                    selected={unitPetugas == 'Iya'}
                     label="Iya"
                   />
                 </div>
                 <div className="mx-10 inline-flex items-center">
                   <InputForm
                     radioButton={true}
-                    radioName="petugasLingkungan"
-                    onClick={() => setPetugasLingkungan('Tidak')}
+                    radioName="unitPetugas"
+                    onClick={() => setUnitPetugas('Tidak')}
+                    radioValue={unitPetugas}
+                    selected={unitPetugas == 'Tidak'}
                     label="Tidak"
                   />
                 </div>
@@ -273,6 +499,8 @@ const FormLingkungan = () => {
                 radioButton={true}
                 radioName="sarana"
                 onClick={() => setSarana('Ada dan memadai')}
+                radioValue={sarana}
+                selected={sarana == 'Ada dan memadai'}
                 label="Ada dan memadai"
               />
             </div>
@@ -281,6 +509,8 @@ const FormLingkungan = () => {
                 radioButton={true}
                 radioName="sarana"
                 onClick={() => setSarana('Ada tetapi tidak memadai')}
+                radioValue={sarana}
+                selected={sarana == 'Ada tetapi tidak memadai'}
                 label="Ada tetapi tidak memadai"
               />
             </div>
@@ -289,6 +519,8 @@ const FormLingkungan = () => {
                 radioButton={true}
                 radioName="sarana"
                 onClick={() => setSarana('Tidak ada')}
+                radioValue={sarana}
+                selected={sarana == 'Tidak ada'}
                 label="Tidak ada"
               />
             </div>
@@ -302,6 +534,8 @@ const FormLingkungan = () => {
                 radioButton={true}
                 radioName="konservasi"
                 onClick={() => setKonservasi('Iya')}
+                radioValue={konservasi}
+                selected={konservasi == 'Iya'}
                 label="Iya"
               />
             </div>
@@ -310,6 +544,8 @@ const FormLingkungan = () => {
                 radioButton={true}
                 radioName="konservasi"
                 onClick={() => setKonservasi('Tidak')}
+                radioValue={konservasi}
+                selected={konservasi == 'Tidak'}
                 label="AdaTidak"
               />
             </div>
@@ -369,6 +605,8 @@ const FormLingkungan = () => {
                 radioButton={true}
                 radioName="berbatasan"
                 onClick={() => setBerbatasan('Iya')}
+                radioValue={berbatasan}
+                selected={berbatasan == 'Iya'}
                 label="Iya"
               />
             </div>
@@ -377,6 +615,8 @@ const FormLingkungan = () => {
                 radioButton={true}
                 radioName="berbatasan"
                 onClick={() => setBerbatasan('Tidak')}
+                radioValue={berbatasan}
+                selected={berbatasan == 'Tidak'}
                 label="Tidak"
               />
             </div>
@@ -390,6 +630,8 @@ const FormLingkungan = () => {
                     radioButton={true}
                     radioName="upayaRehab"
                     onClick={() => setUpayaRehab('Iya')}
+                    radioValue={upayaRehab}
+                    selected={upayaRehab == 'Iya'}
                     label="Iya"
                   />
                 </div>
@@ -398,6 +640,8 @@ const FormLingkungan = () => {
                     radioButton={true}
                     radioName="upayaRehab"
                     onClick={() => setUpayaRehab('Tidak')}
+                    radioValue={upayaRehab}
+                    selected={upayaRehab == 'Tidak'}
                     label="Tidak"
                   />
                 </div>
@@ -445,30 +689,6 @@ const FormLingkungan = () => {
 
 
         <div className={`${mng["base__formsection"]}`}>
-          <span className={mng.base__subtitle}>KAWASAN LINDUNG, SUMBER AIR, SUNGAI DAN REHABILITASI LAHAN KRITIS</span>
-          <label className={mng.base__formlabel}>
-            <span className={mng.base__inputtitle}>Apakah di lokasi kebun Saudara terdapat atau berbatasan dengan kawasan lindung, lahan kritis atau hutan?</span>
-            <div className="inline-flex items-center">
-              <InputForm
-                radioButton={true}
-                radioName="berbatasan"
-                onClick={() => setBerbatasan('Iya')}
-                label="Iya"
-              />
-            </div>
-            <div className="mx-10 inline-flex items-center">
-              <InputForm
-                radioButton={true}
-                radioName="berbatasan"
-                onClick={() => setBerbatasan('Tidak')}
-                label="Tidak"
-              />
-            </div>
-          </label>
-        </div>
-
-
-        <div className={`${mng["base__formsection"]}`}>
           <span className={mng.base__subtitle}>PEMBAKARAN, KEBAKARAN LAHAN & KEBUN</span>
           <p className={`${mng["base__formtitle"]} ${'mt-4'}`}>Pembukaan dan Pembersihan Lahan serta Peremajaan Tanaman</p>
           <label className={mng.base__formlabel}>
@@ -478,6 +698,8 @@ const FormLingkungan = () => {
                 radioButton={true}
                 radioName="bukaLahan"
                 onClick={() => setBukaLahan('Ada')}
+                radioValue={bukaLahan}
+                selected={bukaLahan == 'Ada'}
                 label="Ada"
               />
             </div>
@@ -486,24 +708,26 @@ const FormLingkungan = () => {
                 radioButton={true}
                 radioName="bukaLahan"
                 onClick={() => setBukaLahan('Tidak')}
+                radioValue={bukaLahan}
+                selected={bukaLahan == 'Tidak'}
                 label="Tidak"
               />
             </div>
           </label>
-          {bukaLahan == 'Iya' ? (
+          {bukaLahan == 'Ada' ? (
             <div className="mt-6">
               <div className="flex flex-col">
                 {
                   kegiatanLahan.map((items, i) => (
-                    <div className={`${mng["base__formlabel_twin"]}`} key={i}>
+                    <div className={`w-full`} key={i}>
                       {
                         items.map((item,ii) => (
-                          <div className={`${mng["base__formlabel_twin"]} ${mng["base__formlabel_twin-firstfull"]} w-full`} key={ii}>
+                          <div className={`w-full`} key={ii}>
                             <p className={`${mng["base__formtitle"]} ${"mt-0"}`}>{item.sectionTitle}</p>
-                            <div className={`${mng["base__formlabel_twin"]} w-full`}>
+                            <div className={`${mng["base__formlabel_fours"]} w-full flex`}>
                             {
                               item.sectionData.map((child,iii) => (
-                                <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={iii}>
+                                <label className={`${mng["base__formlabel"]}`} key={iii}>
                                   <span className={mng.base__inputtitle}>{child.title}</span>
                                   <input className={mng.base__inputbase} type={child.type} min='0' placeholder={child.placeholder} value={child.value} onChange={(e) => formSectionChange(e, kegiatanLahan, setKegiatanLahan, i, ii, iii)}/>
                                 </label>
@@ -529,6 +753,8 @@ const FormLingkungan = () => {
                 radioButton={true}
                 radioName="penangananKebakaran"
                 onClick={() => setPenangananKebakaran('Iya')}
+                radioValue={penangananKebakaran}
+                selected={penangananKebakaran == 'Iya'}
                 label="Iya"
               />
             </div>
@@ -537,6 +763,8 @@ const FormLingkungan = () => {
                 radioButton={true}
                 radioName="penangananKebakaran"
                 onClick={() => setPenangananKebakaran('Tidak')}
+                radioValue={penangananKebakaran}
+                selected={penangananKebakaran == 'Tidak'}
                 label="Tidak"
               />
             </div>
@@ -559,6 +787,8 @@ const FormLingkungan = () => {
                 radioButton={true}
                 radioName="petugasPenangananKebakaran"
                 onClick={() => setPetugasPenangananKebakaran('Iya')}
+                radioValue={petugasPenangananKebakaran}
+                selected={petugasPenangananKebakaran == 'Iya'}
                 label="Iya"
               />
             </div>
@@ -567,6 +797,8 @@ const FormLingkungan = () => {
                 radioButton={true}
                 radioName="petugasPenangananKebakaran"
                 onClick={() => setPetugasPenangananKebakaran('Tidak')}
+                radioValue={petugasPenangananKebakaran}
+                selected={petugasPenangananKebakaran == 'Tidak'}
                 label="Tidak"
               />
             </div>
@@ -590,6 +822,8 @@ const FormLingkungan = () => {
                 radioButton={true}
                 radioName="sistemPengamanan"
                 onClick={() => setSistemPengamanan('Iya')}
+                radioValue={sistemPengamanan}
+                selected={sistemPengamanan == 'Iya'}
                 label="Iya"
               />
             </div>
@@ -598,6 +832,8 @@ const FormLingkungan = () => {
                 radioButton={true}
                 radioName="sistemPengamanan"
                 onClick={() => setSistemPengamanan('Tidak')}
+                radioValue={sistemPengamanan}
+                selected={sistemPengamanan == 'Tidak'}
                 label="Tidak"
               />
             </div>
@@ -611,6 +847,8 @@ const FormLingkungan = () => {
                     radioButton={true}
                     radioName="sistemBerfungsi"
                     onClick={() => setSistemBerfungsi('Iya')}
+                    radioValue={sistemBerfungsi}
+                    selected={sistemBerfungsi == 'Iya'}
                     label="Iya"
                   />
                 </div>
@@ -619,6 +857,8 @@ const FormLingkungan = () => {
                     radioButton={true}
                     radioName="sistemBerfungsi"
                     onClick={() => setSistemBerfungsi('Tidak')}
+                    radioValue={sistemBerfungsi}
+                    selected={sistemBerfungsi == 'Tidak'}
                     label="Tidak"
                   />
                 </div>
@@ -641,6 +881,8 @@ const FormLingkungan = () => {
                 radioButton={true}
                 radioName="jenisLahan"
                 onClick={() => setJenisLahan('Tanah Mineral')}
+                radioValue={jenisLahan}
+                selected={jenisLahan == 'Tanah Mineral'}
                 label="Tanah Mineral"
               />
             </div>
@@ -649,6 +891,8 @@ const FormLingkungan = () => {
                 radioButton={true}
                 radioName="jenisLahan"
                 onClick={() => setJenisLahan('Pasang Surut')}
+                radioValue={jenisLahan}
+                selected={jenisLahan == 'Pasang Surut'}
                 label="Pasang Surut"
               />
             </div>
@@ -657,6 +901,8 @@ const FormLingkungan = () => {
                 radioButton={true}
                 radioName="jenisLahan"
                 onClick={() => setJenisLahan('Gambut')}
+                radioValue={jenisLahan}
+                selected={jenisLahan == 'Gambut'}
                 label="Gambut"
               />
             </div>
@@ -678,6 +924,8 @@ const FormLingkungan = () => {
                 radioButton={true}
                 radioName="pantauLingkunganOpt"
                 onClick={() => setPantauLingkunganOpt('Iya')}
+                radioValue={pantauLingkunganOpt}
+                selected={pantauLingkunganOpt == 'Iya'}
                 label="Iya"
               />
             </div>
@@ -686,6 +934,8 @@ const FormLingkungan = () => {
                 radioButton={true}
                 radioName="pantauLingkunganOpt"
                 onClick={() => setPantauLingkunganOpt('Tidak')}
+                radioValue={pantauLingkunganOpt}
+                selected={pantauLingkunganOpt == 'Tidak'}
                 label="Tidak"
               />
             </div>
@@ -750,6 +1000,8 @@ const FormLingkungan = () => {
                 radioButton={true}
                 radioName="pantauInstansi"
                 onClick={() => setPantauInstansi('Iya')}
+                radioValue={pantauInstansi}
+                selected={pantauInstansi == 'Iya'}
                 label="Iya"
               />
             </div>
@@ -758,6 +1010,8 @@ const FormLingkungan = () => {
                 radioButton={true}
                 radioName="pantauInstansi"
                 onClick={() => setPantauInstansi('Tidak')}
+                radioValue={pantauInstansi}
+                selected={pantauInstansi == 'Tidak'}
                 label="Tidak"
               />
             </div>
@@ -786,6 +1040,8 @@ const FormLingkungan = () => {
                 radioButton={true}
                 radioName="sertifikat"
                 onClick={() => setSertifikat('Iya')}
+                radioValue={sertifikat}
+                selected={sertifikat == 'Iya'}
                 label="Iya"
               />
             </div>
@@ -794,6 +1050,8 @@ const FormLingkungan = () => {
                 radioButton={true}
                 radioName="sertifikat"
                 onClick={() => setSertifikat('Tidak')}
+                radioValue={sertifikat}
+                selected={sertifikat == 'Tidak'}
                 label="Tidak"
               />
             </div>
@@ -833,6 +1091,8 @@ const FormLingkungan = () => {
                 radioButton={true}
                 radioName="limbahPadat"
                 onClick={() => setLimbahPadat('Iya')}
+                radioValue={limbahPadat}
+                selected={limbahPadat == 'Iya'}
                 label="Iya"
               />
             </div>
@@ -841,6 +1101,8 @@ const FormLingkungan = () => {
                 radioButton={true}
                 radioName="limbahPadat"
                 onClick={() => setLimbahPadat('Tidak')}
+                radioValue={limbahPadat}
+                selected={limbahPadat == 'Tidak'}
                 label="Tidak"
               />
             </div>
@@ -851,7 +1113,8 @@ const FormLingkungan = () => {
                 <InputForm
                   titleForm="Bagaimana Penanganan Limbah padat tersebut? (pilih yang sesuai)"
                   titleName="Bagaimana Penanganan Limbah padat tersebut? (pilih yang sesuai)"
-                  onChange={(e) => setPengangananLmbahPdt(e)}
+                  onChange={(e) => setPengangananLmbahPdt(e.target.value)}
+                  values={pengangananLmbahPdt}
                   type="text"
                   placeholder="pilih opsi yang sesuai"
                   className={`${
@@ -873,6 +1136,8 @@ const FormLingkungan = () => {
                 radioButton={true}
                 radioName="limbahCair"
                 onClick={() => setLimbahCair('Iya')}
+                radioValue={limbahCair}
+                selected={limbahCair == 'Iya'}
                 label="Iya"
               />
             </div>
@@ -881,6 +1146,8 @@ const FormLingkungan = () => {
                 radioButton={true}
                 radioName="limbahCair"
                 onClick={() => setLimbahCair('Tidak')}
+                radioValue={limbahCair}
+                selected={limbahCair == 'Tidak'}
                 label="Tidak"
               />
             </div>
@@ -891,7 +1158,8 @@ const FormLingkungan = () => {
                 <InputForm
                   titleForm="Bagaimana Penanganan Limbah Cair tersebut? (pilih yang sesuai)"
                   titleName="Bagaimana Penanganan Limbah Cair tersebut? (pilih yang sesuai)"
-                  onChange={(e) => setPengangananLmbahCair(e)}
+                  onChange={(e) => setPengangananLmbahCair(e.target.value)}
+                  values={pengangananLmbahCair}
                   type="text"
                   placeholder="pilih opsi yang sesuai"
                   className={`${
@@ -915,7 +1183,7 @@ const FormLingkungan = () => {
             </div>
           */}
 
-          <button className={`${mng["base__btnsimpan"]} ${"float-right mt-1"}`} onClick={storeData} disabled={!btnValid}>
+          <button className={`${mng["base__btnsimpan"]} ${"float-right mt-1"}`} onClick={storeData} >
             Simpan dan Lanjutkan
           </button>
         </div>

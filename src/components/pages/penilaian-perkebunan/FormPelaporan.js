@@ -1,4 +1,7 @@
-import React, { useState } from 'react';
+import Head from 'next/head'
+import React, { useState, useEffect } from 'react'
+import {useRouter} from 'next/router'
+import _ from 'lodash';
 import InputForm from '../admin/infografis/InputForm';
 import mng from '../../../styles/Managemen.module.scss'
 
@@ -9,6 +12,14 @@ const preventDefault = f => e => {
 
 const FormLapor = () => {
   const [isError, setIsError] = useState(false);
+
+  const router = useRouter()
+
+  const [initialLoad, setInitialLoad] = useState(true)
+  const [btnValid, setBtnValid] = useState(false)
+  const [data, setData] = useState(null)
+  const [dataPass, setDataPass] = useState({})
+  const [dataSubmit, setDataSubmit] = useState([])
 
   const [ket1, setKet1] = useState('');
   const [ket2, setKet2] = useState('');
@@ -57,10 +68,111 @@ const FormLapor = () => {
 
   ////////////////////////// OTHER FUNCTION ////////////////////////////////
 
-  const [btnValid, setBtnValid] = useState(false)
+  useEffect(() => {
+    if (initialLoad) {
+      let retrievedObject = JSON.parse(localStorage.getItem('laporNilai'));
+
+      if (!_.isEmpty(retrievedObject)) {
+        setLegalLapor(retrievedObject[0].reportCompleteness)
+        setLegalLaporSampai(retrievedObject[0].reportOntime)
+        setKet1(retrievedObject[0].description)
+
+        setMnjLapor(retrievedObject[1].reportCompleteness)
+        setMnjLaporSampai(retrievedObject[1].reportOntime)
+        setKet2(retrievedObject[1].description)
+
+        setKebunLapor(retrievedObject[2].reportCompleteness)
+        setKebunLaporSampai(retrievedObject[2].reportOntime)
+        setKet3(retrievedObject[2].description)
+
+        setOlahLapor(retrievedObject[3].reportCompleteness)
+        setOlahLaporSampai(retrievedObject[3].reportOntime)
+        setKet4(retrievedObject[3].description)
+
+        setSosialLapor(retrievedObject[4].reportCompleteness)
+        setSosialLaporSampai(retrievedObject[4].reportOntime)
+        setKet5(retrievedObject[4].description)
+
+        setEkoLapor(retrievedObject[5].reportCompleteness)
+        setEkoLaporSampai(retrievedObject[5].reportOntime)
+        setKet6(retrievedObject[5].description)
+
+        setLingkunganLapor(retrievedObject[6].reportCompleteness)
+        setLingkunganLaporSampai(retrievedObject[6].reportOntime)
+        setKet7(retrievedObject[6].description)
+      }
+    }
+    setInitialLoad(false)
+  }, [initialLoad])
+
+  useEffect(() => {
+
+    setDataSubmit([
+      {
+        "aspect": "Legalitas",
+        "reportCompleteness": legalLapor,
+        "reportOntime": legalLaporSampai,
+        "description": ket1
+      },
+      {
+        "aspect": "Manajemen",
+        "reportCompleteness": mnjLapor,
+        "reportOntime": mnjLaporSampai,
+        "description": ket2
+      },
+      {
+        "aspect": "Kebun",
+        "reportCompleteness": kebunLapor,
+        "reportOntime": kebunLaporSampai,
+        "description": ket3
+      },
+      {
+        "aspect": "Pengolahan Hasil",
+        "reportCompleteness": olahLapor,
+        "reportOntime": olahLaporSampai,
+        "description": ket4
+      },
+      {
+        "aspect": "Sosial",
+        "reportCompleteness": sosialLapor,
+        "reportOntime": sosialLaporSampai,
+        "description": ket5
+      },
+      {
+        "aspect": "Ekonomi WIlayah",
+        "reportCompleteness": ekoLapor,
+        "reportOntime": ekoLaporSampai,
+        "description": ket6
+      },
+      {
+        "aspect": "Linkungan",
+        "reportCompleteness": lingkunganLapor,
+        "reportOntime": lingkunganLaporSampai,
+        "description": ket7
+      }
+    ])
+
+  }, [legalLapor,legalLaporSampai,mnjLapor,mnjLaporSampai,kebunLapor,kebunLaporSampai,olahLapor
+    ,olahLaporSampai,sosialLapor,sosialLaporSampai,ekoLapor,ekoLaporSampai,lingkunganLapor
+    ,lingkunganLaporSampai,ket1,ket2,ket3,ket4,ket5,ket6,ket7])
+
+  useEffect(() => {
+    if (!_.isEmpty(dataSubmit)) {
+      setDataPass(dataSubmit)
+    }
+  },[dataPass,dataSubmit])
 
   const storeData = preventDefault(() => {
+    localStorage.setItem("laporNilai", JSON.stringify(dataSubmit));
 
+    console.log('Data Send Pelaporan Nilai')
+    console.log('=========================================================')
+    console.log(dataSubmit)
+    console.log('=========================================================')
+
+    router.push({
+      pathname: "/penilaian-perkebunan/konfirmasi"
+    })
   })
 
   function clearData() {
@@ -69,6 +181,10 @@ const FormLapor = () => {
 
   return (
     <>
+      <Head>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+      </Head>
+
       <form>
         <div className={`${mng["base__formsection"]} border-b-0`}>
           {/* Aspek Laporan : Legalitas */}
@@ -80,6 +196,8 @@ const FormLapor = () => {
                 radioButton={true}
                 radioName="legalLapor"
                 onClick={() => setLegalLaporOpt('Lengkap')}
+                radioValue={legalLapor}
+                selected={legalLapor == 'Lengkap'}
                 label="Lengkap"
               />
             </div>
@@ -88,6 +206,8 @@ const FormLapor = () => {
                 radioButton={true}
                 radioName="legalLapor"
                 onClick={() => setLegalLaporOpt('Tidak Lengkap')}
+                radioValue={legalLapor}
+                selected={legalLapor == 'Tidak Lengkap'}
                 label="Tidak Lengkap"
               />
             </div>
@@ -99,6 +219,8 @@ const FormLapor = () => {
                 radioButton={true}
                 radioName="legalLaporSampai"
                 onClick={() => setLegalLaporSampaiOpt('Tepat Waktu')}
+                radioValue={legalLaporSampai}
+                selected={legalLaporSampai == 'Tepat Waktu'}
                 label="Tepat Waktu"
               />
             </div>
@@ -107,6 +229,8 @@ const FormLapor = () => {
                 radioButton={true}
                 radioName="legalLaporSampai"
                 onClick={() => setLegalLaporSampaiOpt('Tidak Tepat Waktu')}
+                radioValue={legalLaporSampai}
+                selected={legalLaporSampai == 'Tidak Tepat Waktu'}
                 label="Tidak Tepat Waktu"
               />
             </div>
@@ -125,6 +249,8 @@ const FormLapor = () => {
                 radioButton={true}
                 radioName="mnjLapor"
                 onClick={() => setMnjLaporOpt('Lengkap')}
+                radioValue={mnjLapor}
+                selected={mnjLapor == 'Lengkap'}
                 label="Lengkap"
               />
             </div>
@@ -133,6 +259,8 @@ const FormLapor = () => {
                 radioButton={true}
                 radioName="mnjLapor"
                 onClick={() => setMnjLaporOpt('Tidak Lengkap')}
+                radioValue={mnjLapor}
+                selected={mnjLapor == 'Tidak Lengkap'}
                 label="Tidak Lengkap"
               />
             </div>
@@ -144,6 +272,8 @@ const FormLapor = () => {
                 radioButton={true}
                 radioName="mnjLaporSampai"
                 onClick={() => setMnjLaporSampaiOpt('Tepat Waktu')}
+                radioValue={mnjLaporSampai}
+                selected={mnjLaporSampai == 'Tepat Waktu'}
                 label="Tepat Waktu"
               />
             </div>
@@ -152,6 +282,8 @@ const FormLapor = () => {
                 radioButton={true}
                 radioName="mnjLaporSampai"
                 onClick={() => setMnjLaporSampaiOpt('Tidak Tepat Waktu')}
+                radioValue={mnjLaporSampai}
+                selected={mnjLaporSampai == 'Tidak Tepat Waktu'}
                 label="Tidak Tepat Waktu"
               />
             </div>
@@ -170,6 +302,8 @@ const FormLapor = () => {
                 radioButton={true}
                 radioName="kebunLapor"
                 onClick={() => setKebunLaporOpt('Lengkap')}
+                radioValue={kebunLapor}
+                selected={kebunLapor == 'Lengkap'}
                 label="Lengkap"
               />
             </div>
@@ -178,6 +312,8 @@ const FormLapor = () => {
                 radioButton={true}
                 radioName="kebunLapor"
                 onClick={() => setKebunLaporOpt('Tidak Lengkap')}
+                radioValue={kebunLapor}
+                selected={kebunLapor == 'Tidak Lengkap'}
                 label="Tidak Lengkap"
               />
             </div>
@@ -189,6 +325,8 @@ const FormLapor = () => {
                 radioButton={true}
                 radioName="kebunLaporSampai"
                 onClick={() => setKebunLaporSampaiOpt('Tepat Waktu')}
+                radioValue={kebunLaporSampai}
+                selected={kebunLaporSampai == 'Tepat Waktu'}
                 label="Tepat Waktu"
               />
             </div>
@@ -197,6 +335,8 @@ const FormLapor = () => {
                 radioButton={true}
                 radioName="kebunLaporSampai"
                 onClick={() => setKebunLaporSampaiOpt('Tidak Tepat Waktu')}
+                radioValue={kebunLaporSampai}
+                selected={kebunLaporSampai == 'Tidak Tepat Waktu'}
                 label="Tidak Tepat Waktu"
               />
             </div>
@@ -215,6 +355,8 @@ const FormLapor = () => {
                 radioButton={true}
                 radioName="olahLapor"
                 onClick={() => setOlahLaporOpt('Lengkap')}
+                radioValue={olahLapor}
+                selected={olahLapor == 'Lengkap'}
                 label="Lengkap"
               />
             </div>
@@ -223,6 +365,8 @@ const FormLapor = () => {
                 radioButton={true}
                 radioName="olahLapor"
                 onClick={() => setOlahLaporOpt('Tidak Lengkap')}
+                radioValue={olahLapor}
+                selected={olahLapor == 'Tidak Lengkap'}
                 label="Tidak Lengkap"
               />
             </div>
@@ -234,6 +378,8 @@ const FormLapor = () => {
                 radioButton={true}
                 radioName="olahLaporSampai"
                 onClick={() => setOlahLaporSampaiOpt('Tepat Waktu')}
+                radioValue={olahLaporSampai}
+                selected={olahLaporSampai == 'Tepat Waktu'}
                 label="Tepat Waktu"
               />
             </div>
@@ -242,6 +388,8 @@ const FormLapor = () => {
                 radioButton={true}
                 radioName="olahLaporSampai"
                 onClick={() => setOlahLaporSampaiOpt('Tidak Tepat Waktu')}
+                radioValue={olahLaporSampai}
+                selected={olahLaporSampai == 'Tidak Tepat Waktu'}
                 label="Tidak Tepat Waktu"
               />
             </div>
@@ -260,6 +408,8 @@ const FormLapor = () => {
                 radioButton={true}
                 radioName="sosialLapor"
                 onClick={() => setSosialLaporOpt('Lengkap')}
+                radioValue={sosialLapor}
+                selected={sosialLapor == 'Lengkap'}
                 label="Lengkap"
               />
             </div>
@@ -268,6 +418,8 @@ const FormLapor = () => {
                 radioButton={true}
                 radioName="sosialLapor"
                 onClick={() => setSosialLaporOpt('Tidak Lengkap')}
+                radioValue={sosialLapor}
+                selected={sosialLapor == 'Tidak Lengkap'}
                 label="Tidak Lengkap"
               />
             </div>
@@ -279,6 +431,8 @@ const FormLapor = () => {
                 radioButton={true}
                 radioName="sosialLaporSampai"
                 onClick={() => setSosialLaporSampaiOpt('Tepat Waktu')}
+                radioValue={sosialLaporSampai}
+                selected={sosialLaporSampai == 'Tepat Waktu'}
                 label="Tepat Waktu"
               />
             </div>
@@ -287,6 +441,8 @@ const FormLapor = () => {
                 radioButton={true}
                 radioName="sosialLaporSampai"
                 onClick={() => setSosialLaporSampaiOpt('Tidak Tepat Waktu')}
+                radioValue={sosialLaporSampai}
+                selected={sosialLaporSampai == 'Tidak Tepat Waktu'}
                 label="Tidak Tepat Waktu"
               />
             </div>
@@ -305,6 +461,8 @@ const FormLapor = () => {
                 radioButton={true}
                 radioName="ekoLapor"
                 onClick={() => setEkoLaporOpt('Lengkap')}
+                radioValue={ekoLapor}
+                selected={ekoLapor == 'Lengkap'}
                 label="Lengkap"
               />
             </div>
@@ -313,6 +471,8 @@ const FormLapor = () => {
                 radioButton={true}
                 radioName="ekoLapor"
                 onClick={() => setEkoLaporOpt('Tidak Lengkap')}
+                radioValue={ekoLapor}
+                selected={ekoLapor == 'Tidak Lengkap'}
                 label="Tidak Lengkap"
               />
             </div>
@@ -324,6 +484,8 @@ const FormLapor = () => {
                 radioButton={true}
                 radioName="ekoLaporSampai"
                 onClick={() => setEkoLaporSampaiOpt('Tepat Waktu')}
+                radioValue={ekoLaporSampai}
+                selected={ekoLaporSampai == 'Tepat Waktu'}
                 label="Tepat Waktu"
               />
             </div>
@@ -332,6 +494,8 @@ const FormLapor = () => {
                 radioButton={true}
                 radioName="ekoLaporSampai"
                 onClick={() => setEkoLaporSampaiOpt('Tidak Tepat Waktu')}
+                radioValue={ekoLaporSampai}
+                selected={ekoLaporSampai == 'Tidak Tepat Waktu'}
                 label="Tidak Tepat Waktu"
               />
             </div>
@@ -350,6 +514,8 @@ const FormLapor = () => {
                 radioButton={true}
                 radioName="lingkunganLapor"
                 onClick={() => setLingkunganLaporOpt('Lengkap')}
+                radioValue={lingkunganLapor}
+                selected={lingkunganLapor == 'Lengkap'}
                 label="Lengkap"
               />
             </div>
@@ -358,6 +524,8 @@ const FormLapor = () => {
                 radioButton={true}
                 radioName="lingkunganLapor"
                 onClick={() => setLingkunganLaporOpt('Tidak Lengkap')}
+                radioValue={lingkunganLapor}
+                selected={lingkunganLapor == 'Tidak Lengkap'}
                 label="Tidak Lengkap"
               />
             </div>
@@ -369,6 +537,8 @@ const FormLapor = () => {
                 radioButton={true}
                 radioName="lingkunganLaporSampai"
                 onClick={() => setLingkunganLaporSampaiOpt('Tepat Waktu')}
+                radioValue={lingkunganLaporSampai}
+                selected={lingkunganLaporSampai == 'Tepat Waktu'}
                 label="Tepat Waktu"
               />
             </div>
@@ -377,6 +547,8 @@ const FormLapor = () => {
                 radioButton={true}
                 radioName="lingkunganLaporSampai"
                 onClick={() => setLingkunganLaporSampaiOpt('Tidak Tepat Waktu')}
+                radioValue={lingkunganLaporSampai}
+                selected={lingkunganLaporSampai == 'Tidak Tepat Waktu'}
                 label="Tidak Tepat Waktu"
               />
             </div>
@@ -395,7 +567,7 @@ const FormLapor = () => {
             </div>
           */}
 
-          <button className={`${mng["base__btnsimpan"]} ${"float-right mt-1"}`} onClick={storeData} disabled={!btnValid}>
+          <button className={`${mng["base__btnsimpan"]} ${"float-right mt-1"}`} onClick={storeData}>
             Simpan dan Lanjutkan
           </button>
         </div>

@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import React, { useState, useEffect } from 'react'
 import {useRouter} from 'next/router'
+import _ from 'lodash';
 import InputFileButton from 'src/components/customInput/InputFileButton';
 import InputForm from '../admin/infografis/InputForm';
 import mng from 'src/styles/Managemen.module.scss'
@@ -13,9 +14,16 @@ const preventDefault = f => e => {
 const FormPengolahan = () => {
   const [isError, setIsError] = useState(false);
 
+  const router = useRouter()
+
+  const [initialLoad, setInitialLoad] = useState(true)
+  const [btnValid, setBtnValid] = useState(false)
+  const [data, setData] = useState(null)
+  const [dataPass, setDataPass] = useState({})
+  const [dataSubmit, setDataSubmit] = useState([])
+
   ////////////////////////// INPUT FORM STATE ////////////////////////////////
 
-  const [asalBenih, setAsalBenih] = useState('');
   const [sumberEnergi, setSumberEnergi] = useState('');
   const [izinProduk, setIzinProduk] = useState('');
   const [hasilProduk, setHasilProduk] = useState('');
@@ -75,15 +83,6 @@ const FormPengolahan = () => {
       {'title':'Dijual','placeholder':'jumlah sesuai jenis','type':'text','value':'','isOpt':false},
     ]
   ])
-
-  function handleBtnProduksiKebun() {
-    setProduksiKebun([...produksiKebun,[
-      {'title':'Diolahkan di pabrik lain segroup','placeholder':'Jumlah sesuai jenis','type':'text','value':'','isOpt':false},
-      {'title':'Diolahkan di pabrik lain dengan kontrak','placeholder':'jumlah sesuai jenis','type':'text','value':'','isOpt':false},
-      {'title':'Diolahkan di pabrik lain tanpa kontrak','placeholder':'jumlah sesuai jenis','type':'text','value':'','isOpt':false},
-      {'title':'Dijual','placeholder':'jumlah sesuai jenis','type':'text','value':'','isOpt':false},
-    ]])
-  }
 
   ////////////////////////// Tingkat Efisiensi Proses Pengolahan 3 tahun terakhir Sebelum Penilaian Usaha Perkebunan Saat Ini ////////////////////////////////
 
@@ -567,10 +566,454 @@ const FormPengolahan = () => {
     setState(list);
   }
 
-  const [btnValid, setBtnValid] = useState(false)
+  useEffect(() => {
+    if (initialLoad) {
+      let retrievedObject = JSON.parse(localStorage.getItem('olahNilai'));
+
+      if (!_.isEmpty(retrievedObject)) {
+
+        let replicateData = {
+          "processingUnit": [],
+          "unownedGarden": [],
+          "processingEfficiency": [],
+          "auxilliaryMaterial": [],
+          "lastThreeYearsProcessing": [],
+          "downstreamProduct": [],
+          "sideResult": [],
+          "solidWaste": [],
+          "liquidWaste": [],
+          "qualityAchievement": [],
+          "processingPartnership": []
+        }
+
+        retrievedObject.auxilliaryMaterial.forEach((e, i, arr) => {
+          const formData = [ { 'sectionTitle': '', 'sectionData': [ {'title':'Komoditas','type':'text','placeholder':'masukkan jenis komoditas','value':e.comodity}, ] }, { 'sectionTitle': 'Kapur Tohor', 'sectionData': [ {'title':'Dosis Anjuran (satuan)','type':'text','placeholder':'masukkan dosis sesuai satuan','value':e.details[0].standardYieldPercentage}, {'title':'Dosis yang digunakan (satuan)','type':'text','placeholder':'masukkan dosis sesuai satuan','value':e.details[0].taxation} ] }, { 'sectionTitle': 'Flokulan', 'sectionData': [ {'title':'Dosis Anjuran (satuan)','type':'text','placeholder':'masukkan dosis sesuai satuan','value':e.details[1].standardYieldPercentage}, {'title':'Dosis yang digunakan (satuan)','type':'text','placeholder':'masukkan dosis sesuai satuan','value':e.details[1].taxation} ] }, { 'sectionTitle': 'Belerang', 'sectionData': [ {'title':'Dosis Anjuran (satuan)','type':'text','placeholder':'masukkan dosis sesuai satuan','value':e.details[2].standardYieldPercentage}, {'title':'Dosis yang digunakan (satuan)','type':'text','placeholder':'masukkan dosis sesuai satuan','value':e.details[2].taxation} ] }, { 'sectionTitle': 'Phospat', 'sectionData': [ {'title':'Dosis Anjuran (satuan)','type':'text','placeholder':'masukkan dosis sesuai satuan','value':e.details[3].standardYieldPercentage}, {'title':'Dosis yang digunakan (satuan)','type':'text','placeholder':'masukkan dosis sesuai satuan','value':e.details[3].taxation} ] } ]
+          replicateData.auxilliaryMaterial.push(formData)
+        })
+
+        retrievedObject.processingEfficiency.forEach((e, i, arr) => {
+          const formData = [ { 'sectionTitle': '', 'sectionData': [ {'title':'Komoditas','type':'text','placeholder':'masukkan jenis komoditas','value':e.comodity}, ] }, { 'sectionTitle': 'Volume bahan masuk (ton) Tebu', 'sectionData': [ {'title':'Tahun 1','type':'text','placeholder':'masukkan sesuai satuan','value':e.details[0].inputVolume}, {'title':'Tahun 2','type':'text','placeholder':'masukkan sesuai satuan','value':e.details[1].inputVolume}, {'title':'Tahun 3','type':'text','placeholder':'masukkan sesuai satuan','value':e.details[2].inputVolume} ] }, { 'sectionTitle': 'Rendemen sesuai kondisi setempat/standar (%)', 'sectionData': [ {'title':'Tahun 1','type':'text','placeholder':'masukkan sesuai satuan','value':e.details[0].standardYieldPercentage}, {'title':'Tahun 2','type':'text','placeholder':'masukkan sesuai satuan','value':e.details[1].standardYieldPercentage}, {'title':'Tahun 3','type':'text','placeholder':'masukkan sesuai satuan','value':e.details[2].standardYieldPercentage} ] }, { 'sectionTitle': 'Taksasi produksi (ton) = 1x2', 'sectionData': [ {'title':'Tahun 1','type':'text','placeholder':'masukkan sesuai satuan','value':e.details[0].taxation}, {'title':'Tahun 2','type':'text','placeholder':'masukkan sesuai satuan','value':e.details[1].taxation}, {'title':'Tahun 3','type':'text','placeholder':'masukkan sesuai satuan','value':e.details[2].taxation} ] }, { 'sectionTitle': 'Realisasi produksi (ton) SHS % Tebu', 'sectionData': [ {'title':'Tahun 1','type':'text','placeholder':'masukkan sesuai satuan','value':e.details[0].realProductionPercentage}, {'title':'Tahun 2','type':'text','placeholder':'masukkan sesuai satuan','value':e.details[1].realProductionPercentage}, {'title':'Tahun 3','type':'text','placeholder':'masukkan sesuai satuan','value':e.details[2].realProductionPercentage} ] }, { 'sectionTitle': 'Rendemen yang dicapai = 4/1 (%)', 'sectionData': [ {'title':'Tahun 1','type':'text','placeholder':'masukkan sesuai satuan','value':e.details[0].realYieldPercentage}, {'title':'Tahun 2','type':'text','placeholder':'masukkan sesuai satuan','value':e.details[1].realYieldPercentage}, {'title':'Tahun 3','type':'text','placeholder':'masukkan sesuai satuan','value':e.details[2].realYieldPercentage} ] } ]
+          replicateData.processingEfficiency.push(formData)
+        })
+
+        retrievedObject.liquidWaste.forEach((e, i) => {
+          const formData = _.cloneDeep(limbahCair)
+          let moveArr = []
+          let moveFormArr = []
+          Object.keys(e).forEach(key => {
+            moveArr.push(e[key])
+          });
+          formData.forEach((form,i2) => {
+            form.forEach((formData, i3) => {
+              formData.sectionData.forEach((secData, i4, arr) => {
+                moveFormArr.push(secData)
+                moveFormArr.forEach((item,iItem) => {
+                  secData.value = moveArr[iItem]
+                })
+              })
+            })
+            replicateData.liquidWaste.push(form)
+          })
+        })
+
+        retrievedObject.solidWaste.forEach((e, i) => {
+          const formData = _.cloneDeep(limbahPadat)
+          let moveArr = []
+          let moveFormArr = []
+          Object.keys(e).forEach(key => {
+            moveArr.push(e[key])
+          });
+          formData.forEach((form,i2) => {
+            form.forEach((formData, i3) => {
+              formData.sectionData.forEach((secData, i4, arr) => {
+                moveFormArr.push(secData)
+                moveFormArr.forEach((item,iItem) => {
+                  secData.value = moveArr[iItem]
+                })
+              })
+            })
+            replicateData.solidWaste.push(form)
+          })
+        })
+
+        retrievedObject.sideResult.forEach((e, i) => {
+          const formData = _.cloneDeep(hasilSamping)
+          let moveArr = []
+          let moveFormArr = []
+          Object.keys(e).forEach(key => {
+            moveArr.push(e[key])
+          });
+          formData.forEach((form,i2) => {
+            form.forEach((formData, i3) => {
+              formData.sectionData.forEach((secData, i4, arr) => {
+                moveFormArr.push(secData)
+                moveFormArr.forEach((item,iItem) => {
+                  secData.value = moveArr[iItem]
+                })
+              })
+            })
+            replicateData.sideResult.push(form)
+          })
+        })
+
+        retrievedObject.processingPartnership.forEach((dt,index) => {
+          const formMitraOlah = _.cloneDeep(mitraOlah)
+          formMitraOlah.forEach((dtFrm, i) => {
+            dtFrm[0].value = dt.comodity
+            dtFrm[1].value = dt.materialType
+            dtFrm[2].value = dt.rawMaterialType
+            dtFrm[3].value = dt.selfProcessedPercentage
+            dtFrm[4].value = dt.partnerProcessedPercentage
+            dtFrm[5].value = dt.processedWithContractPercentage
+            dtFrm[6].value = dt.processedWithoutContractPercentage
+            dtFrm[7].value = dt.description
+            replicateData.processingPartnership.push(dtFrm)
+          })
+        })
+
+        retrievedObject.qualityAchievement.forEach((dt,index) => {
+          const formMutu = _.cloneDeep(mutu)
+          formMutu.forEach((dtFrm, i) => {
+            dtFrm[0].value = dt.productType
+            dtFrm[1].value = dt.firstYearVolume
+            dtFrm[2].value = dt.firstYearPercentage
+            dtFrm[3].value = dt.secondYearVolume
+            dtFrm[4].value = dt.secondYearPercentage
+            dtFrm[5].value = dt.thirdYearVolume
+            dtFrm[6].value = dt.thirdYearPercentage
+            replicateData.qualityAchievement.push(dtFrm)
+          })
+        })
+
+        retrievedObject.downstreamProduct.forEach((dt,index) => {
+          const formProduksiHilir = _.cloneDeep(produksiHilir)
+          formProduksiHilir.forEach((dtFrm, i) => {
+            dtFrm[0].value = dt.processingType
+            dtFrm[1].value = dt.qualityType
+            dtFrm[2].value = dt.firstYearVolume
+            dtFrm[3].value = dt.firstYearPercentage
+            dtFrm[4].value = dt.secondYearVolume
+            dtFrm[5].value = dt.secondYearPercentage
+            dtFrm[6].value = dt.thirdYearVolume
+            dtFrm[7].value = dt.thirdYearPercentage
+            dtFrm[8].value = dt.avgVolume
+            dtFrm[9].value = dt.avgPercentage
+            replicateData.downstreamProduct.push(dtFrm)
+          })
+        })
+
+        retrievedObject.processingUnit.forEach((dt,index) => {
+          const formKebunPabrik = _.cloneDeep(kebunPabrik)
+          formKebunPabrik.forEach((dtFrm, i) => {
+            dtFrm[0].value = dt.comodity
+            dtFrm[1].value = dt.unit
+            dtFrm[2].value = dt.cityId
+            dtFrm[3].value = dt.disctrictId
+            dtFrm[4].value = dt.villageId
+            dtFrm[5].value = dt.certifiedArea
+            dtFrm[6].value = dt.installedArea
+            dtFrm[7].value = dt.usedArea
+            dtFrm[8].value = dt.certifier
+            dtFrm[9].value = dt.certifNo
+            dtFrm[10].value = dt.description
+            replicateData.processingUnit.push(dtFrm)
+          })
+        })
+
+        retrievedObject.lastThreeYearsProcessing.forEach((dt,index) => {
+          const formLatihSekitar = _.cloneDeep(produksiPrimer)
+          formLatihSekitar.forEach((dtFrm, i) => {
+            dtFrm[0].value = dt.processingType
+            dtFrm[1].value = dt.qualityType
+            dtFrm[2].value = dt.firstYearVolume
+            dtFrm[3].value = dt.firstYearPercentage
+            dtFrm[4].value = dt.secondYearVolume
+            dtFrm[5].value = dt.secondYearPercentage
+            dtFrm[6].value = dt.thirdYearVolume
+            dtFrm[7].value = dt.thirdYearPercentage
+            dtFrm[8].value = dt.description
+            replicateData.lastThreeYearsProcessing.push(dtFrm)
+          })
+        })
+
+        const formProduksiKebun = _.cloneDeep(produksiKebun)
+        formProduksiKebun.forEach((dtFrm, i) => {
+          dtFrm[0].value = retrievedObject.unownedGarden.sameGroupUnit
+          dtFrm[1].value = retrievedObject.unownedGarden.otherFactoryWithContractUnit
+          dtFrm[2].value = retrievedObject.unownedGarden.otherFactoryWithoutContractUnit
+          dtFrm[3].value = retrievedObject.unownedGarden.soldUnit
+          replicateData.unownedGarden.push(dtFrm)
+        })
+
+        setSumberEnergi(retrievedObject.energySource.villageId)
+        setIzinProduk(retrievedObject.productAndQuality.certificateType)
+        setHasilProduk(retrievedObject.productAndQuality.product)
+        setSistemMutu(retrievedObject.productAndQuality.qualityManagement)
+        setSistemMutuLain(retrievedObject.productAndQuality.otherStandard)
+        setWaktuDibutuhkan(retrievedObject.productAndQuality.rspoDescription)
+
+        setProdukHilirOpt('')
+        setSistemMutuOpt(retrievedObject.productAndQuality.isImplementingManagement)
+        setSistemIsoOpt(retrievedObject.productAndQuality.isImplementingIso9000)
+        setSistemIsoLainOpt(retrievedObject.productAndQuality.isImplementingOtherStandard)
+        setSertifikatOpt(retrievedObject.productAndQuality.isImplementingRspo)
+
+        setKebunPabrik(replicateData.processingUnit)
+        setProduksiKebun(replicateData.unownedGarden)
+        setEfisiensi(replicateData.processingEfficiency)
+        setBhnPenolong(replicateData.auxilliaryMaterial)
+        setProduksiPrimer(replicateData.lastThreeYearsProcessing)
+        setProduksiHilir(replicateData.downstreamProduct)
+        setHasilSamping(replicateData.sideResult)
+        setLimbahCair(replicateData.liquidWaste)
+        setLimbahPadat(replicateData.solidWaste)
+        setMutu(replicateData.qualityAchievement)
+        setMitraOlah(replicateData.processingPartnership)
+      }
+    }
+    setInitialLoad(false)
+  }, [initialLoad])
+
+  useEffect(() => {
+
+    let data = {
+      "processingUnit": [],
+      "unownedGarden": {
+        "sameGroupUnit": produksiKebun[0][0].value,
+        "otherFactoryWithContractUnit": produksiKebun[0][1].value,
+        "otherFactoryWithoutContractUnit": produksiKebun[0][2].value,
+        "soldUnit": produksiKebun[0][3].value
+      },
+      "processingEfficiency": [],
+      "auxilliaryMaterial": [],
+      "lastThreeYearsProcessing": [],
+      "downstreamProduct": [],
+      "sideResult": [],
+      "solidWaste": [],
+      "liquidWaste": [],
+      "productAndQuality": {
+          "certificateType": izinProduk,
+          "product": hasilProduk,
+          "isImplementingManagement": sistemMutuOpt,
+          "qualityManagement": sistemMutu,
+          "isImplementingIso9000": sistemIsoOpt,
+          "file": {},
+          "isImplementingOtherStandard": sistemIsoLainOpt,
+          "otherStandard": sistemMutuLain,
+          "isImplementingRspo": sertifikatOpt,
+          "rspoDescription": waktuDibutuhkan
+      },
+      "qualityAchievement": [],
+      "energySource": {
+          "villageId": sumberEnergi
+      },
+      "processingPartnership": []
+    }
+
+    limbahCair.forEach((item, i) => {
+      let dataTemp = {}
+      item.forEach((e, i, arr) => {
+        dataTemp.comodity = arr[0].sectionData[0].value
+        dataTemp.processingType = arr[1].sectionData[0].value
+        dataTemp.processedTotal = arr[1].sectionData[1].value
+        dataTemp.selfProcessedPercentage = arr[1].sectionData[2].value
+        dataTemp.otherPartyPercentage = arr[1].sectionData[3].value
+        dataTemp.resultType = arr[1].sectionData[4].value
+        dataTemp.unprocessedUsedPercentage = arr[2].sectionData[0].value
+        dataTemp.unprocessedSoldPercentage = arr[2].sectionData[1].value
+        dataTemp.unprocessedUnusedPercentage = arr[2].sectionData[2].value
+      });
+      data.liquidWaste.push(dataTemp)
+    });
+
+    limbahPadat.forEach((item, i) => {
+      let dataTemp = {}
+      item.forEach((e, i, arr) => {
+        dataTemp.comodity = arr[0].sectionData[0].value
+        dataTemp.processingType = arr[1].sectionData[0].value
+        dataTemp.processedTotal = arr[1].sectionData[1].value
+        dataTemp.selfProcessedPercentage = arr[1].sectionData[2].value
+        dataTemp.otherPartyPercentage = arr[1].sectionData[3].value
+        dataTemp.resultType = arr[1].sectionData[4].value
+        dataTemp.unprocessedUsedPercentage = arr[2].sectionData[0].value
+        dataTemp.unprocessedSoldPercentage = arr[2].sectionData[1].value
+        dataTemp.unprocessedUnusedPercentage = arr[2].sectionData[2].value
+      });
+      data.solidWaste.push(dataTemp)
+    });
+
+    hasilSamping.forEach((item, i) => {
+      let dataTemp = {}
+      item.forEach((e, i, arr) => {
+        dataTemp.comodity = arr[0].sectionData[0].value
+        dataTemp.processingType = arr[1].sectionData[0].value
+        dataTemp.processedTotal = arr[1].sectionData[1].value
+        dataTemp.selfProcessedPercentage = arr[1].sectionData[2].value
+        dataTemp.otherPartyPercentage = arr[1].sectionData[3].value
+        dataTemp.resultType = arr[1].sectionData[4].value
+        dataTemp.unprocessedUsedPercentage = arr[2].sectionData[0].value
+        dataTemp.unprocessedSoldPercentage = arr[2].sectionData[1].value
+        dataTemp.unprocessedUnusedPercentage = arr[2].sectionData[2].value
+      });
+      data.sideResult.push(dataTemp)
+    });
+
+    bhnPenolong.forEach((item, i) => {
+      let dataTemp = {}
+      let details = []
+      let details1 = {}
+      let details2 = {}
+      let details3 = {}
+      let details4 = {}
+      item.forEach((e, i, arr) => {
+        dataTemp.comodity = arr[0].sectionData[0].value
+        details1.material = arr[1].sectionTitle
+        details1.standardYieldPercentage = arr[1].sectionData[0].value
+        details1.taxation = arr[1].sectionData[1].value
+
+        details2.material = arr[2].sectionTitle
+        details2.standardYieldPercentage = arr[2].sectionData[0].value
+        details2.taxation = arr[2].sectionData[1].value
+
+        details3.material = arr[3].sectionTitle
+        details3.standardYieldPercentage = arr[3].sectionData[0].value
+        details3.taxation = arr[3].sectionData[1].value
+
+        details4.material = arr[4].sectionTitle
+        details4.standardYieldPercentage = arr[4].sectionData[0].value
+        details4.taxation = arr[4].sectionData[1].value
+      });
+      details.push(details1, details2, details3, details4)
+      dataTemp.details = details
+      data.auxilliaryMaterial.push(dataTemp)
+    });
+
+    efisiensi.forEach((item, i) => {
+      let dataTemp = {}
+      let details = []
+      let details1 = {}
+      let details2 = {}
+      let details3 = {}
+      item.forEach((e, i, arr) => {
+        dataTemp.comodity = arr[0].sectionData[0].value
+        details1.year = 1
+        details1.inputVolume = arr[1].sectionData[0].value
+        details1.standardYieldPercentage = arr[2].sectionData[0].value
+        details1.taxation = arr[3].sectionData[0].value
+        details1.realProductionPercentage = arr[4].sectionData[0].value
+        details1.realYieldPercentage = arr[5].sectionData[0].value
+        details2.year = 2
+        details2.inputVolume = arr[1].sectionData[1].value
+        details2.standardYieldPercentage = arr[2].sectionData[1].value
+        details2.taxation = arr[3].sectionData[1].value
+        details2.realProductionPercentage = arr[4].sectionData[1].value
+        details2.realYieldPercentage = arr[5].sectionData[1].value
+        details3.year = 3
+        details3.inputVolume = arr[1].sectionData[2].value
+        details3.standardYieldPercentage = arr[2].sectionData[2].value
+        details3.taxation = arr[3].sectionData[2].value
+        details3.realProductionPercentage = arr[4].sectionData[2].value
+        details3.realYieldPercentage = arr[5].sectionData[2].value
+      });
+      details.push(details1, details2, details3)
+      dataTemp.details = details
+      data.processingEfficiency.push(dataTemp)
+    });
+
+    mitraOlah.forEach((item, i) => {
+      let inv = {}
+      item.forEach(() => {
+        inv.comodity = item[0].value
+        inv.materialType = item[1].value
+        inv.rawMaterialType = item[2].value
+        inv.selfProcessedPercentage = item[3].value
+        inv.partnerProcessedPercentage = item[4].value
+        inv.processedWithContractPercentage = item[5].value
+        inv.processedWithoutContractPercentage = item[6].value
+        inv.description = item[7].value
+      });
+      data.processingPartnership.push(inv)
+    });
+
+    mutu.forEach((item, i) => {
+      let inv = {}
+      item.forEach(() => {
+        inv.productType = item[0].value
+        inv.firstYearVolume = item[1].value
+        inv.firstYearPercentage = item[2].value
+        inv.secondYearVolume = item[3].value
+        inv.secondYearPercentage = item[4].value
+        inv.thirdYearVolume = item[5].value
+        inv.thirdYearPercentage = item[6].value
+      });
+      data.qualityAchievement.push(inv)
+    });
+
+    produksiHilir.forEach((item, i) => {
+      let inv = {}
+      item.forEach(() => {
+        inv.processingType = item[0].value
+        inv.qualityType = item[1].value
+        inv.firstYearVolume = item[2].value
+        inv.firstYearPercentage = item[3].value
+        inv.secondYearVolume = item[4].value
+        inv.secondYearPercentage = item[5].value
+        inv.thirdYearVolume = item[6].value
+        inv.thirdYearPercentage = item[7].value
+        inv.avgVolume = item[8].value
+        inv.avgPercentage = item[9].value
+      });
+      data.downstreamProduct.push(inv)
+    });
+
+    produksiPrimer.forEach((item, i) => {
+      let inv = {}
+      item.forEach(() => {
+        inv.processingType = item[0].value
+        inv.qualityType = item[1].value
+        inv.firstYearVolume = item[2].value
+        inv.firstYearPercentage = item[3].value
+        inv.secondYearVolume = item[4].value
+        inv.secondYearPercentage = item[5].value
+        inv.thirdYearVolume = item[6].value
+        inv.thirdYearPercentage = item[7].value
+        inv.description = item[8].value
+      });
+      data.lastThreeYearsProcessing.push(inv)
+    });
+
+    kebunPabrik.forEach((item, i) => {
+      let inv = {}
+      item.forEach(() => {
+        inv.comodity = item[0].value
+        inv.unit = item[1].value
+        inv.cityId = item[2].value
+        inv.disctrictId = item[3].value
+        inv.villageId = item[4].value
+        inv.certifiedArea = item[5].value
+        inv.installedArea = item[6].value
+        inv.usedArea = item[7].value
+        inv.certifier = item[8].value
+        inv.certifNo = item[9].value
+        inv.description = item[10].value
+      });
+      data.processingUnit.push(inv)
+    });
+
+    setDataSubmit(data)
+
+  }, [sumberEnergi,izinProduk,hasilProduk,sistemMutu,sistemMutuLain,waktuDibutuhkan
+    ,produkHilirOpt,sistemMutuOpt,sistemIsoOpt,sistemIsoLainOpt,sertifikatOpt,kebunPabrik,produksiKebun
+    ,efisiensi,bhnPenolong,produksiPrimer,produksiHilir,hasilSamping,limbahCair,limbahPadat,mutu,mitraOlah])
+
+  useEffect(() => {
+    if (!_.isEmpty(dataSubmit)) {
+      setDataPass(dataSubmit)
+    }
+  },[dataPass,dataSubmit])
 
   const storeData = preventDefault(() => {
-
+    localStorage.setItem("olahNilai", JSON.stringify(dataSubmit));
   })
 
   function clearData() {
@@ -854,6 +1297,8 @@ const FormPengolahan = () => {
                 radioButton={true}
                 radioName="produkHilirOpt"
                 onClick={() => setProdukHilirOpt('Iya')}
+                radioValue={produkHilirOpt}
+                selected={produkHilirOpt == 'Iya'}
                 label="Iya"
               />
             </div>
@@ -862,6 +1307,8 @@ const FormPengolahan = () => {
                 radioButton={true}
                 radioName="produkHilirOpt"
                 onClick={() => setProdukHilirOpt('Tidak')}
+                radioValue={produkHilirOpt}
+                selected={produkHilirOpt == 'Tidak'}
                 label="Tidak"
               />
             </div>
@@ -1018,6 +1465,8 @@ const FormPengolahan = () => {
                 radioButton={true}
                 radioName="sistemMutuOpt"
                 onClick={() => setSistemMutuOpt('Sudah')}
+                radioValue={sistemMutuOpt}
+                selected={sistemMutuOpt == 'Sudah'}
                 label="Sudah"
               />
             </div>
@@ -1026,6 +1475,8 @@ const FormPengolahan = () => {
                 radioButton={true}
                 radioName="sistemMutuOpt"
                 onClick={() => setSistemMutuOpt('Belum')}
+                radioValue={sistemMutuOpt}
+                selected={sistemMutuOpt == 'Belum'}
                 label="Belum"
               />
             </div>
@@ -1047,6 +1498,8 @@ const FormPengolahan = () => {
                 radioButton={true}
                 radioName="sistemIsoOpt"
                 onClick={() => setSistemIsoOpt('Sudah')}
+                radioValue={sistemIsoOpt}
+                selected={sistemIsoOpt == 'Sudah'}
                 label="Sudah"
               />
             </div>
@@ -1055,6 +1508,8 @@ const FormPengolahan = () => {
                 radioButton={true}
                 radioName="sistemIsoOpt"
                 onClick={() => setSistemIsoOpt('Belum')}
+                radioValue={sistemIsoOpt}
+                selected={sistemIsoOpt == 'Belum'}
                 label="Belum"
               />
             </div>
@@ -1083,6 +1538,8 @@ const FormPengolahan = () => {
                 radioButton={true}
                 radioName="sistemIsoLainOpt"
                 onClick={() => setSistemIsoLainOpt('Sudah')}
+                radioValue={sistemIsoLainOpt}
+                selected={sistemIsoLainOpt == 'Sudah'}
                 label="Sudah"
               />
             </div>
@@ -1091,6 +1548,8 @@ const FormPengolahan = () => {
                 radioButton={true}
                 radioName="sistemIsoLainOpt"
                 onClick={() => setSistemIsoLainOpt('Belum')}
+                radioValue={sistemIsoLainOpt}
+                selected={sistemIsoLainOpt == 'Belum'}
                 label="Belum"
               />
             </div>
@@ -1112,6 +1571,8 @@ const FormPengolahan = () => {
                 radioButton={true}
                 radioName="sertifikatOpt"
                 onClick={() => setSertifikatOpt('Sudah')}
+                radioValue={sertifikatOpt}
+                selected={sertifikatOpt == 'Sudah'}
                 label="Sudah"
               />
             </div>
@@ -1120,6 +1581,8 @@ const FormPengolahan = () => {
                 radioButton={true}
                 radioName="sertifikatOpt"
                 onClick={() => setSertifikatOpt('Belum')}
+                radioValue={sertifikatOpt}
+                selected={sertifikatOpt == 'Belum'}
                 label="Belum"
               />
             </div>
@@ -1170,10 +1633,11 @@ const FormPengolahan = () => {
 
           <InputForm
             titleForm="Sumber energi yang digunakan berasal dari (pilih yang sesuai)"
-            onChange={(e) => setSumberEnergi(e)}
+            onChange={(e) => setSumberEnergi(e.target.value)}
             type="text"
             values={sumberEnergi}
             placeholder="pilih desa"
+            values={sumberEnergi}
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
             } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-sm`}
@@ -1221,7 +1685,7 @@ const FormPengolahan = () => {
             </div>
           */}
 
-          <button className={`${mng["base__btnsimpan"]} ${"float-right mt-1"}`} onClick={storeData} disabled={!btnValid}>
+          <button className={`${mng["base__btnsimpan"]} ${"float-right mt-1"}`} onClick={storeData}>
             Simpan dan Lanjutkan
           </button>
         </div>

@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import React, { useState, useEffect } from 'react'
 import {useRouter} from 'next/router'
+import _ from 'lodash';
 import InputFileButton from 'src/components/customInput/InputFileButton';
 import InputForm from '../admin/infografis/InputForm';
 import mng from 'src/styles/Managemen.module.scss'
@@ -12,6 +13,14 @@ const preventDefault = f => e => {
 
 const FormEkonomi = () => {
   const [isError, setIsError] = useState(false);
+
+  const router = useRouter()
+
+  const [initialLoad, setInitialLoad] = useState(true)
+  const [btnValid, setBtnValid] = useState(false)
+  const [data, setData] = useState(null)
+  const [dataPass, setDataPass] = useState({})
+  const [dataSubmit, setDataSubmit] = useState({})
 
   ////////////////////////// INPUT FORM STATE ////////////////////////////////
 
@@ -61,47 +70,6 @@ const FormEkonomi = () => {
     ]
   ])
 
-  function handleBtnAddJenisPajak() {
-    setJenisPajak([...jenisPajak,[
-      {
-        'sectionTitle': 'Jenis Pajak atau Retribusi : Pajak Pertambahan Nilai (PPN)',
-        'sectionData': [{'title':'Tahun 1','type':'text','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 2','type':'text','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 3','type':'text','placeholder':'masukkan nominal.','value':''}]
-      },
-      {
-        'sectionTitle': 'Jenis Pajak atau Retribusi : Pajak Penghasilan (PPh)',
-        'sectionData': [{'title':'Tahun 1','type':'text','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 2','type':'text','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 3','type':'text','placeholder':'masukkan nominal.','value':''}]
-      },
-      {
-        'sectionTitle': 'Jenis Pajak atau Retribusi : Pajak Bumi dan Bangunan (PBB)',
-        'sectionData': [{'title':'Tahun 1','type':'text','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 2','type':'text','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 3','type':'text','placeholder':'masukkan nominal.','value':''}]
-      },
-      {
-        'sectionTitle': 'Jenis Pajak atau Retribusi : Pajak Ekspor (PE)',
-        'sectionData': [{'title':'Tahun 1','type':'text','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 2','type':'text','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 3','type':'text','placeholder':'masukkan nominal.','value':''}]
-      },
-      {
-        'sectionTitle': 'Jenis Pajak atau Retribusi : Retribusi Wajib Tenaga Kerja',
-        'sectionData': [{'title':'Tahun 1','type':'text','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 2','type':'text','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 3','type':'text','placeholder':'masukkan nominal.','value':''}]
-      },
-      {
-        'sectionTitle': 'Jenis Pajak atau Retribusi : Retribusi Kesejahteraan Buruh',
-        'sectionData': [{'title':'Tahun 1','type':'text','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 2','type':'text','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 3','type':'text','placeholder':'masukkan nominal.','value':''}]
-      },
-      {
-        'sectionTitle': 'Jenis Pajak atau Retribusi : Retribusi Air',
-        'sectionData': [{'title':'Tahun 1','type':'text','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 2','type':'text','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 3','type':'text','placeholder':'masukkan nominal.','value':''}]
-      },
-      {
-        'sectionTitle': 'Jenis Pajak atau Retribusi : Retribusi Jalan',
-        'sectionData': [{'title':'Tahun 1','type':'text','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 2','type':'text','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 3','type':'text','placeholder':'masukkan nominal.','value':''}]
-      },
-      {
-        'sectionTitle': 'Jenis Pajak atau Retribusi : Lainnya',
-        'sectionData': [{'title':'Tahun 1','type':'text','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 2','type':'text','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 3','type':'text','placeholder':'masukkan nominal.','value':''}]
-      },
-    ]])
-  }
-
   ////////////////////////// Penyerapan Tenaga Lokal untuk Posisi Staf ////////////////////////////////
 
   const [tahun1, setTahun1] = useState([
@@ -114,16 +82,6 @@ const FormEkonomi = () => {
     ]
   ])
 
-  function handleBtnAddTahun1() {
-    setTahun1([...tahun1,[
-      {'title':'Tahun 1','placeholder':'YYY','type':'text','value':'','isOpt':false},
-      {'title':'Jumlah Tenaga Kerja Lokal Staf','placeholder':'masukkan jumlah dalam satuan orang','type':'text','value':'','isOpt':false},
-      {'title':'Jumlah Tenaga Kerja Lokal Non Staf','placeholder':'masukkan jumlah dalam satuan orang','type':'text','value':'','isOpt':false},
-      {'title':'Jumlah Pegawai Staf','placeholder':'masukkan jumlah dalam satuan orang','type':'text','value':'','isOpt':false},
-      {'title':'Jumlah Pegawai Non Staf','placeholder':'masukkan jumlah dalam satuan orang','type':'text','value':'','isOpt':false},
-    ]])
-  }
-
   const [tahun2, setTahun2] = useState([
     [
       {'title':'Tahun 2','placeholder':'YYY','type':'text','value':'','isOpt':false},
@@ -134,16 +92,6 @@ const FormEkonomi = () => {
     ]
   ])
 
-  function handleBtnAddTahun2() {
-    setTahun2([...tahun2,[
-      {'title':'Tahun 2','placeholder':'YYY','type':'text','value':'','isOpt':false},
-      {'title':'Jumlah Tenaga Kerja Lokal Staf','placeholder':'masukkan jumlah dalam satuan orang','type':'text','value':'','isOpt':false},
-      {'title':'Jumlah Tenaga Kerja Lokal Non Staf','placeholder':'masukkan jumlah dalam satuan orang','type':'text','value':'','isOpt':false},
-      {'title':'Jumlah Pegawai Staf','placeholder':'masukkan jumlah dalam satuan orang','type':'text','value':'','isOpt':false},
-      {'title':'Jumlah Pegawai Non Staf','placeholder':'masukkan jumlah dalam satuan orang','type':'text','value':'','isOpt':false},
-    ]])
-  }
-
   const [tahun3, setTahun3] = useState([
     [
       {'title':'Tahun 3','placeholder':'YYY','type':'text','value':'','isOpt':false},
@@ -153,16 +101,6 @@ const FormEkonomi = () => {
       {'title':'Jumlah Pegawai Non Staf','placeholder':'masukkan jumlah dalam satuan orang','type':'text','value':'','isOpt':false},
     ]
   ])
-
-  function handleBtnAddTahun3() {
-    setTahun3([...tahun3,[
-      {'title':'Tahun 3','placeholder':'YYY','type':'text','value':'','isOpt':false},
-      {'title':'Jumlah Tenaga Kerja Lokal Staf','placeholder':'masukkan jumlah dalam satuan orang','type':'text','value':'','isOpt':false},
-      {'title':'Jumlah Tenaga Kerja Lokal Non Staf','placeholder':'masukkan jumlah dalam satuan orang','type':'text','value':'','isOpt':false},
-      {'title':'Jumlah Pegawai Staf','placeholder':'masukkan jumlah dalam satuan orang','type':'text','value':'','isOpt':false},
-      {'title':'Jumlah Pegawai Non Staf','placeholder':'masukkan jumlah dalam satuan orang','type':'text','value':'','isOpt':false},
-    ]])
-  }
 
   ////////////////////////// RADIO BUTTON STATE ////////////////////////////////
 
@@ -209,10 +147,141 @@ const FormEkonomi = () => {
     setState(list);
   }
 
-  const [btnValid, setBtnValid] = useState(false)
+  useEffect(() => {
+    if (initialLoad) {
+      let retrievedObject = JSON.parse(localStorage.getItem('ekonomiNilai'));
+
+      if (!_.isEmpty(retrievedObject)) {
+
+        let replicateData = {
+          "jenisPajak": [],
+          "tahun1": [],
+          "tahun2": [],
+          "tahun3": [],
+        }
+
+        const formData = _.cloneDeep(jenisPajak)
+        formData.forEach((formDt, i2) => {
+          formDt.forEach((dt, i3) => {
+            dt.sectionData.forEach((dtSec, i4, arr2) => {
+              arr2[0].value = retrievedObject.tax.details[i3].firstYear
+              arr2[1].value = retrievedObject.tax.details[i3].secondYear
+              arr2[2].value = retrievedObject.tax.details[i3].thirdYear
+            })
+          })
+          replicateData.jenisPajak.push(formDt)
+        })
+
+        const formDataTahun1 = _.cloneDeep(tahun1)
+        formDataTahun1.forEach((dt, i) => {
+          dt[0].value = retrievedObject.localEmployment[0].year
+          dt[1].value = retrievedObject.localEmployment[0].localStaff
+          dt[2].value = retrievedObject.localEmployment[0].localNonStaff
+          dt[3].value = retrievedObject.localEmployment[0].staffTotal
+          dt[4].value = retrievedObject.localEmployment[0].nonStaffTotal
+          replicateData.tahun1.push(dt)
+        })
+        const formDataTahun3 = _.cloneDeep(tahun3)
+        formDataTahun3.forEach((dt, i) => {
+          dt[0].value = retrievedObject.localEmployment[0].year
+          dt[1].value = retrievedObject.localEmployment[0].localStaff
+          dt[2].value = retrievedObject.localEmployment[0].localNonStaff
+          dt[3].value = retrievedObject.localEmployment[0].staffTotal
+          dt[4].value = retrievedObject.localEmployment[0].nonStaffTotal
+          replicateData.tahun3.push(dt)
+        })
+        const formDataTahun2 = _.cloneDeep(tahun2)
+        formDataTahun2.forEach((dt, i) => {
+          dt[0].value = retrievedObject.localEmployment[0].year
+          dt[1].value = retrievedObject.localEmployment[0].localStaff
+          dt[2].value = retrievedObject.localEmployment[0].localNonStaff
+          dt[3].value = retrievedObject.localEmployment[0].staffTotal
+          dt[4].value = retrievedObject.localEmployment[0].nonStaffTotal
+          replicateData.tahun2.push(dt)
+        })
+
+
+        setJenisRetribusiPajak(retrievedObject.tax.taxDescription)
+        setAlasan(retrievedObject.tax.reason)
+        setKontribusi(retrievedObject.tax.hasTaxConstribution)
+        setBayarPajak(retrievedObject.tax.isTaxOntime)
+        setJenisPajak(replicateData.jenisPajak)
+        setTahun1(replicateData.tahun1)
+        setTahun2(replicateData.tahun2)
+        setTahun3(replicateData.tahun3)
+      }
+    }
+    setInitialLoad(false)
+  }, [initialLoad])
+
+  useEffect(() => {
+
+    let data = {
+      "tax": {
+          "hasTaxConstribution": kontribusi,
+          "taxDescription": jenisRetribusiPajak,
+          "isTaxOntime": bayarPajak,
+          "reason": alasan,
+          "details": []
+      },
+      "localEmployment": []
+    }
+
+    jenisPajak.forEach((item, i) => {
+      item.forEach((e, i, arr) => {
+        let dataTemp = {
+          "taxType": arr[i].sectionTitle.split(' : ')[1],
+          "firstYear": arr[i].sectionData[0].value,
+          "secondYear": arr[i].sectionData[1].value,
+          "thirdYear": arr[i].sectionData[2].value
+        }
+        data.tax.details.push(dataTemp)
+      });
+    });
+
+    tahun1.forEach((item, i) => {
+      let dataTemp = {
+        "year": item[0].value,
+        "localStaff": item[1].value,
+        "localNonStaff": item[2].value,
+        "staffTotal": item[3].value,
+        "nonStaffTotal": item[4].value,
+      }
+      data.localEmployment.push(dataTemp)
+    });
+    tahun2.forEach((item, i) => {
+      let dataTemp = {
+        "year": item[0].value,
+        "localStaff": item[1].value,
+        "localNonStaff": item[2].value,
+        "staffTotal": item[3].value,
+        "nonStaffTotal": item[4].value,
+      }
+      data.localEmployment.push(dataTemp)
+    });
+    tahun3.forEach((item, i) => {
+      let dataTemp = {
+        "year": item[0].value,
+        "localStaff": item[1].value,
+        "localNonStaff": item[2].value,
+        "staffTotal": item[3].value,
+        "nonStaffTotal": item[4].value,
+      }
+      data.localEmployment.push(dataTemp)
+    });
+
+    setDataSubmit(data)
+
+  }, [jenisRetribusiPajak,alasan,jenisPajak,tahun1,tahun2,tahun3,kontribusi,bayarPajak])
+
+  useEffect(() => {
+    if (!_.isEmpty(dataSubmit)) {
+      setDataPass(dataSubmit)
+    }
+  },[dataPass,dataSubmit])
 
   const storeData = preventDefault(() => {
-
+    localStorage.setItem("ekonomiNilai", JSON.stringify(dataSubmit));
   })
 
   function clearData() {
@@ -235,6 +304,8 @@ const FormEkonomi = () => {
                 radioButton={true}
                 radioName="kontribusi"
                 onClick={() => setKontribusi('Iya')}
+                radioValue={kontribusi}
+                selected={kontribusi == 'Iya'}
                 label="Iya"
               />
             </div>
@@ -243,6 +314,8 @@ const FormEkonomi = () => {
                 radioButton={true}
                 radioName="kontribusi"
                 onClick={() => setKontribusi('Tidak')}
+                radioValue={kontribusi}
+                selected={kontribusi == 'Tidak'}
                 label="Tidak"
               />
             </div>
@@ -292,6 +365,8 @@ const FormEkonomi = () => {
                 radioButton={true}
                 radioName="bayarPajak"
                 onClick={() => setBayarPajak('Iya')}
+                radioValue={bayarPajak}
+                selected={bayarPajak == 'Iya'}
                 label="Iya"
               />
             </div>
@@ -300,6 +375,8 @@ const FormEkonomi = () => {
                 radioButton={true}
                 radioName="bayarPajak"
                 onClick={() => setBayarPajak('Tidak')}
+                radioValue={bayarPajak}
+                selected={bayarPajak == 'Tidak'}
                 label="Tidak"
               />
             </div>
@@ -377,7 +454,7 @@ const FormEkonomi = () => {
             </div>
           */}
 
-          <button className={`${mng["base__btnsimpan"]} ${"float-right mt-1"}`} onClick={storeData} disabled={!btnValid}>
+          <button className={`${mng["base__btnsimpan"]} ${"float-right mt-1"}`} onClick={storeData}>
             Simpan dan Lanjutkan
           </button>
         </div>

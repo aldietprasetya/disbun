@@ -37,9 +37,27 @@ const FormManajemen = () => {
   const handleClick = (direction) => {
     let newStep = currentStep;
 
+    console.log(newStep)
+
+    if (newStep == 1) {
+      let report = localStorage.getItem('mnjPart1Nilai');
+      localStorage.setItem("mnjPart1NilaiReport", report);
+    } else if (newStep == 2) {
+      let report = localStorage.getItem('mnjPart2Nilai');
+      localStorage.setItem("mnjPart2NilaiReport", report);
+    } else if (newStep == 3) {
+      let report = localStorage.getItem('mnjPart3Nilai');
+      localStorage.setItem("mnjPart3NilaiReport", report);
+    } else {
+      let report = localStorage.getItem('mnjPart4Nilai');
+      localStorage.setItem("mnjPart4NilaiReport", report);
+    }
+
     direction === "next" ? newStep++ : newStep--;
     // check if steps are within bounds
     newStep > 0 && newStep <= steps.length && setCurrentStep(newStep);
+
+
   };
 
   return (

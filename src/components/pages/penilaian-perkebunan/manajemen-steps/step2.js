@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import React, { useState, useEffect } from 'react'
 import {useRouter} from 'next/router'
+import _ from 'lodash';
 import InputFileButton from 'src/components/customInput/InputFileButton';
 import InputForm from '../../admin/infografis/InputForm';
 import mng from 'src/styles/Managemen.module.scss'
@@ -11,6 +12,15 @@ const preventDefault = f => e => {
 }
 
 const FormManajemenStep2 = () => {
+  const [isError, setIsError] = useState(false);
+
+  const router = useRouter()
+
+  const [initialLoad, setInitialLoad] = useState(true)
+  const [btnValid, setBtnValid] = useState(false)
+  const [data, setData] = useState(null)
+  const [dataPass, setDataPass] = useState({})
+  const [dataSubmit, setDataSubmit] = useState([])
 
   ////////////////////////// INPUT FORM STATE ////////////////////////////////
 
@@ -145,11 +155,374 @@ const FormManajemenStep2 = () => {
     setState(list);
   }
 
-  const [btnValid, setBtnValid] = useState(false)
+  useEffect(() => {
+    if (initialLoad) {
+      localStorage.removeItem("mnjPart2Nilai");
+      let retrievedObject = JSON.parse(localStorage.getItem('mnjPart2NilaiReport'));
 
-  const storeData = preventDefault(() => {
+      if (!_.isEmpty(retrievedObject)) {
 
-  })
+        let replicateData = {
+          "leaderEducationBackground": [],
+          "employeeCourse": [],
+          "employeeCourseOth": [],
+          "employeeTraining": [],
+          "employeeTrainingOth": [],
+          "tkaUsage": [],
+          "tkaSubtitution": [],
+          "employeeMinimumSalary": [],
+          "employeeMinimumSalaryOth": []
+        }
+
+        const formJenisKursus = _.cloneDeep(jenisKursus)
+        formJenisKursus.forEach((dtFrm, i1) => {
+          dtFrm.forEach((sec, i2, arr) => {
+            sec.sectionData.forEach((secData,i3,arr2) => {
+              arr2[0].value = retrievedObject.employeeCourse[i2].numberOfPeople
+              arr2[1].value = retrievedObject.employeeCourse[i2].description
+            })
+          })
+          replicateData.employeeCourse.push(dtFrm)
+        })
+
+        retrievedObject.employeeCourse.forEach((e, i, arr) => {
+          const dataArr = []
+          if (e.course == 'Lainnya') {
+            const formstrTka = {
+              'sectionTitle': 'Jenis Kursus : Lainnya',
+              'sectionData': [
+                {'title':'Jumlah Orang','type':'text','placeholder':'masukkan jumlah dalam satuan orang','value':arr[i].numberOfPeople},
+                {'title':'Keterangan','type':'text','placeholder':'keterangan','value':arr[i].description}
+              ]
+            }
+            dataArr.push(formstrTka)
+            replicateData.employeeCourseOth.push(dataArr)
+          }
+        })
+
+        const formJenisPelatihan = _.cloneDeep(jenisPelatihan)
+        formJenisPelatihan.forEach((dtFrm, i1) => {
+          dtFrm.forEach((sec, i2, arr) => {
+            sec.sectionData.forEach((secData,i3,arr2) => {
+              arr2[0].value = retrievedObject.employeeTraining[i2].numberOfPeople
+              arr2[1].value = retrievedObject.employeeTraining[i2].duration
+              arr2[2].value = retrievedObject.employeeTraining[i2].location
+              arr2[3].value = retrievedObject.employeeTraining[i2].positionPromotion
+              arr2[4].value = retrievedObject.employeeTraining[i2].startDate
+            })
+          })
+          replicateData.employeeTraining.push(dtFrm)
+        })
+
+        retrievedObject.employeeTraining.forEach((e, i, arr) => {
+          const dataArr = []
+          if (e.trainingField == 'Pelatihan Lainnya') {
+            const formstrTka = {
+              'sectionTitle': 'Pelatihan Lainnya',
+              'sectionData': [
+                {'title':'Jumlah (orang)','type':'text','placeholder':'masukkan jumlah orang','value':arr[i].numberOfPeople},
+                {'title':'Durasi (hari)','type':'text','placeholder':'masukkan durasi hari','value':arr[i].duration},
+                {'title':'Lokasi','type':'text','placeholder':'masukkan lokasi','value':arr[i].location},
+                {'title':'Promosi Posisi','type':'text','placeholder':'masukkan posisi','value':arr[i].positionPromotion},
+                {'title':'Terhitung Mulai Tanggal/tahun','type':'text','placeholder':'DD/MM/YYY','value':arr[i].startDate}
+              ]
+            }
+            dataArr.push(formstrTka)
+            replicateData.employeeTrainingOth.push(dataArr)
+          }
+        })
+
+        const formTunjangan = _.cloneDeep(tunjangan)
+        formTunjangan.forEach((dtFrm, i1) => {
+          dtFrm.forEach((sec, i2, arr) => {
+            sec.sectionData.forEach((secData,i3,arr2) => {
+              arr2[0].value = retrievedObject.employeeMinimumSalary[i2].firstYearValue
+              arr2[1].value = retrievedObject.employeeMinimumSalary[i2].secondYearValue
+              arr2[2].value = retrievedObject.employeeMinimumSalary[i2].thirdYearValue
+              arr2[3].value = retrievedObject.employeeMinimumSalary[i2].description
+            })
+          })
+          replicateData.employeeMinimumSalary.push(dtFrm)
+        })
+
+        retrievedObject.employeeMinimumSalary.forEach((e, i, arr) => {
+          const dataArr = []
+          if (e.type == 'Realisasi Tunjangan Lainnya') {
+            const formstrTka = {
+              'sectionTitle': 'Realisasi Tunjangan Lainnya',
+              'sectionData': [
+                {'title':'Tahun 1','type':'text','placeholder':'masukkan nominal','value':arr[i].firstYearValue},
+                {'title':'Tahun 2','type':'text','placeholder':'masukkan nominal','value':arr[i].secondYearValue},
+                {'title':'Tahun 3','type':'text','placeholder':'masukkan nominal','value':arr[i].thirdYearValue},
+                {'title':'Keterangan','type':'text','placeholder':'keterangan','value':arr[i].description}
+              ]
+            }
+            dataArr.push(formstrTka)
+            replicateData.employeeMinimumSalaryOth.push(dataArr)
+          }
+        })
+
+        const formGantiTenaga = _.cloneDeep(gantiTenaga)
+        formGantiTenaga.forEach((dtFrm, i, arr) => {
+
+          arr[0][0].sectionData[0].value = retrievedObject.tkaSubtitution.details[0].position
+          arr[0][0].sectionData[1].value = retrievedObject.tkaSubtitution.details[0].tmt
+          arr[0][0].sectionData[2].value = retrievedObject.tkaSubtitution.details[0].numberOfPeople
+
+          arr[0][1].sectionData[0].value = retrievedObject.tkaSubtitution.details[1].position
+          arr[0][1].sectionData[1].value = retrievedObject.tkaSubtitution.details[1].tmt
+          arr[0][1].sectionData[2].value = retrievedObject.tkaSubtitution.details[1].numberOfPeople
+
+          arr[0][2].sectionData[0].value = retrievedObject.tkaSubtitution.details[2].position
+          arr[0][2].sectionData[1].value = retrievedObject.tkaSubtitution.details[2].tmt
+          arr[0][2].sectionData[2].value = retrievedObject.tkaSubtitution.details[2].numberOfPeople
+
+          arr[0][3].sectionData[0].value = retrievedObject.tkaSubtitution.details[3].position
+          arr[0][3].sectionData[1].value = retrievedObject.tkaSubtitution.details[3].tmt
+          arr[0][3].sectionData[2].value = retrievedObject.tkaSubtitution.details[3].numberOfPeople
+
+          arr[0][4].sectionData[0].value = retrievedObject.tkaSubtitution.details[4].position
+          arr[0][4].sectionData[1].value = retrievedObject.tkaSubtitution.details[4].tmt
+          arr[0][4].sectionData[2].value = retrievedObject.tkaSubtitution.details[4].numberOfPeople
+
+          arr[0][5].sectionData[0].value = retrievedObject.tkaSubtitution.details[5].position
+          arr[0][5].sectionData[1].value = retrievedObject.tkaSubtitution.details[5].tmt
+          arr[0][5].sectionData[2].value = retrievedObject.tkaSubtitution.details[5].numberOfPeople
+
+          arr[0][6].sectionData[0].value = retrievedObject.tkaSubtitution.details[6].position
+          arr[0][6].sectionData[1].value = retrievedObject.tkaSubtitution.details[6].tmt
+          arr[0][6].sectionData[2].value = retrievedObject.tkaSubtitution.details[6].numberOfPeople
+
+          arr[0][7].sectionData[0].value = retrievedObject.tkaSubtitution.details[7].position
+          arr[0][7].sectionData[1].value = retrievedObject.tkaSubtitution.details[7].tmt
+          arr[0][7].sectionData[2].value = retrievedObject.tkaSubtitution.details[7].numberOfPeople
+
+          arr[0][8].sectionData[0].value = retrievedObject.tkaSubtitution.details[8].position
+          arr[0][8].sectionData[1].value = retrievedObject.tkaSubtitution.details[8].tmt
+          arr[0][8].sectionData[2].value = retrievedObject.tkaSubtitution.details[8].numberOfPeople
+
+          replicateData.tkaSubtitution.push(dtFrm)
+        })
+
+        const formLatarPendidikan = _.cloneDeep(latarPendidikan)
+        formLatarPendidikan.forEach((dtFrm, i, arr) => {
+
+          arr[0][0].sectionData[0].value = retrievedObject.leaderEducationBackground[0].name
+          arr[0][0].sectionData[1].value = retrievedObject.leaderEducationBackground[0].education
+          arr[0][0].sectionData[2].value = retrievedObject.leaderEducationBackground[0].expereienceYears
+          arr[0][0].sectionData[3].value = retrievedObject.leaderEducationBackground[0].course
+          arr[0][0].sectionData[4].value = retrievedObject.leaderEducationBackground[0].duration
+
+          arr[0][1].sectionData[0].value = retrievedObject.leaderEducationBackground[1].name
+          arr[0][1].sectionData[1].value = retrievedObject.leaderEducationBackground[1].education
+          arr[0][1].sectionData[2].value = retrievedObject.leaderEducationBackground[1].expereienceYears
+          arr[0][1].sectionData[3].value = retrievedObject.leaderEducationBackground[1].course
+          arr[0][1].sectionData[4].value = retrievedObject.leaderEducationBackground[1].duration
+
+          arr[0][2].sectionData[0].value = retrievedObject.leaderEducationBackground[2].name
+          arr[0][2].sectionData[1].value = retrievedObject.leaderEducationBackground[2].education
+          arr[0][2].sectionData[2].value = retrievedObject.leaderEducationBackground[2].expereienceYears
+          arr[0][2].sectionData[3].value = retrievedObject.leaderEducationBackground[2].course
+          arr[0][2].sectionData[4].value = retrievedObject.leaderEducationBackground[2].duration
+          replicateData.leaderEducationBackground.push(dtFrm)
+        })
+
+        retrievedObject.tkaUsage.forEach((e, i) => {
+          const formstrTka = _.cloneDeep(tka)
+          formstrTka.forEach((dtFrm, i, arr) => {
+            arr[0][0].value = e.name
+            arr[0][1].value = e.position
+            arr[0][2].value = e.education
+            arr[0][3].value = e.nationality
+            arr[0][4].value = e.tkaNo
+            arr[0][5].value = e.expDate
+            replicateData.tkaUsage.push(dtFrm)
+          })
+        })
+
+        setGantiTenaga(replicateData.tkaSubtitution)
+        setJenisPelatihan(replicateData.employeeTraining)
+        setJenisPelatihanLainnya(replicateData.employeeTrainingOth)
+        setLatarPendidikan(replicateData.leaderEducationBackground)
+        setJenisKursus(replicateData.employeeCourse)
+        setJenisKursusLainnya(replicateData.employeeCourseOth)
+        setTka(replicateData.tkaUsage)
+        setTunjangan(replicateData.employeeMinimumSalary)
+        setTunjanganLainnya(replicateData.employeeMinimumSalaryOth)
+
+
+        setPresentasePutusKerja(retrievedObject.hrManagement.hasRecruitmentSystem)
+        setSistemRekrutPegawaiOpt(retrievedObject.hrManagement.isRecruitmentSystemImplemented)
+        setSistemRekrutPegawaiTerapkanOpt(retrievedObject.hrManagement.hasPaytollSystem)
+        setSistemGajiPegawaiOpt(retrievedObject.hrManagement.isPayrollSystemImplemented)
+        setSistemGajiPegawaiTerapkanOpt(retrievedObject.hrManagement.hasKpiSystem)
+        setJenjangKarirOpt(retrievedObject.hrManagement.isKpiSystemImplemented)
+        setJenjangKarirTerapkanOpt(retrievedObject.hrManagement.hasTurnover)
+        setPutusKerjaOpt(retrievedObject.hrManagement.turnoverPercentage)
+        setPutusKerjaGantiOpt(retrievedObject.tkaSubtitution.subtitutionInThreeYears)
+      }
+    }
+    setInitialLoad(false)
+  }, [initialLoad])
+
+  useEffect(() => {
+
+    let data = {
+        "hrManagement": {
+            "hasRecruitmentSystem": sistemRekrutPegawaiOpt,
+            "isRecruitmentSystemImplemented": sistemRekrutPegawaiTerapkanOpt,
+            "hasPaytollSystem": sistemGajiPegawaiOpt,
+            "isPayrollSystemImplemented": sistemGajiPegawaiTerapkanOpt,
+            "hasKpiSystem": jenjangKarirOpt,
+            "isKpiSystemImplemented": jenjangKarirTerapkanOpt,
+            "hasTurnover": putusKerjaOpt,
+            "turnoverPercentage": presentasePutusKerja
+        },
+        "leaderEducationBackground": [],
+        "employeeCourse": [],
+        "employeeTraining": [],
+        "tkaUsage": [],
+        "tkaSubtitution": {
+          "subtitutionInThreeYears": putusKerjaGantiOpt,
+          "details":[]
+        },
+        "employeeMinimumSalary": []
+    }
+
+    gantiTenaga.forEach((item, i) => {
+      item.forEach((e, ii, arr) => {
+        let detailObj = {}
+        e.sectionData.forEach((secData, iii, arr2) => {
+          detailObj.field = e.sectionTitle.split(' : ')[1]
+          detailObj.position = arr2[0].value
+          detailObj.tmt = arr2[1].value
+          detailObj.numberOfPeople = arr2[2].value
+        })
+        data.tkaSubtitution.details.push(detailObj)
+      });
+    });
+
+    latarPendidikan.forEach((item, i) => {
+      item.forEach((e, ii, arr) => {
+        let detailObj = {}
+        e.sectionData.forEach((secData, iii, arr2) => {
+          detailObj.position = e.sectionTitle.split(' : ')[1]
+          detailObj.name = arr2[0].value
+          detailObj.education = arr2[1].value
+          detailObj.expereienceYears = arr2[2].value
+          detailObj.course = arr2[3].value
+          detailObj.duration = arr2[4].value
+        })
+        data.leaderEducationBackground.push(detailObj)
+      });
+    });
+
+    jenisKursus.forEach((item, i) => {
+      item.forEach((e, ii, arr) => {
+        let detailObj = {}
+        e.sectionData.forEach((secData, iii, arr2) => {
+          detailObj.course = e.sectionTitle.split(': ')[1]
+          detailObj.numberOfPeople = arr2[0].value
+          detailObj.description = arr2[1].value
+        })
+        data.employeeCourse.push(detailObj)
+      });
+    });
+
+    jenisKursusLainnya.forEach((item, i) => {
+      item.forEach((e, ii, arr) => {
+        let detailObj = {}
+        e.sectionData.forEach((secData, iii, arr2) => {
+          detailObj.course = e.sectionTitle.split(': ')[1]
+          detailObj.numberOfPeople = arr2[0].value
+          detailObj.description = arr2[1].value
+        })
+        data.employeeCourse.push(detailObj)
+      });
+    });
+
+    jenisPelatihan.forEach((item, i) => {
+      item.forEach((e, ii, arr) => {
+        let detailObj = {}
+        e.sectionData.forEach((secData, iii, arr2) => {
+          detailObj.trainingField = e.sectionTitle.split(': ')[1]
+          detailObj.numberOfPeople = arr2[0].value
+          detailObj.duration = arr2[1].value
+          detailObj.location = arr2[2].value
+          detailObj.positionPromotion = arr2[3].value
+          detailObj.startDate = arr2[4].value
+        })
+        data.employeeTraining.push(detailObj)
+      });
+    });
+
+    jenisPelatihanLainnya.forEach((item, i) => {
+      item.forEach((e, ii, arr) => {
+        let detailObj = {}
+        e.sectionData.forEach((secData, iii, arr2) => {
+          detailObj.trainingField = 'Pelatihan Lainnya'
+          detailObj.numberOfPeople = arr2[0].value
+          detailObj.duration = arr2[1].value
+          detailObj.location = arr2[2].value
+          detailObj.positionPromotion = arr2[3].value
+          detailObj.startDate = arr2[4].value
+        })
+        data.employeeTraining.push(detailObj)
+      });
+    });
+
+    tunjangan.forEach((item, i) => {
+      item.forEach((e, ii, arr) => {
+        let detailObj = {}
+        e.sectionData.forEach((secData, iii, arr2) => {
+          detailObj.type = e.sectionTitle
+          detailObj.firstYearValue = arr2[0].value
+          detailObj.secondYearValue = arr2[1].value
+          detailObj.thirdYearValue = arr2[2].value
+          detailObj.description = arr2[3].value
+        })
+        data.employeeMinimumSalary.push(detailObj)
+      });
+    });
+
+    tunjanganLainnya.forEach((item, i) => {
+      item.forEach((e, ii, arr) => {
+        let detailObj = {}
+        e.sectionData.forEach((secData, iii, arr2) => {
+          detailObj.type = 'Realisasi Tunjangan Lainnya'
+          detailObj.firstYearValue = arr2[0].value
+          detailObj.secondYearValue = arr2[1].value
+          detailObj.thirdYearValue = arr2[2].value
+          detailObj.description = arr2[3].value
+        })
+        data.employeeMinimumSalary.push(detailObj)
+      });
+    });
+
+    tka.forEach((item, i) => {
+      let inv = {}
+      item.forEach((e, i, arr) => {
+        inv.name = arr[0].value
+        inv.position = arr[1].value
+        inv.education = arr[2].value
+        inv.nationality = arr[3].value
+        inv.tkaNo = arr[4].value
+        inv.expDate = arr[5].value
+      });
+      data.tkaUsage.push(inv)
+    });
+
+    setDataSubmit(data)
+
+  }, [gantiTenaga,latarPendidikan,jenisKursus,jenisKursusLainnya,jenisPelatihan,jenisPelatihanLainnya,tka,tunjangan,tunjanganLainnya,presentasePutusKerja
+    ,sistemRekrutPegawaiOpt,sistemRekrutPegawaiTerapkanOpt,sistemGajiPegawaiOpt,sistemGajiPegawaiTerapkanOpt
+    ,jenjangKarirOpt,jenjangKarirTerapkanOpt,putusKerjaOpt,putusKerjaGantiOpt])
+
+  useEffect(() => {
+    if (!_.isEmpty(dataSubmit)) {
+      localStorage.setItem("mnjPart2Nilai", JSON.stringify(dataSubmit));
+    }
+  },[dataPass,dataSubmit])
 
   function clearData() {
 
@@ -173,6 +546,8 @@ const FormManajemenStep2 = () => {
                 radioButton={true}
                 radioName="sistemRekrutPegawaiOpt"
                 onClick={() => setSistemRekrutPegawaiOpt('Ya')}
+                radioValue={sistemRekrutPegawaiOpt}
+                selected={sistemRekrutPegawaiOpt == 'Ya'}
                 label="Ya"
               />
             </div>
@@ -181,6 +556,8 @@ const FormManajemenStep2 = () => {
                 radioButton={true}
                 radioName="sistemRekrutPegawaiOpt"
                 onClick={() => setSistemRekrutPegawaiOpt('Tidak')}
+                radioValue={sistemRekrutPegawaiOpt}
+                selected={sistemRekrutPegawaiOpt == 'Tidak'}
                 label="Tidak"
               />
             </div>
@@ -194,6 +571,8 @@ const FormManajemenStep2 = () => {
                     radioButton={true}
                     radioName="sistemRekrutPegawaiTerapkanOpt"
                     onClick={() => setSistemRekrutPegawaiTerapkanOpt('Ya')}
+                    radioValue={sistemRekrutPegawaiTerapkanOpt}
+                    selected={sistemRekrutPegawaiTerapkanOpt == 'Ya'}
                     label="Ya"
                   />
                 </div>
@@ -202,6 +581,8 @@ const FormManajemenStep2 = () => {
                     radioButton={true}
                     radioName="sistemRekrutPegawaiTerapkanOpt"
                     onClick={() => setSistemRekrutPegawaiTerapkanOpt('Tidak')}
+                    radioValue={sistemRekrutPegawaiTerapkanOpt}
+                    selected={sistemRekrutPegawaiTerapkanOpt == 'Tidak'}
                     label="Tidak"
                   />
                 </div>
@@ -217,6 +598,8 @@ const FormManajemenStep2 = () => {
                 radioButton={true}
                 radioName="sistemGajiPegawaiOpt"
                 onClick={() => setSistemGajiPegawaiOpt('Ya')}
+                radioValue={sistemGajiPegawaiOpt}
+                selected={sistemGajiPegawaiOpt == 'Ya'}
                 label="Ya"
               />
             </div>
@@ -225,6 +608,8 @@ const FormManajemenStep2 = () => {
                 radioButton={true}
                 radioName="sistemGajiPegawaiOpt"
                 onClick={() => setSistemGajiPegawaiOpt('Tidak')}
+                radioValue={sistemGajiPegawaiOpt}
+                selected={sistemGajiPegawaiOpt == 'Tidak'}
                 label="Tidak"
               />
             </div>
@@ -238,6 +623,8 @@ const FormManajemenStep2 = () => {
                     radioButton={true}
                     radioName="sistemGajiPegawaiTerapkanOpt"
                     onClick={() => setSistemGajiPegawaiTerapkanOpt('Ya')}
+                    radioValue={sistemGajiPegawaiTerapkanOpt}
+                    selected={sistemGajiPegawaiTerapkanOpt == 'Ya'}
                     label="Ya"
                   />
                 </div>
@@ -246,6 +633,8 @@ const FormManajemenStep2 = () => {
                     radioButton={true}
                     radioName="sistemGajiPegawaiTerapkanOpt"
                     onClick={() => setSistemGajiPegawaiTerapkanOpt('Tidak')}
+                    radioValue={sistemGajiPegawaiTerapkanOpt}
+                    selected={sistemGajiPegawaiTerapkanOpt == 'Tidak'}
                     label="Tidak"
                   />
                 </div>
@@ -261,6 +650,8 @@ const FormManajemenStep2 = () => {
                 radioButton={true}
                 radioName="jenjangKarirOpt"
                 onClick={() => setJenjangKarirOpt('Ya')}
+                radioValue={jenjangKarirOpt}
+                selected={jenjangKarirOpt == 'Ya'}
                 label="Ya"
               />
             </div>
@@ -269,6 +660,8 @@ const FormManajemenStep2 = () => {
                 radioButton={true}
                 radioName="jenjangKarirOpt"
                 onClick={() => setJenjangKarirOpt('Tidak')}
+                radioValue={jenjangKarirOpt}
+                selected={jenjangKarirOpt == 'Tidak'}
                 label="Tidak"
               />
             </div>
@@ -280,16 +673,20 @@ const FormManajemenStep2 = () => {
                 <div className="inline-flex items-center">
                   <InputForm
                     radioButton={true}
-                    radioName="sistemGajiPegawaiTerapkanOpt"
-                    onClick={() => setSistemGajiPegawaiTerapkanOpt('Ya')}
+                    radioName="jenjangKarirTerapkanOpt"
+                    onClick={() => setJenjangKarirTerapkanOpt('Ya')}
+                    radioValue={jenjangKarirTerapkanOpt}
+                    selected={jenjangKarirTerapkanOpt == 'Ya'}
                     label="Ya"
                   />
                 </div>
                 <div className="mx-10 inline-flex items-center">
                   <InputForm
                     radioButton={true}
-                    radioName="sistemGajiPegawaiTerapkanOpt"
-                    onClick={() => setSistemGajiPegawaiTerapkanOpt('Tidak')}
+                    radioName="jenjangKarirTerapkanOpt"
+                    onClick={() => setJenjangKarirTerapkanOpt('Tidak')}
+                    radioValue={jenjangKarirTerapkanOpt}
+                    selected={jenjangKarirTerapkanOpt == 'Tidak'}
                     label="Tidak"
                   />
                 </div>
@@ -305,6 +702,8 @@ const FormManajemenStep2 = () => {
                 radioButton={true}
                 radioName="putusKerjaOpt"
                 onClick={() => setPutusKerjaOpt('Ya')}
+                radioValue={putusKerjaOpt}
+                selected={putusKerjaOpt == 'Ya'}
                 label="Ya"
               />
             </div>
@@ -313,6 +712,8 @@ const FormManajemenStep2 = () => {
                 radioButton={true}
                 radioName="putusKerjaOpt"
                 onClick={() => setPutusKerjaOpt('Tidak')}
+                radioValue={putusKerjaOpt}
+                selected={putusKerjaOpt == 'Tidak'}
                 label="Tidak"
               />
             </div>
@@ -514,6 +915,8 @@ const FormManajemenStep2 = () => {
                 radioButton={true}
                 radioName="putusKerjaGantiOpt"
                 onClick={() => setPutusKerjaGantiOpt('Ya')}
+                radioValue={putusKerjaGantiOpt}
+                selected={putusKerjaGantiOpt == 'Ya'}
                 label="Ya"
               />
             </div>
@@ -522,6 +925,8 @@ const FormManajemenStep2 = () => {
                 radioButton={true}
                 radioName="putusKerjaGantiOpt"
                 onClick={() => setPutusKerjaGantiOpt('Tidak')}
+                radioValue={putusKerjaGantiOpt}
+                selected={putusKerjaGantiOpt == 'Tidak'}
                 label="Tidak"
               />
             </div>
