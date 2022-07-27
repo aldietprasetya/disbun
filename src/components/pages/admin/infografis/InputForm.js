@@ -17,7 +17,7 @@ function InputForm({
   className = '',
   classes = '',
   star = false,
-  margin = 'mb-2',
+  margin = 'mb-1.5',
   textArea = '',
   selectionArea = '',
   radioName = '',
@@ -43,7 +43,7 @@ function InputForm({
             value={values}
             type={type}
             placeholder={placeholder}
-            className={`${className} placeholder:text-sm placeholder:font-normal`}
+            className={`${className} placeholder:text-sm placeholder:font-normal border-transparent`}
             id={id}
           />
         )}
@@ -81,14 +81,14 @@ function InputForm({
               value={values}
               type={type}
               placeholder={placeholder}
-              className={`${className} placeholder:text-sm placeholder:font-normal`}
+              className={`${className} placeholder:text-sm placeholder:font-normal border-transparent`}
             />
           </div>
         )}
         {textArea && (
           <textarea
             name={titleName}
-            className={`${className} placeholder:text-sm placeholder:font-normal`}
+            className={`${className} placeholder:text-sm placeholder:font-normal border-transparent`}
             value={values}
             onChange={onChange}
             placeholder={placeholder}

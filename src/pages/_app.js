@@ -1,11 +1,11 @@
 import '../styles/globals.scss';
 import { Provider } from 'react-redux';
-import { store } from 'src/redux/store';
+import { store } from '../redux/store';
 import AuthProvider from '../components/provider/AuthProvider';
 import { SnackbarProvider } from 'notistack';
-import CustomComponent from 'src/components/snackbar/CustomComponent';
+import CustomComponent from '../components/snackbar/CustomComponent';
 
-const App = ({ Component, pageProps }) => {
+function MyApp({ Component, pageProps }) {
   return (
     <Provider store={store}>
       <AuthProvider>
@@ -15,8 +15,6 @@ const App = ({ Component, pageProps }) => {
       </AuthProvider>
     </Provider>
   );
-};
+}
 
-import '../styles/print.css'
-
-export default App;
+export default MyApp

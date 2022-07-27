@@ -771,9 +771,9 @@ const FormLegalitas = () => {
                             />
                           </label>
                         ) : (
-                          <label className={`${mng["base__formlabel"]} float-left w-1/2 pr-2`} key={ii}>
+                          <label className={`${mng["base__formlabel"]} float-left w-[47%] pr-2`} key={ii}>
                             <span className={mng.base__inputtitle}>{item.title}</span>
-                            <textarea className={`${mng["base__inputbase"]} min-h-[140px]`} type={item.type} rows="20" placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, kantorPusat, setKantorPusat, i, ii)}></textarea>
+                            <textarea className={`${mng["base__inputbase"]} min-h-[153px]`} type={item.type} rows="20" placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, kantorPusat, setKantorPusat, i, ii)}></textarea>
                           </label>
                         )
                       }
@@ -809,9 +809,9 @@ const FormLegalitas = () => {
                             />
                           </label>
                         ) : (
-                          <label className={`${mng["base__formlabel"]} float-left w-1/2 pr-2`} key={ii}>
+                          <label className={`${mng["base__formlabel"]} float-left w-[47%] pr-2`} key={ii}>
                             <span className={mng.base__inputtitle}>{item.title}</span>
-                            <textarea className={`${mng["base__inputbase"]} min-h-[140px]`} type={item.type} rows="20" placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, kantorWakil, setKantorWakil, i, ii)}></textarea>
+                            <textarea className={`${mng["base__inputbase"]} min-h-[153px]`} type={item.type} rows="20" placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, kantorWakil, setKantorWakil, i, ii)}></textarea>
                           </label>
                         )
                       }
@@ -948,7 +948,7 @@ const FormLegalitas = () => {
                               id="datePicker"
                               className={`${
                                 isError && 'border-primary-red-1 bg-primary-red-2'
-                              } w-full rounded  bg-white-2 py-3 px-4  text-small uppercase text-primary-gray-4`}
+                              } ${mng["base__inputbase"]} w-full rounded  bg-white-2 py-2 px-3 text-sm uppercase text-primary-gray-4`}
                               iconEmail="true"
                             />
                           </label>
@@ -1054,7 +1054,7 @@ const FormLegalitas = () => {
                               id="datePicker"
                               className={`${
                                 isError && 'border-primary-red-1 bg-primary-red-2'
-                              } w-full rounded  bg-white-2 py-3 px-4  text-small uppercase text-primary-gray-4`}
+                              } ${mng["base__inputbase"]} w-full rounded  bg-white-2 py-2 px-3 text-sm uppercase text-primary-gray-4`}
                               iconEmail="true"
                             />
                           </label>
@@ -1106,7 +1106,7 @@ const FormLegalitas = () => {
                               id="datePicker"
                               className={`${
                                 isError && 'border-primary-red-1 bg-primary-red-2'
-                              } w-full rounded  bg-white-2 py-3 px-4  text-small uppercase text-primary-gray-4`}
+                              } ${mng["base__inputbase"]} w-full rounded  bg-white-2 py-2 px-3  text-sm uppercase text-primary-gray-4`}
                               iconEmail="true"
                             />
                           </label>
@@ -1158,7 +1158,7 @@ const FormLegalitas = () => {
                               id="datePicker"
                               className={`${
                                 isError && 'border-primary-red-1 bg-primary-red-2'
-                              } w-full rounded  bg-white-2 py-3 px-4  text-small uppercase text-primary-gray-4`}
+                              } ${mng["base__inputbase"]} w-full rounded  bg-white-2 py-2 px-3  text-sm uppercase text-primary-gray-4`}
                               iconEmail="true"
                             />
                           </label>
@@ -1210,7 +1210,7 @@ const FormLegalitas = () => {
                               id="datePicker"
                               className={`${
                                 isError && 'border-primary-red-1 bg-primary-red-2'
-                              } w-full rounded  bg-white-2 py-3 px-4  text-small uppercase text-primary-gray-4`}
+                              } ${mng["base__inputbase"]} w-full rounded  bg-white-2 py-2 px-3  text-sm uppercase text-primary-gray-4`}
                               iconEmail="true"
                             />
                           </label>
@@ -1262,7 +1262,7 @@ const FormLegalitas = () => {
                               id="datePicker"
                               className={`${
                                 isError && 'border-primary-red-1 bg-primary-red-2'
-                              } w-full rounded  bg-white-2 py-3 px-4  text-small uppercase text-primary-gray-4`}
+                              } ${mng["base__inputbase"]} w-full rounded  bg-white-2 py-2 px-3  text-sm uppercase text-primary-gray-4`}
                               iconEmail="true"
                             />
                           </label>
@@ -1314,7 +1314,7 @@ const FormLegalitas = () => {
                               id="datePicker"
                               className={`${
                                 isError && 'border-primary-red-1 bg-primary-red-2'
-                              } w-full rounded  bg-white-2 py-3 px-4  text-small uppercase text-primary-gray-4`}
+                              } ${mng["base__inputbase"]} w-full rounded  bg-white-2 py-2 px-3  text-sm uppercase text-primary-gray-4`}
                               iconEmail="true"
                             />
                           </label>
@@ -1366,7 +1366,7 @@ const FormLegalitas = () => {
                               id="datePicker"
                               className={`${
                                 isError && 'border-primary-red-1 bg-primary-red-2'
-                              } w-full rounded  bg-white-2 py-3 px-4  text-small uppercase text-primary-gray-4`}
+                              } ${mng["base__inputbase"]} w-full rounded  bg-white-2 py-2 px-3  text-sm uppercase text-primary-gray-4`}
                               iconEmail="true"
                             />
                           </label>
