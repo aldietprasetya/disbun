@@ -117,7 +117,7 @@ const Navbar = ({ backdrop }) => {
                         title={link.title}
                         href={link.path}
                         icon={link.icon}
-                        isActive={router.asPath.match(link.path)}
+                        isActive={router.asPath == link.path}
                       />
                     );
                   })}

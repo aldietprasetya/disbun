@@ -31,7 +31,9 @@ module.exports = {
           'red-2': '#FFF4F2',
           // green
           green: '#038575',
+          'green-1': '#CDE2E1',
           'dark-green': '#02554B',
+          'dark-green-1': '#0D9282',
           // black
           black: '#01231F',
           'black-2': '#404040',
@@ -42,11 +44,16 @@ module.exports = {
           'gray-2': '#EDEDED',
           'gray-3': '#E0E0E0',
           'gray-4': '#C2C2C2',
+          'gray-5': '#616161',
+          'gray-6': '#ECECEC',
+          'gray-7': '#687182',
           'light-gray': '#D5DBDA',
+          'light-gray-1': '#959595',
           // blue
           'light-blue': '#F0FFFD',
           'blue-1': '#3267E3',
           'blue-2': '#F0F3FF',
+          'blue-3': '#1C3E58',
         },
       },
       screens: {

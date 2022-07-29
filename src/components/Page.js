@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import Sidebar from './sidebar/Sidebar';
+import Detail from 'src/components/pages/admin/MasterBasisData/DetailMasterData';
 import StickyBox from "react-sticky-box";
 import Head from 'next/head';
+import eventBus from "src/state";
 
 const Page = ({
   children,
@@ -18,7 +20,23 @@ const Page = ({
   onChangeSidebarConfirm,
   backdropHeight = 'h-[50%]',
   isInfografis,
+  adminMode,
 }) => {
+  const [dataItem, setDataItem] = useState(null);
+
+  useEffect(() => {
+    eventBus.on("detilApply", (data, dt) =>
+      setDataItem(data)
+    );
+    return function cleanup () {
+      eventBus.remove("detilApply");
+    }
+  },[])
+
+  const closeDisplay = (dt) => {
+    console.log(dt);
+  };
+
   return (
     <div className="relative h-screen overflow-x-hidden  bg-gray-100 ">
       <Head>
@@ -31,7 +49,7 @@ const Page = ({
         <div
           className={`${
             backdrop ? 'block' : 'hidden'
-          } fixed z-0 w-full h-[340px] ${backdropHeight}`}
+          } ${adminMode ? 'h-[260px]' : 'h-[340px]'} fixed z-0 w-full ${backdropHeight}`}
         >
           <img
             src="/images/background-page.png"
@@ -65,6 +83,13 @@ const Page = ({
           </div>
         )}
       </div>
+      {
+        dataItem != null ? (
+          <Detail item={dataItem} closeDisplay={closeDisplay}/>
+        ) : (
+          <></>
+        )
+      }
       <Footer />
     </div>
   );

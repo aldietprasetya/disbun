@@ -1,0 +1,41 @@
+.table {
+  @apply min-w-full;
+  &__head {
+    @apply border-b bg-white;
+    &_row {
+      @apply bg-[#EEEEEE];
+    }
+    &_col {
+      @apply first:pl-[30px] last:pr-[30px] text-center px-2 py-3 text-left text-xs font-medium uppercase text-gray-900;
+      &:nth-of-type(1),
+      &:nth-of-type(2),
+      &:nth-of-type(3) {
+        @apply text-left;
+      }
+      &_action {
+        @apply text-left;
+        &:last-of-type {
+          @apply text-center;
+        }
+      }
+      &_statcenter {
+        &:nth-of-type(6) {
+          @apply text-center;
+        }
+      }
+    }
+  }
+  &__body {
+    &_row {
+
+    }
+    &_col {
+      @apply whitespace-nowrap first:pl-[30px] last:pr-[30px] px-2 py-3 text-center text-xs font-light text-gray-900;
+      &:nth-of-type(1),
+      &:nth-of-type(2),
+      &:nth-of-type(3) {
+        @apply text-left;
+      }
+    }
+  }
+}

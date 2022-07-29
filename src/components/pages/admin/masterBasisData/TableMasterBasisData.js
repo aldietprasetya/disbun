@@ -70,7 +70,7 @@ const TableMasterBasisData = ({
                   </td>
                   <td className="flex justify-center whitespace-nowrap px-6 py-3 text-center text-xs font-light text-gray-900">
                     <div
-                      className={`flex w-fit items-center gap-2 
+                      className={`flex w-fit items-center gap-2
                       rounded py-1 px-2 text-[${item.status.color}]
                       bg-[${item.status.backgroundColor}]`}
                     >
@@ -78,6 +78,7 @@ const TableMasterBasisData = ({
                       <div>{item.status.status}</div>
                     </div>
                   </td>
+
                   <td className="whitespace-nowrap px-8 py-3 text-xs font-light text-gray-900 ">
                     <div className="relative">
                       <div
@@ -103,6 +104,7 @@ const TableMasterBasisData = ({
                       </MenuFloating>
                     </div>
                   </td>
+
                 </tr>
               );
             })}
