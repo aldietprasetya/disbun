@@ -224,7 +224,7 @@ const SectionDaftar = ({ margin = 'lg:mt-32 tall:mt-8' }) => {
             <div className="flex">
               <div className="mx-7 flex items-center">
                 <img src="/icon/info-circle.svg" className="mx-1 w-2" />
-                <a className="mx-1 cursor-pointer text-xs text-primary-green">
+                <a className="mx-1 cursor-pointer text-xs text-primary-green" href='suratLampionPerkeb.pdf' target="_blank" rel="noopener noreferrer">
                   Lihat Format
                 </a>
               </div>
