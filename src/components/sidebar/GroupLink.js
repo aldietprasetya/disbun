@@ -1,88 +1,3 @@
-export const navItemList = [
-  {
-    id: 0,
-    title: 'Koleksi DTW',
-    isExpand: false,
-    path: '/manajemen-basis-data/koleksi-dtw',
-  },
-  {
-    id: 1,
-    title: 'Monev DTW',
-    isExpand: true,
-    path: '/manajemen-basis-data/monev-dtw',
-    subNavList: [
-      {
-        title: 'Survey Awal',
-        path: '/manajemen-basis-data/monev-dtw/survey-awal',
-        id: 'surveyAwal',
-      },
-      {
-        title: 'Survey Harian',
-        path: '/manajemen-basis-data/monev-dtw/survey-harian',
-        id: 'surveyHarian',
-      },
-      {
-        title: 'Survey CHSE',
-        path: '/manajemen-basis-data/monev-dtw/survey-chse',
-        id: 'surveyChse',
-      },
-    ],
-  },
-  {
-    id: 2,
-    title: 'Rencana Investasi',
-    isExpand: false,
-    path: '/manajemen-basis-data/rencana-investasi',
-  },
-  {
-    id: 3,
-    title: 'Pengajuan',
-    isExpand: true,
-    path: '/manajemen-basis-data/pengajuan',
-    subNavList: [
-      {
-        title: 'Perubahan Data',
-        path: '/manajemen-basis-data/pengajuan/perubahan-data',
-        id: 'perubahanData',
-      },
-      {
-        title: 'DTW Baru',
-        path: '/manajemen-basis-data/pengajuan/dtw-baru',
-        id: 'dtwBaru',
-      },
-    ],
-  },
-  {
-    id: 4,
-    title: 'Master Database',
-    isExpand: false,
-    path: '/manajemen-basis-data/master-database',
-  },
-];
-
-export const navListElementDTW = [
-  {
-    title: 'Informasi Umum',
-    path: '/element-dtw/buat-baru/informasi-umum',
-  },
-  {
-    title: 'Atraksi',
-    path: '/element-dtw/buat-baru/atraksi',
-  },
-  {
-    title: 'Aksebilitas',
-    path: '/element-dtw/buat-baru/aksebilitas',
-  },
-  {
-    title: 'Amenitas & Fasilitas',
-    path: '/element-dtw/buat-baru/amenitas-fasilitas',
-  },
-  {
-    title: 'Lain-lain',
-    path: '/element-dtw/buat-baru/lain-lain',
-  },
-];
-
 export const navListRencanaPembangunan = [
   {
     title: 'Pembangunan',
@@ -111,13 +26,6 @@ export const navListSidebarEditProfile = [
     title: 'Ubah Password',
     path: '/profile/ubah-password',
   },
-  // {
-  //   icon: '/icon/kapasitas-dtw-icon-white.svg',
-  //   iconActive: '/icon/kapasitas-dtw-icon-green.svg',
-  //   title: 'Kapasitas DTW',
-  //   path: '/profile/admin/kapasitas-dtw',
-  //   isAdmin: true,
-  // },
 ];
 
 export const navList = [

@@ -9,12 +9,12 @@ const TableFooter = ({
   handlePrevPage,
 }) => {
   return (
-    <div className="flex items-center justify-between bg-white p-6">
+    <div className="flex items-center justify-between bg-white py-[11px] px-[30px]">
       {/* left */}
       <div className="flex items-center gap-2">
         {dataMeta && (
-          <div className="text-xs">
-            {dataMeta?.page}-{dataMeta?.limit * dataMeta?.page} of{' '}
+          <div className="text-xs text-primary-gray-7 font-bold">
+            Menampilkan {dataMeta?.page}-{dataMeta?.limit * dataMeta?.page} dari{' '}
             {dataMeta?.total}
           </div>
         )}

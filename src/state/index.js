@@ -1,5 +1,13 @@
-import { createGlobalState } from 'react-hooks-global-state';
+const eventBus = {
+  on(event, callback) {
+    document.addEventListener(event, (e) => callback(e.detail));
+  },
+  dispatch(event, data) {
+    document.dispatchEvent(new CustomEvent(event, { detail: data }));
+  },
+  remove(event, callback) {
+    document.removeEventListener(event, callback);
+  },
+};
 
-const { setGlobalState, useGlobalState } = createGlobalState({})
-
-export { setGlobalState, useGlobalState }
+export default eventBus;
