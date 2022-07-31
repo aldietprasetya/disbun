@@ -23,8 +23,7 @@ const ManajemenPage = () => {
           <BreadCrumbs
             variant="1"
             links={[
-              { path: '/', title: 'Beranda' },
-              { path: '/infografis/buat-laporan', title: 'Buat Laporan' },
+              { path: '/pelaporan-perkebunan', title: 'Pelaporan Perkebunan' },
               {
                 path: '/pelaporan-perkebunan/aspek-manajemen',
                 title: 'Aspek Manajemen',

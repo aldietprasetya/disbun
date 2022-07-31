@@ -18,8 +18,7 @@ const UmumPage = () => {
       <div className="relative mt-5 w-full">
         <BreadCrumbs
           links={[
-            { path: '/', title: 'Beranda' },
-            { path: '/infografis/buat-laporan', title: 'Buat Laporan' },
+            { path: '/pelaporan-perkebunan', title: 'Pelaporan Perkebunan' },
             {
               path: '/pelaporan-perkebunan/aspek-umum',
               title: 'Aspek Umum',
