@@ -18,12 +18,11 @@ const ManajemenPage = () => {
             <div className="relative mt-5 w-full">
                 <BreadCrumbs
                     links={[
-                        { path: '/infografis', title: 'Infografis' },
-                        { path: '/infografis/buat-laporan', title: 'Buat Laporan' },
-                        {
-                            path: '/penilaian-perkebunan/manajemen',
-                            title: 'Manajemen',
-                        },
+                      { path: '/penilaian-perkebunan', title: 'Penilaian Perkebunan' },
+                      {
+                          path: '/penilaian-perkebunan/manajemen',
+                          title: 'Manajemen',
+                      },
                     ]}
                 />
                 <div className="mt-6 flex items-center justify-between ">

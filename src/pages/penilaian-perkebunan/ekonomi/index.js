@@ -18,8 +18,7 @@ const Ekonomi = () => {
       <div className="relative mt-5 w-full">
         <BreadCrumbs
           links={[
-            { path: '/', title: 'Beranda' },
-            { path: '/infografis/buat-laporan', title: 'Buat Laporan' },
+            { path: '/penilaian-perkebunan', title: 'Penilaian Perkebunan' },
             {
               path: '/penilaian-perkebunan/ekonomi',
               title: 'Ekonomi',

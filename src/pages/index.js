@@ -10,14 +10,14 @@ const links = [
     title2: 'Perkebunan',
     icon: '/images/card/Pelaporan-Perkebunan-icon.svg',
     bannerImage: 'bg-[url(/images/card/Pelaporan-Perkebunan-bg.png)]',
-    path: '/pelaporan-perkebunan/aspek-umum',
+    path: '/pelaporan-perkebunan',
   },
   {
     title: 'Penilaian',
     title2: 'Perkebunan',
     icon: '/images/card/Penilaian-Perkebunan-icon.svg',
     bannerImage: 'bg-[url(/images/card/Penilaian-Perkebunan-bg.png)]',
-    path: '/penilaian-perkebunan/legalitas',
+    path: '/penilaian-perkebunan',
   },
 ];
 

@@ -6,7 +6,7 @@ import table from 'src/styles/Table.module.scss'
 import Page from 'src/components/Page';
 import eventBus from "src/state";
 
-const TableMasterBasisData = ({
+const TableMasterPenilaianPerkebunan = ({
   headerTable,
   data,
   dataMeta,
@@ -34,14 +34,9 @@ const TableMasterBasisData = ({
   };
 
   function changeState(e) {
-    if (e == 'Diajukan') {
-      return <div className="bg-[#FEF6F6] inline-flex px-[8px] py-[2px] items-center justify-center rounded text-[#EE5C52] font-medium text-xs">
-        <span className="w-[6px] h-[6px] bg-[#EE5C52] mr-1.5 rounded-sm"></span>{e}
-      </div>
-    }
-    if (e == 'Ditunda') {
-      return <div className="bg-[#FFF6E3] inline-flex px-[8px] py-[2px] items-center justify-center rounded text-[#FCBD0F] font-medium text-xs">
-        <span className="w-[6px] h-[6px] bg-[#FCBD0F] mr-1.5 rounded-sm"></span>{e}
+    if (e == 'Draft') {
+      return <div className="bg-[#EFF2FA] inline-flex px-[8px] py-[2px] items-center justify-center rounded text-[#3267E3] font-medium text-xs">
+        <span className="w-[6px] h-[6px] bg-[#3267E3] mr-1.5 rounded-sm"></span>{e}
       </div>
     }
     if (e == 'Diterima') {
@@ -78,13 +73,13 @@ const TableMasterBasisData = ({
                   className={`${index % 2 === 0 ? 'bg-white' : 'bg-[#FAFAFA]'}` }
                 >
                   <td className={`${table.table__body_col}`}>
-                    {item.perusahaan}
-                  </td>
-                  <td className={`${table.table__body_col}`}>
                     {item.kebun}
                   </td>
                   <td className={`${table.table__body_col}`}>
-                    {item.kabKota}
+                    {item.kota}
+                  </td>
+                  <td className={`${table.table__body_col}`}>
+                    {item.admin}
                   </td>
                   <td className={`${table.table__body_col} text-left`}>
                     {item.jenis}
@@ -94,9 +89,6 @@ const TableMasterBasisData = ({
                   </td>
                   <td className={`${table.table__body_col}`}>
                     {changeState(item.status)}
-                  </td>
-                  <td className={`${table.table__body_col} text-left`}>
-                    {item.skor}
                   </td>
 
                   <td className="whitespace-nowrap px-8 py-3 text-xs font-light text-gray-900 ">
@@ -145,4 +137,4 @@ const TableMasterBasisData = ({
   );
 };
 
-export default TableMasterBasisData;
+export default TableMasterPenilaianPerkebunan;
