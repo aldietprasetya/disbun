@@ -5,8 +5,6 @@ import { useRouter } from 'next/router';
 import CustomLink from './CustomLink';
 import { Icon } from '@iconify/react';
 import { useState } from 'react';
-import { logout } from '../redux/slices/auth';
-import { useDispatch, useSelector } from 'react-redux';
 
 const links = [
   {
@@ -28,6 +26,10 @@ const links = [
     isAdmin: true,
   },
 ];
+
+function logout() {
+  alert('logout')
+}
 
 const ProfileDropDown = ({ open, handleLogout }) => {
   return (
@@ -77,8 +79,6 @@ const NavItem = ({ isActive, icon, title, href, isAdmin }) => {
 const Navbar = ({ backdrop }) => {
   const router = useRouter();
   const [dropDownOpen, setDropDownOpen] = useState(false);
-  const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.auth);
   const [dummyUser, setDummyUser] = useState(true);
 
   return (
@@ -89,8 +89,8 @@ const Navbar = ({ backdrop }) => {
     >
       <div className="container mx-auto flex h-20 justify-between px-10">
         <div className="flex items-center gap-10">
-          <CustomLink href={user.roleId === 1 ? '/' : '/admin/infografis'}>
-            {dummyUser == true || user?.roleId === 2 ? (
+          <CustomLink href={'/'}>
+            {dummyUser == true ? (
               <img
                 src="/images/logo/lampion-kebun-logo.svg"
                 alt="logo-disbun"
@@ -108,7 +108,7 @@ const Navbar = ({ backdrop }) => {
           {backdrop && (
             <>
               {/*  {user?.roleId === 3 || user?.roleId === 2 ? ( */}
-              {dummyUser == true || user?.roleId === 2 ? (
+              {dummyUser == true ? (
                 <div className="flex gap-2">
                   {links.map((link) => {
                     return (
@@ -134,7 +134,7 @@ const Navbar = ({ backdrop }) => {
             <div className="relative h-8 w-8">
               <Image
                 src={
-                  user?.profilePicture || '/icon/default-profile-picture.svg'
+                  '/icon/default-profile-picture.svg'
                 }
                 layout="fill"
                 objectFit="cover"
@@ -170,7 +170,7 @@ const Navbar = ({ backdrop }) => {
           </div>
           <ProfileDropDown
             open={dropDownOpen}
-            handleLogout={() => dispatch(logout())}
+            handleLogout={() => logout()}
           />
         </div>
       </div>

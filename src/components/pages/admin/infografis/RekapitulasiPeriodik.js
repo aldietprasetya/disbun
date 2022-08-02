@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import MUIDataTable from "mui-datatables";
 import { Icon } from '@iconify/react';
 import InputForm from 'src/components/pages/admin/infografis/InputForm';
 import mng from 'src/styles/Managemen.module.scss';

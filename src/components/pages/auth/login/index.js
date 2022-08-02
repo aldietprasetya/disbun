@@ -6,8 +6,6 @@ import { useRouter } from 'next/router';
 import CarouselBanner from '../components/CarouselBanner';
 import axios from 'axios';
 import { appConfig } from 'src/config';
-import { login } from '../../../../redux/slices/auth';
-import { useDispatch } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import CustomComponent from 'src/components/snackbar/CustomComponent';
 import ReactLoading from 'react-loading';
@@ -20,7 +18,6 @@ import LoginForm from '../components/Login/LoginForm';
 
 const LoginPage = () => {
   const { enqueueSnackbar } = useSnackbar();
-  const dispatch = useDispatch();
   const [typePassword, setTypePassword] = useState(false);
   const router = useRouter();
   const [isError, setIsError] = useState(false);
@@ -56,9 +53,7 @@ const LoginPage = () => {
               Authorization: `Bearer ${res.data.data.accessToken}`,
             },
           });
-          dispatch(
-            login({ token: res.data.data.accessToken, user: result.data.data }),
-          );
+          login({ token: res.data.data.accessToken, user: result.data.data })
           // if (res.data.data.role.id === 1) {
           //   router.push('/');
           // } else {
@@ -104,6 +99,10 @@ const LoginPage = () => {
       }
     },
   });
+
+  function login(dt) {
+    alert(dt)
+  }
 
   const { values, errors, handleChange, handleSubmit, initialValues } =
     formLogin;

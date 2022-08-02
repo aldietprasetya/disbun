@@ -2,7 +2,6 @@ import React from 'react';
 import BreadCrumbs from '../../components/BreadCrumbs';
 import Page from '../../components/Page';
 import { useFormik } from 'formik';
-import { useSelector } from 'react-redux';
 import axiosInstance from 'src/lib/axios';
 import { useSnackbar } from 'notistack';
 import CustomComponent from 'src/components/snackbar/CustomComponent';
@@ -11,12 +10,11 @@ import PengaturanAkun from 'src/components/pages/profile/PengaturanAkun';
 
 const PengaturanAkunPage = () => {
   const { enqueueSnackbar } = useSnackbar();
-  const { user } = useSelector((state) => state.auth);
   const formEditProfile = useFormik({
     initialValues: {
-      email: '' || user?.email,
-      namaPengelola: '' || user?.name,
-      phoneNumber: '' || user?.phoneNumber,
+      email: '',
+      namaPengelola: '',
+      phoneNumber: '',
     },
     enableReinitialize: true,
     onSubmit: async (values) => {

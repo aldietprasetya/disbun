@@ -6,8 +6,6 @@ import { useRouter } from 'next/router';
 import CarouselBanner from '../components/CarouselBanner';
 import axios from 'axios';
 import { appConfig } from 'src/config';
-import { login } from '../../../../redux/slices/auth';
-import { useDispatch } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import CustomComponent from 'src/components/snackbar/CustomComponent';
 import ReactLoading from 'react-loading';
@@ -20,7 +18,6 @@ import LoginForm from '../components/Login/LoginForm';
 
 const ResetPassPage = () => {
   const router = useRouter();
-  const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
   const [typePassword1, setTypePassword1] = useState(false);
   const [typePassword2, setTypePassword2] = useState(false);

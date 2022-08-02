@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { navItemList } from './GroupLink';
 import { useRouter } from 'next/router';
 import { Icon } from '@iconify/react';
-import { useSelector } from 'react-redux';
 
 const NavItem = ({
   title,
@@ -85,7 +84,6 @@ const Sidebar = ({
   roleId,
 }) => {
   const router = useRouter();
-  const { user } = useSelector((state) => state.auth);
 
   return (
     <div className="flex h-[540px] w-[280px] mr-[2px] flex-col items-center border-r bg-white py-4">
@@ -119,7 +117,7 @@ const Sidebar = ({
                       handleChangePath={() => router.push(list.path)}
                       iconActive={list.iconActive}
                       stickyBot={list.stickyBot}
-                      show={list.isAdmin ? user?.roleId !== 1 : true}
+                      show={list.isAdmin}
                     />
                   );
                 })}

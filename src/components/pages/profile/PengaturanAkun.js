@@ -1,20 +1,18 @@
 import React from 'react';
 import LoginForm from '../auth/components/Login/LoginForm';
 import { useFormik } from 'formik';
-import { useSelector } from 'react-redux';
 import axiosInstance from 'src/lib/axios';
 import { useSnackbar } from 'notistack';
 import CustomComponent from 'src/components/snackbar/CustomComponent';
 
 function PengaturanAkun() {
   const { enqueueSnackbar } = useSnackbar();
-  const { user } = useSelector((state) => state.auth);
   const formEditProfile = useFormik({
     initialValues: {
-      username: '' || user?.username,
-      email: '' || user?.email,
-      namaPengelola: '' || user?.name,
-      phoneNumber: '' || user?.phoneNumber,
+      username: '',
+      email: '',
+      namaPengelola: '',
+      phoneNumber: '',
     },
     enableReinitialize: true,
     onSubmit: async (values) => {
