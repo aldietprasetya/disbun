@@ -63,8 +63,8 @@ const LoginPage = () => {
       } else {
         setLoading(true);
         setIsError(false);
+        router.push("/");
       }
-      if (res.url) router.push("/");
       setSubmitting(false);
     },
   });
