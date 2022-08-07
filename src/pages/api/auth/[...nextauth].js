@@ -46,28 +46,28 @@ export default NextAuth({
               }
             }
           };
-        }
+        } else {
+          const res = await axios.post(
+            `${appConfig.baseUrl}/authentications`,
+            payload,
+          );
 
-        const res = await axios.post(
-          `${appConfig.baseUrl}/authentications`,
-          payload,
-        );
-
-        const user = await res.data;
-        if (res.data.status == 'failed') {
-          throw new Error(res.data.message);
-        }
-        // If no error and we have user data, return it
-        if (res.data.status == 'success' && user) {
-          const getMe = await axios.get(`${appConfig.baseUrl}/users/profile`, {
-            headers: {
-              Authorization: `Bearer ${user.data.accessToken}`,
-            },
-          });
-          if (getMe.data.status == 'success') {
-            user.data.acquiredUser = getMe.data.data.acquiredUser
+          const user = await res.data;
+          if (res.data.status == 'failed') {
+            throw new Error(res.data.message);
           }
-          return user;
+          // If no error and we have user data, return it
+          if (res.data.status == 'success' && user) {
+            const getMe = await axios.get(`${appConfig.baseUrl}/users/profile`, {
+              headers: {
+                Authorization: `Bearer ${user.data.accessToken}`,
+              },
+            });
+            if (getMe.data.status == 'success') {
+              user.data.acquiredUser = getMe.data.data.acquiredUser
+            }
+            return user;
+          }
         }
 
         // login failed
