@@ -31,7 +31,7 @@ export const navListSidebarEditProfile = [
 export const navList = [
   {
     title: 'Aspek Umum',
-    path: '/pelaporan-perkebunan/aspek-umum',
+    path: '/user/pelaporan-perkebunan/aspek-umum',
     icon: '/icon/home-icon-white.svg',
     isAdmin: true,
     stickyBot: false,
@@ -40,7 +40,7 @@ export const navList = [
   },
   {
     title: 'Aspek Manajemen',
-    path: '/pelaporan-perkebunan/aspek-manajemen',
+    path: '/user/pelaporan-perkebunan/aspek-manajemen',
     icon: '/icon/home-icon-white.svg',
     isAdmin: true,
     stickyBot: false,
@@ -49,7 +49,7 @@ export const navList = [
   },
   {
     title: 'Aspek Kebun',
-    path: '/pelaporan-perkebunan/aspek-kebun',
+    path: '/user/pelaporan-perkebunan/aspek-kebun',
     icon: '/icon/home-icon-white.svg',
     isAdmin: true,
     stickyBot: false,
@@ -58,7 +58,7 @@ export const navList = [
   },
   {
     title: 'Aspek Pengolahan',
-    path: '/pelaporan-perkebunan/aspek-pengolahan',
+    path: '/user/pelaporan-perkebunan/aspek-pengolahan',
     icon: '/icon/home-icon-white.svg',
     isAdmin: true,
     stickyBot: false,
@@ -66,7 +66,7 @@ export const navList = [
   },
   {
     title: 'Aspek Sosial Ekonomi dan Lingkungan',
-    path: '/pelaporan-perkebunan/aspek-sosial',
+    path: '/user/pelaporan-perkebunan/aspek-sosial',
     icon: '/icon/home-icon-white.svg',
     isAdmin: true,
     stickyBot: false,
@@ -75,7 +75,7 @@ export const navList = [
   },
   {
     title: 'Konfirmasi',
-    path: '/pelaporan-perkebunan/konfirmasi',
+    path: '/user/pelaporan-perkebunan/konfirmasi',
     icon: '/icon/home-icon-white.svg',
     isAdmin: true,
     stickyBot: true,
@@ -87,7 +87,7 @@ export const navList = [
 export const navListPenilaianPerkebunan = [
   {
     title: 'Legalitas',
-    path: '/penilaian-perkebunan/legalitas',
+    path: '/user/penilaian-perkebunan/legalitas',
     icon: '/icon/home-icon-white.svg',
     isAdmin: true,
     stickyBot: false,
@@ -96,7 +96,7 @@ export const navListPenilaianPerkebunan = [
   },
   {
     title: 'Manajemen',
-    path: '/penilaian-perkebunan/manajemen',
+    path: '/user/penilaian-perkebunan/manajemen',
     icon: '/icon/home-icon-white.svg',
     isAdmin: true,
     stickyBot: false,
@@ -105,7 +105,7 @@ export const navListPenilaianPerkebunan = [
   },
   {
     title: 'Kebun',
-    path: '/penilaian-perkebunan/kebun',
+    path: '/user/penilaian-perkebunan/kebun',
     icon: '/icon/home-icon-white.svg',
     isAdmin: true,
     stickyBot: false,
@@ -114,7 +114,7 @@ export const navListPenilaianPerkebunan = [
   },
   {
     title: 'Pengolahan Hasil',
-    path: '/penilaian-perkebunan/pengolahan',
+    path: '/user/penilaian-perkebunan/pengolahan',
     icon: '/icon/home-icon-white.svg',
     isAdmin: true,
     stickyBot: false,
@@ -122,7 +122,7 @@ export const navListPenilaianPerkebunan = [
   },
   {
     title: 'Sosial',
-    path: '/penilaian-perkebunan/sosial',
+    path: '/user/penilaian-perkebunan/sosial',
     icon: '/icon/home-icon-white.svg',
     isAdmin: true,
     stickyBot: false,
@@ -131,7 +131,7 @@ export const navListPenilaianPerkebunan = [
   },
   {
     title: 'Ekonomi Wilayah',
-    path: '/penilaian-perkebunan/ekonomi',
+    path: '/user/penilaian-perkebunan/ekonomi',
     icon: '/icon/home-icon-white.svg',
     isAdmin: true,
     stickyBot: false,
@@ -140,7 +140,7 @@ export const navListPenilaianPerkebunan = [
   },
   {
     title: 'Lingkungan',
-    path: '/penilaian-perkebunan/lingkungan',
+    path: '/user/penilaian-perkebunan/lingkungan',
     icon: '/icon/home-icon-white.svg',
     isAdmin: true,
     stickyBot: false,
@@ -149,7 +149,7 @@ export const navListPenilaianPerkebunan = [
   },
   {
     title: 'Pelaporan',
-    path: '/penilaian-perkebunan/pelaporan',
+    path: '/user/penilaian-perkebunan/pelaporan',
     icon: '/icon/home-icon-white.svg',
     isAdmin: true,
     stickyBot: false,
@@ -158,7 +158,7 @@ export const navListPenilaianPerkebunan = [
   },
   {
     title: 'Konfirmasi',
-    path: '/penilaian-perkebunan/konfirmasi',
+    path: '/user/penilaian-perkebunan/konfirmasi',
     icon: '/icon/home-icon-white.svg',
     isAdmin: true,
     stickyBot: true,

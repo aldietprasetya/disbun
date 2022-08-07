@@ -34,7 +34,7 @@ function LoginForm({
             value={values}
             type={type}
             placeholder={placeholder}
-            className={`${className}`}
+            className={`${className} bg-[#F7F7F7] border-[#EDEDED]`}
           />
         )}
         {iconPassword && (
@@ -46,7 +46,7 @@ function LoginForm({
               value={values}
               type={type}
               placeholder={placeholder}
-              className={`${className}`}
+              className={`${className} bg-[#F7F7F7] border-[#EDEDED]`}
             />
             <Icon
               onClick={onClick}
@@ -61,7 +61,7 @@ function LoginForm({
         )}
         {phoneNumber && (
           <div className="flex gap-3">
-            <div className="flex items-center justify-center rounded-md border bg-white-2 py-3 px-4 text-sm">
+            <div className="flex items-center justify-center rounded-md bg-white-2 py-3 px-4 text-sm bg-[#F7F7F7] border-[#EDEDED]">
               +62
             </div>
             <input
@@ -71,7 +71,7 @@ function LoginForm({
               value={values}
               type={type}
               placeholder={placeholder}
-              className={`${className}`}
+              className={`${className} bg-[#F7F7F7] border-[#EDEDED]`}
             />
           </div>
         )}

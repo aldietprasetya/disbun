@@ -78,7 +78,7 @@ const SectionCreatePassword = () => {
               />
             ),
           });
-          router.push('/auth/login');
+          router.push('/login');
         }
         setLoading(false);
       } catch (error) {
@@ -301,7 +301,7 @@ const SectionCreatePassword = () => {
           <div className="mt-10 w-full text-center text-sm text-[#9E9E9E]">
             Sudah memiliki akun?{' '}
             <span
-              onClick={() => router.push('/auth/login')}
+              onClick={() => router.push('/login')}
               className="cursor-pointer text-[#038575]"
             >
               Masuk

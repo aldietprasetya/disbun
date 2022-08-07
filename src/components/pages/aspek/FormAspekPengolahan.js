@@ -319,7 +319,7 @@ const FormAspekPengolahan = () => {
     console.log('=========================================================')
 
     router.push({
-      pathname: "/pelaporan-perkebunan/aspek-sosial/"
+      pathname: "/user/pelaporan-perkebunan/aspek-sosial/"
     })
   })
 

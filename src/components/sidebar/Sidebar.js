@@ -109,6 +109,16 @@ const Sidebar = ({
               <>
                 {navList?.map((list,i) => {
                   return (
+                    // <NavItem
+                    //   key={i}
+                    //   title={list.title}
+                    //   icon={list.icon}
+                    //   isActive={router.asPath.match(list.path)}
+                    //   handleChangePath={() => router.push(list.path)}
+                    //   iconActive={list.iconActive}
+                    //   stickyBot={list.stickyBot}
+                    //   show={list.isAdmin ? user?.roleId !== 1 : true}
+                    // />
                     <NavItem
                       key={i}
                       title={list.title}
@@ -117,7 +127,7 @@ const Sidebar = ({
                       handleChangePath={() => router.push(list.path)}
                       iconActive={list.iconActive}
                       stickyBot={list.stickyBot}
-                      show={list.isAdmin}
+                      show={true}
                     />
                   );
                 })}

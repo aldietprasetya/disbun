@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
 import Image from 'next/image';
+import { signOut, useSession } from "next-auth/react";
 import { useRouter } from 'next/router';
 import CustomLink from './CustomLink';
 import { Icon } from '@iconify/react';
@@ -9,19 +10,19 @@ import { useState } from 'react';
 const links = [
   {
     title: 'Beranda',
-    path: '/',
+    path: '/user',
     icon: '/icon/home-icon-white.svg',
     isAdmin: true,
   },
   {
     title: 'Infografis',
-    path: '/admin/infografis',
+    path: '/user/infografis',
     icon: '/icon/web-icon.svg',
     isAdmin: true,
   },
   {
     title: 'Master Basis Data',
-    path: '/admin/master-basis-data',
+    path: '/user/master-basis-data',
     icon: '/icon/web-icon.svg',
     isAdmin: true,
   },
@@ -77,6 +78,7 @@ const NavItem = ({ isActive, icon, title, href, isAdmin }) => {
 };
 
 const Navbar = ({ backdrop }) => {
+  const { data: session } = useSession();
   const router = useRouter();
   const [dropDownOpen, setDropDownOpen] = useState(false);
   const [dummyUser, setDummyUser] = useState(true);
@@ -107,21 +109,40 @@ const Navbar = ({ backdrop }) => {
 
           {backdrop && (
             <>
-              {/*  {user?.roleId === 3 || user?.roleId === 2 ? ( */}
-              {dummyUser == true ? (
-                <div className="flex gap-2">
-                  {links.map((link) => {
-                    return (
-                      <NavItem
-                        key={link.path}
-                        title={link.title}
-                        href={link.path}
-                        icon={link.icon}
-                        isActive={router.asPath == link.path}
-                      />
-                    );
-                  })}
-                </div>
+              {session ? (
+                <>
+                  {
+                    session.user.acquiredUser.role == 1 ? (
+                      <div className="flex gap-2">
+                        {links.map((link) => {
+                          return (
+                            <NavItem
+                              key={link.path}
+                              title={link.title}
+                              href={link.path}
+                              icon={link.icon}
+                              isActive={router.asPath == link.path}
+                            />
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <div className="flex gap-2">
+                        {links.map((link) => {
+                          return (
+                            <NavItem
+                              key={link.path}
+                              title={link.title}
+                              href={link.path}
+                              icon={link.icon}
+                              isActive={router.asPath == link.path}
+                            />
+                          );
+                        })}
+                      </div>
+                    )
+                  }
+                </>
               ) : null}
             </>
           )}
@@ -147,18 +168,26 @@ const Navbar = ({ backdrop }) => {
                   backdrop ? 'text-white' : 'text-primary-green'
                 } text-sm`}
               >
-                {/* {user?.name} */}
-                {'PT. Perkebunan Nusantara VIII'}
+                {
+                  session ? (
+                    session.user.acquiredUser.companyname
+                  ) : (
+                    'PT. Perkebunan Nusantara VIII'
+                  )
+                }
               </div>
               <div
                 className={`${
                   backdrop ? 'text-white' : 'text-[#A5A5A5]'
                 } text-xs font-light`}
               >
-                {/* {user?.email?.length > 15
-                  ? `${user?.email.slice(0, 15)}...`
-                  : user?.email} */}
-                {'angelia@email.com'}
+                {
+                  session ? (
+                    session.user.acquiredUser.email
+                  ) : (
+                    'angelia@email.com'
+                  )
+                }
               </div>
             </div>
             <Icon
@@ -170,7 +199,7 @@ const Navbar = ({ backdrop }) => {
           </div>
           <ProfileDropDown
             open={dropDownOpen}
-            handleLogout={() => logout()}
+            handleLogout={() => signOut()}
           />
         </div>
       </div>

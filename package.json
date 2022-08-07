@@ -20,6 +20,7 @@
     "lodash": "^4.17.21",
     "moment": "^2.29.2",
     "next": "12.1.0",
+    "next-auth": "^4.10.3",
     "notistack": "^2.0.4",
     "nuka-carousel": "^5.0.7",
     "react": "17.0.2",
@@ -35,6 +36,7 @@
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.4.1",
     "sass": "^1.54.0",
+    "serverless-mysql": "^1.5.4",
     "yup": "^0.32.11"
   },
   "devDependencies": {

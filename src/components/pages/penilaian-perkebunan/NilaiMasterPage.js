@@ -37,7 +37,7 @@ const PenilaianPerkebunanPageComponent = () => {
 
   const handleAddNew = () => {
     router.push({
-      pathname: "/penilaian-perkebunan/legalitas/"
+      pathname: '/user/penilaian-perkebunan/legalitas/'
     })
   };
 

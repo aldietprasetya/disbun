@@ -1,11 +1,17 @@
 import '../styles/globals.scss';
 import { SnackbarProvider } from 'notistack';
+import { SessionProvider } from 'next-auth/react'
 
-function MyApp({ Component, pageProps }) {
+function MyApp({
+  Component,
+  pageProps: { session, ...pageProps }, 
+}) {
   return (
-    <SnackbarProvider>
-      <Component {...pageProps} />
-    </SnackbarProvider>
+    <SessionProvider session={session}>
+      <SnackbarProvider>
+        <Component {...pageProps} />
+      </SnackbarProvider>
+    </SessionProvider>
   );
 }
 

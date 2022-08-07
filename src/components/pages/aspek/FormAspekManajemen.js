@@ -222,14 +222,14 @@ const FormAspekManajemen = () => {
     console.log('=========================================================')
 
     router.push({
-      pathname: "/pelaporan-perkebunan/aspek-kebun/"
+      pathname: "/user/pelaporan-perkebunan/aspek-kebun/"
     })
   })
 
   function clearData() {
     localStorage.setItem("manajementReport", JSON.stringify(dataSubmit.manajemen={}));
     router.push({
-      pathname: "/pelaporan-perkebunan/aspek-manajemen/"
+      // pathname: "/pelaporan-perkebunan/aspek-manajemen/"
     })
   }
 

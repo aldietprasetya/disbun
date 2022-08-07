@@ -7,6 +7,7 @@ const InputFileButton = ({ acceptFileType, handleImage, maxFiles = 1 }) => {
     accept: acceptFileType,
     onDrop: (acceptedFiles) => {
       handleImage(acceptedFiles);
+      console.log(acceptedFiles)
     },
   });
 

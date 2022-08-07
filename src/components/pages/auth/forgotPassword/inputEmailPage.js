@@ -19,7 +19,6 @@ const InputEmailPage = ({ handleNextStep, handleBackState }) => {
   const inputEmailSchema = Yup.object().shape({
     email: Yup.string()
       .required('Email wajib diisi')
-      .email('Format email salah'),
   });
 
   const formInputEmail = useFormik({
@@ -30,11 +29,8 @@ const InputEmailPage = ({ handleNextStep, handleBackState }) => {
     onSubmit: async (values) => {
       setLoading(true);
       try {
-        const res = await axios.post(
-          `${appConfig.baseUrl}/auth/v1/forgot-password`,
-          {
-            email: values.email,
-          },
+        const res = await axios.get(
+          `${appConfig.baseUrl}/users/password/${values.email}`
         );
         if (res.data.status == 'success') {
           handleNextStep(values.email);
@@ -90,6 +86,7 @@ const InputEmailPage = ({ handleNextStep, handleBackState }) => {
               errors.confirmPassword ||
               errors.password
             }
+            type='button'
             className="w-full rounded-md bg-primary-green  p-2 text-sm text-white disabled:bg-[#D5DBDA]"
           >
             {loading ? (

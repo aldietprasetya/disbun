@@ -37,7 +37,7 @@ const PelaporanPerkebunanPageComponent = () => {
 
   const handleAddNew = () => {
     router.push({
-      pathname: "/pelaporan-perkebunan/aspek-umum/"
+      pathname: '/user/pelaporan-perkebunan/aspek-umum'
     })
   };
 

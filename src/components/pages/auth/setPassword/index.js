@@ -16,7 +16,7 @@ const SetPasswordPage = () => {
   useEffect(() => {
     const tokenSetPassword = Cookies.get('token-temp');
     if (!tokenSetPassword) {
-      route.push('/auth/register');
+      route.push('/register');
     }
   }, []);
 

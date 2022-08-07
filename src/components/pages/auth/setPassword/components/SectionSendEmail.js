@@ -40,22 +40,15 @@ const SectionSendEmail = ({ email, date, title, description }) => {
       }
     }, 1000);
 
+    console.log(timeLeft)
     return () => clearTimeout(timer);
   }, [timeLeft, countDownSendEmail]);
 
   const handleSendAgainEmailVerification = async () => {
     try {
       const token = Cookies.get('token-temp');
-      const res = await axios.post(
-        `${appConfig.baseUrl}/auth/v1/email-verification`,
-        {
-          email,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
+      const res = await axios.get(
+        `${appConfig.baseUrl}/users/password/${email}`
       );
       if (res.data.status == 'success') {
         setCountDownSendEmail(moment().add(3, 'minutes'));
@@ -78,7 +71,7 @@ const SectionSendEmail = ({ email, date, title, description }) => {
         <div className="text-sm text-[#FF4D49]">{`(0${timeLeft?.minutes} : ${
           timeLeft?.seconds >= 10 ? timeLeft?.seconds : `0${timeLeft?.seconds}`
         })`}</div>
-        {timeLeft?.seconds === 0 && (
+        {(timeLeft.minutes === 0 && timeLeft.seconds === 0) && (
           <div className="mt-3 text-sm text-[#9E9E9E]">
             Belum menerima surel?{' '}
             <span

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { signIn, getCsrfToken } from 'next-auth/react';
 import { Icon } from '@iconify/react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -36,67 +37,35 @@ const LoginPage = () => {
       password: '',
     },
     validationSchema: loginSchema,
-    onSubmit: async (values) => {
-      try {
-        setLoading(true);
-        const res = await axios.post(
-          `${appConfig.baseUrl}/authentications`,
-          {
-            username: values.email,
-            password: values.password,
+    onSubmit: async (values, { setSubmitting }) => {
+      const res = await signIn('credentials', {
+        redirect: false,
+        username: values.email,
+        password: values.password,
+      });
+
+      if (res?.error) {
+        setIsError(true);
+        enqueueSnackbar('', {
+          anchorOrigin: {
+            vertical: 'top',
+            horizontal: 'right',
           },
-        );
-        if (res.data.status == 'success') {
-          setIsError(false);
-          const result = await axios.get(`${appConfig.baseUrl}/users/profile`, {
-            headers: {
-              Authorization: `Bearer ${res.data.data.accessToken}`,
-            },
-          });
-          login({ token: res.data.data.accessToken, user: result.data.data })
-          // if (res.data.data.role.id === 1) {
-          //   router.push('/');
-          // } else {
-          //   router.push('/admin/infografis');
-          // }
-        } else {
-          setIsError(true);
-          enqueueSnackbar(res.data.message, {
-            anchorOrigin: {
-              vertical: 'top',
-              horizontal: 'right',
-            },
-            content: (key, message) => (
-              <CustomComponent
-                id={key}
-                message="Pasangan Email dan Password anda salah."
-                variant="error"
-                title="Gagal Masuk!"
-              />
-            ),
-          });
-        }
-        setLoading(false);
-      } catch (error) {
-        setLoading(false);
-        if (error.response.status >= 400) {
-          setIsError(true);
-          enqueueSnackbar(error.response.data.message, {
-            anchorOrigin: {
-              vertical: 'top',
-              horizontal: 'right',
-            },
-            content: (key, message) => (
-              <CustomComponent
-                id={key}
-                message="Pasangan Email dan Password anda salah."
-                variant="error"
-                title="Gagal Masuk!"
-              />
-            ),
-          });
-        }
+          content: (key, message) => (
+            <CustomComponent
+              id={key}
+              message="Pasangan Email dan Password anda salah."
+              variant="error"
+              title="Gagal Masuk!"
+            />
+          ),
+        });
+      } else {
+        setLoading(true);
+        setIsError(false);
       }
+      if (res.url) router.push("/");
+      setSubmitting(false);
     },
   });
 
@@ -206,7 +175,7 @@ const LoginPage = () => {
             <div className="mt-10 w-full text-center text-base text-[#9E9E9E]">
               Belum memiliki akun?{' '}
               <span
-                onClick={() => router.push('/auth/register')}
+                onClick={() => router.push('/register')}
                 className="cursor-pointer text-[#038575]"
               >
                 Daftar

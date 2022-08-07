@@ -184,7 +184,7 @@ const FormAspekSosial = () => {
     console.log('=========================================================')
 
     router.push({
-      pathname: "/pelaporan-perkebunan/konfirmasi/"
+      pathname: "/user/pelaporan-perkebunan/konfirmasi/"
     })
   })
 

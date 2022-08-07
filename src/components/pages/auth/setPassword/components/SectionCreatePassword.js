@@ -147,8 +147,8 @@ const SectionCreatePassword = ({ handleNextState }) => {
             </div>
           </div>
           <div
-            onClick={() => router.push('/auth/register')}
-            className="flex cursor-pointer items-center gap-1 rounded-md 
+            onClick={() => router.push('/register')}
+            className="flex cursor-pointer items-center gap-1 rounded-md
             border border-primary-teal p-2 text-primary-green transition hover:shadow-md"
           >
             <Icon icon="bi:arrow-left-short" />
@@ -299,7 +299,7 @@ const SectionCreatePassword = ({ handleNextState }) => {
           <div className="mt-6 w-full text-center text-sm text-[#9E9E9E]">
             Sudah memiliki akun?{' '}
             <span
-              onClick={() => router.push('/auth/login')}
+              onClick={() => router.push('/login')}
               className="cursor-pointer text-[#038575]"
             >
               Masuk

@@ -225,7 +225,7 @@ const FormAspekUmum = (props) => {
     console.log('=========================================================')
 
     router.push({
-      pathname: "/pelaporan-perkebunan/aspek-manajemen/"
+      pathname: "/user/pelaporan-perkebunan/aspek-manajemen/"
     })
   })
 

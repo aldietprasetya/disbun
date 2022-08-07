@@ -45,25 +45,25 @@ const ResetPassPage = () => {
     onSubmit: async (values) => {
       try {
         setLoading(true);
-        const res = await axios.post(
-          `${appConfig.baseUrl}/users/password`,
+        const res = await axios.put(
+          `${appConfig.baseUrl}/users/reset-password`,
           {
-            password1: values.password,
-            password2: values.passwordConfirm,
+            id: 'user-Hvnnv_SNQrBuMc5zL7pw6',
+            newpassword: values.password2,
           },
         );
         if (res.data.status == 'success') {
           setIsError(false);
-          const result = await axios.get(`${appConfig.baseUrl}/users`, {
+          const result = await axios.get(`${appConfig.baseUrl}/users/profile`, {
             headers: {
-              Authorization: `Bearer ${res.data.data.token}`,
+              Authorization: `Bearer ${res.data.data.accessToken}`,
             },
           });
           console.log(result);
           if (res.data.data.role.id === 1) {
             router.push('/');
           } else {
-            router.push('/auth/login');
+            router.push('/login');
           }
         } else {
           setIsError(true);
@@ -196,6 +196,7 @@ const ResetPassPage = () => {
           <button
             onClick={handleSubmit}
             className="rounded-md bg-primary-green p-4 w-32 text-sm font-bold float-right text-white disabled:bg-[#D5DBDA]"
+            type='button'
             disabled={!valid}
           >
             {loading ? (
