@@ -13,7 +13,8 @@ export default function middleware(req) {
 
     var reqProtected = (
       req.nextUrl.pathname == '/' ||
-      url.includes("/user")
+      url.includes("/user") ||
+      url.includes("/profile")
     )
 
     var frontProtected = (

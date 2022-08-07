@@ -1,42 +1,56 @@
-import React from 'react';
-import LoginForm from '../auth/components/Login/LoginForm';
+import React, {useState, useEffect} from 'react';
 import { useFormik } from 'formik';
-import axiosInstance from 'src/lib/axios';
+import { appConfig } from 'src/config';
 import { useSnackbar } from 'notistack';
+import InputFileButton from 'src/components/customInput/InputFileButton';
+import axios from 'axios';
 import CustomComponent from 'src/components/snackbar/CustomComponent';
+import LoginForm from '../auth/components/Login/LoginForm';
+import InputForm2 from '../admin/infografis/InputForm';
+
 
 function PengaturanAkun() {
+  const [city, setCity] = useState('');
+  const [profile, setProfile] = useState();
   const { enqueueSnackbar } = useSnackbar();
+
   const formEditProfile = useFormik({
     initialValues: {
       username: '',
       email: '',
-      namaPengelola: '',
+      perusahaan: '',
       phoneNumber: '',
     },
     enableReinitialize: true,
     onSubmit: async (values) => {
       try {
-        const res = await axiosInstance.put('/profile/v1/me', {
-          username: values.username,
-          email: values.email,
-          name: values.namaPengelola,
-          phoneNumber: values.phoneNumber,
-        });
-        enqueueSnackbar(res.data.message, {
-          anchorOrigin: {
-            vertical: 'top',
-            horizontal: 'right',
-          },
-          content: (key, message) => (
-            <CustomComponent
-              id={key}
-              message={message}
-              variant="success"
-              title="Berhasil Disimpan!"
-            />
-          ),
-        });
+        var formData = new FormData();
+        formData.append('username', values.username);
+        formData.append('email', values.email);
+        formData.append('companyname', values.perusahaan);
+        formData.append('phonenumber', values.phoneNumber);
+        formData.append('city', city);
+        formData.append('profile', profile);
+
+        const res = await axios.put(
+          `${appConfig.baseUrl}/users/profile`,formData
+        );
+        if (res.data.status == 'success') {
+          enqueueSnackbar(res.data.message, {
+            anchorOrigin: {
+              vertical: 'top',
+              horizontal: 'right',
+            },
+            content: (key, message) => (
+              <CustomComponent
+                id={key}
+                message={message}
+                variant="success"
+                title="Berhasil Disimpan!"
+              />
+            ),
+          });
+        }
       } catch (error) {
         enqueueSnackbar(error.message, {
           anchorOrigin: {
@@ -55,9 +69,36 @@ function PengaturanAkun() {
       }
     },
   });
-  const { values, handleChange, handleBlur } = formEditProfile;
+  const { values, handleChange, handleBlur, handleSubmit } = formEditProfile;
   return (
     <>
+      <div className="mt-10 flex items-center gap-5">
+        {
+          profile ? (
+            <img
+              key={profile[0].path}
+              src={profile[0].preview}
+              className="h-[96px] w-[96px] rounded-full	 object-cover"
+            />
+          ) : (
+            <img
+              src="/icon/default-profile-picture.svg"
+              className="h-20 object-cover"
+            />
+          )
+        }
+        <div className="w-64">
+          <div className="text-[#9E9E9E] mb-3">
+            Gunakan format PNG atau JPG dengan maksimal ukuran 2MB
+          </div>
+          <InputFileButton
+            handleImage={(img) => {
+              setProfile(img);
+            }}
+          />
+        </div>
+      </div>
+
       <LoginForm
         titleForm={`Username`}
         titleName="username"
@@ -71,10 +112,10 @@ function PengaturanAkun() {
       />
       <LoginForm
         titleForm={`Surel`}
-        titleName="surel"
+        titleName="email"
         type="email"
         star={true}
-        values={values.surel}
+        values={values.email}
         onChange={handleChange}
         onBlur={handleBlur}
         placeholder="Masukan Email anda"
@@ -91,26 +132,22 @@ function PengaturanAkun() {
         placeholder="Masukan Nama Perusahaan anda"
         className={`w-full rounded border bg-white-2 py-3 px-4 placeholder:text-base`}
       />
-      {/* <LoginForm
-        titleForm={`Kabupaten/Kota`}
-        titleName="kota"
-        type="select"
-        star={true}
-        values={values.kota}
-        onChange={handleChange}
-        onBlur={handleBlur}
-        placeholder="Masukan Email anda"
-        className={`w-full rounded border bg-white-2 py-3 px-4 placeholder:text-base`}
-      /> */}
-      <LoginForm titleForm={`Kabupaten/Kota`} star={true} margin="mb-0" />
-      <select
-        name="kota"
-        id="kota"
-        className="w-full rounded border bg-white-2 py-3 px-4 placeholder:text-base"
-      >
-        <option value="bandung">KOTA BANDUNG</option>
-        <option value="bogor">KOTA BOGOR</option>
-      </select>
+
+      <div className='mt-6'>
+        <InputForm2
+          titleForm="Kabupaten/Kota"
+          titleName="Kabupaten/Kota"
+          onChange={(e) => setCity(e.target.value)}
+          type="text"
+          values={city}
+          placeholder="pilih fasilitas kesehatan"
+          className={`${
+            'border-primary-red-1 bg-primary-red-2'
+          }`}
+          selectionArea={true}
+        />
+      </div>
+
       <LoginForm
         titleForm={`Nomor Telepon`}
         titleName="phoneNumber"
@@ -124,6 +161,24 @@ function PengaturanAkun() {
         phoneNumber={true}
         className={`w-full rounded border bg-white-2 py-3 px-4 placeholder:text-base`}
       />
+
+
+      <div className="mt-6 flex justify-end">
+        <button
+          onClick={handleSubmit}
+          type='button'
+          disabled={
+            !values.username ||
+            !values.email ||
+            !values.perusahaan ||
+            !values.phoneNumber ||
+            !profile
+          }
+          className="w-32 rounded-md bg-gradient-to-b from-[#119F90] to-[#048577] p-2 text-sm text-white"
+        >
+          Simpan
+        </button>
+      </div>
     </>
   );
 }

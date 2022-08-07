@@ -1,11 +1,15 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 
 const InputFileButton = ({ acceptFileType, handleImage, maxFiles = 1 }) => {
+  const [files, setFiles] = useState([]);
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     maxFiles: maxFiles,
     accept: acceptFileType,
     onDrop: (acceptedFiles) => {
+      setFiles(acceptedFiles.map(file => Object.assign(file, {
+        preview: URL.createObjectURL(file)
+      })));
       handleImage(acceptedFiles);
       console.log(acceptedFiles)
     },
