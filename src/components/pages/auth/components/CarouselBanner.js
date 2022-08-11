@@ -3,10 +3,9 @@ import Carousel from 'nuka-carousel';
 import Image from 'next/image';
 
 const dataImage = [
-  '/images/test-image/image-1.JPG',
-  '/images/test-image/image-2.jpg',
-  '/images/test-image/image-3.JPG',
-  '/images/test-image/image-4.JPG',
+  '/images/sliders/1.jpeg',
+  '/images/sliders/2.jpeg',
+  '/images/sliders/3.jpeg',
 ];
 
 const CarouselBanner = ({ className = 'h-[1024px] tall:h-[100vh]' }) => {

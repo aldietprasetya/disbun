@@ -10,14 +10,14 @@ const links = [
     title: 'Pelaporan',
     title2: 'Perkebunan',
     icon: '/images/card/Pelaporan-Perkebunan-icon.svg',
-    bannerImage: 'bg-[url(/images/card/Pelaporan-Perkebunan-bg.png)]',
+    bannerImage: 'bg-[url(/images/card/pelaporan.jpg)]',
     path: '/user/pelaporan-perkebunan',
   },
   {
     title: 'Penilaian',
     title2: 'Perkebunan',
     icon: '/images/card/Penilaian-Perkebunan-icon.svg',
-    bannerImage: 'bg-[url(/images/card/Penilaian-Perkebunan-bg.png)]',
+    bannerImage: 'bg-[url(/images/card/penilaian.jpg)]',
     path: '/user/penilaian-perkebunan',
   },
 ];

@@ -4,9 +4,11 @@ const next = require("next");
 const dev = process.env.NODE_ENV !== "production";
 
 const port = !dev ? process.env.PORT : 3000;
+const hostname = 'localhost'
+const port = 3000
 
 // Create the Express-Next App
-const app = next({ dev });
+const app = next({ dev, hostname, port });
 const handle = app.getRequestHandler();
 
 app
