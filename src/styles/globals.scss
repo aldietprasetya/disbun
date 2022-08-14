@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0');
 
 @tailwind base;
 @tailwind components;
@@ -56,4 +57,31 @@ input[type='number'] {
   border-left: 3px solid transparent;
   border-radius: 6px;
   background-clip: content-box;
+}
+
+.react-select {
+  &__control {
+    @apply h-[48px] pl-2 bg-white-2 shadow-sm transition ease-in-out rounded-md border-solid border-white-2 bg-clip-padding focus:outline-none focus:border-2 focus:border-primary-green focus:ring-1 focus:ring-primary-green border focus:bg-white focus:outline-none;
+    background: #F7F7F7 !important;
+    cursor: pointer !important;
+    border-color: transparent !important;
+    &:hover {
+      border-color: transparent !important;
+      outline: 0 !important;
+    }
+    &--menu-is-open,
+    &:hover {
+      border: 3px solid;
+      border-color: #038575 !important;
+      outline: 0 !important;
+    }
+
+  }
+  &__placeholder {
+    @apply text-primary-gray-4;
+  }
+  &__input-container {
+    @apply text-sm text-primary-black-2 focus:text-gray-700;
+  }
+
 }

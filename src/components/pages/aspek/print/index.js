@@ -92,8 +92,8 @@ export const ComponentToPrint = React.forwardRef((props, ref) => {
     let retrievedObjectGeneral = JSON.parse(localStorage.getItem('generalReport'));
 
     setCompanyName(retrievedObjectGeneral.companyName)
-    setPeriodMonthId(retrievedObjectGeneral.periodMonthId)
-    setPeriodYearId(retrievedObjectGeneral.periodYearId)
+    setPeriodMonthId(retrievedObjectGeneral.periodMonthId.value)
+    setPeriodYearId(retrievedObjectGeneral.periodYearId.value)
     setCenterAddress(retrievedObjectGeneral.centerAddress)
     setCenterPhone(retrievedObjectGeneral.centerPhone)
     setCenterFax(retrievedObjectGeneral.centerFax)
@@ -107,9 +107,9 @@ export const ComponentToPrint = React.forwardRef((props, ref) => {
     setLongitude(retrievedObjectGeneral.longitude)
     setGardenName(retrievedObjectGeneral.gardenName)
     setFactoryName(retrievedObjectGeneral.factoryName)
-    setCityId(retrievedObjectGeneral.cityId)
-    setDistrictId(retrievedObjectGeneral.districtId)
-    setVillageId(retrievedObjectGeneral.villageId)
+    setCityId(retrievedObjectGeneral.cityId.value)
+    setDistrictId(retrievedObjectGeneral.districtId.value)
+    setVillageId(retrievedObjectGeneral.villageId.value)
     setLegalitas(retrievedObjectGeneral.legalities)
     setIzin(retrievedObjectGeneral.iup)
 
@@ -145,8 +145,6 @@ export const ComponentToPrint = React.forwardRef((props, ref) => {
 
 
     let retrievedObjectSosial = JSON.parse(localStorage.getItem('dataSubmitSosial'));
-
-    console.log(retrievedObjectSosial.protectedArea)
 
     setPajakRestribusi(retrievedObjectSosial.retribution)
     setKawasanLindung(retrievedObjectSosial.protectedArea)
@@ -216,13 +214,13 @@ export const ComponentToPrint = React.forwardRef((props, ref) => {
 
               <ol className={mng.base__print_sublist}>
                 <li>
-                  <span>Desa</span>:<span>{villageId}</span>
+                  <span>Desa</span>:<span>{villageId.value}</span>
                 </li>
                 <li>
-                  <span>Kecamatan</span>:<span>{districtId}</span>
+                  <span>Kecamatan</span>:<span>{districtId.value}</span>
                 </li>
                 <li>
-                  <span>Kabupaten</span>:<span>{cityId}</span>
+                  <span>Kabupaten</span>:<span>{cityId.value}</span>
                 </li>
               </ol>
 
@@ -465,7 +463,7 @@ export const ComponentToPrint = React.forwardRef((props, ref) => {
                 tanaman.map((item,i) => (
                   <tr>
                     <td className='px-[40px]'>{item[0].value}</td>
-                    <td>{item[1].value}</td>
+                    <td>{item[1].value.value}</td>
                     <td>-</td>
                     <td>-</td>
                     <td>-</td>
@@ -531,7 +529,7 @@ export const ComponentToPrint = React.forwardRef((props, ref) => {
                 bahanBaku.map((item,i) => (
                   <tr>
                     <td>{item.uphType}</td>
-                    <td>{item.cityId}</td>
+                    <td>{item.cityId.value}</td>
                     <td>{item.volume}</td>
                     <td>{item.description}</td>
                   </tr>
@@ -591,7 +589,7 @@ export const ComponentToPrint = React.forwardRef((props, ref) => {
                   <tr>
                     <td>{i+1}</td>
                     <td>{item.comodity}</td>
-                    <td>{item.targetMarketId}</td>
+                    <td>{item.targetMarketId.value}</td>
                     <td>{item.qualityType}</td>
                     <td>{item.cost}</td>
                     <td>{item.price}</td>

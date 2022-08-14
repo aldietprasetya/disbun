@@ -29,7 +29,7 @@ function PengaturanAkun() {
         formData.append('email', values.email);
         formData.append('companyname', values.perusahaan);
         formData.append('phonenumber', values.phoneNumber);
-        formData.append('city', city);
+        formData.append('city', city.value);
         formData.append('profile', profile);
 
         const res = await axios.put(
@@ -108,7 +108,7 @@ function PengaturanAkun() {
         onChange={handleChange}
         onBlur={handleBlur}
         placeholder="Masukan Username anda"
-        className={`w-full rounded border bg-white-2 py-3 px-4 placeholder:text-base`}
+        className={`w-full rounded bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
       />
       <LoginForm
         titleForm={`Surel`}
@@ -119,7 +119,7 @@ function PengaturanAkun() {
         onChange={handleChange}
         onBlur={handleBlur}
         placeholder="Masukan Email anda"
-        className={`w-full rounded border bg-white-2 py-3 px-4 placeholder:text-base`}
+        className={`w-full rounded bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
       />
       <LoginForm
         titleForm={`Nama Perusahaan`}
@@ -130,21 +130,19 @@ function PengaturanAkun() {
         onChange={handleChange}
         onBlur={handleBlur}
         placeholder="Masukan Nama Perusahaan anda"
-        className={`w-full rounded border bg-white-2 py-3 px-4 placeholder:text-base`}
+        className={`w-full rounded bg-white-2 py-3  px-4 placeholder:text-primary-gray-4`}
       />
 
       <div className='mt-6'>
         <InputForm2
           titleForm="Kabupaten/Kota"
           titleName="Kabupaten/Kota"
-          onChange={(e) => setCity(e.target.value)}
+          onChange={(e) => setCity(e)}
           type="text"
           values={city}
-          placeholder="pilih fasilitas kesehatan"
-          className={`${
-            'border-primary-red-1 bg-primary-red-2'
-          }`}
-          selectionArea={true}
+          placeholder="Pilih Kabupaten/Kota"
+          selectArea={true}
+          selectType='kota'
         />
       </div>
 
@@ -159,9 +157,8 @@ function PengaturanAkun() {
         placeholder="Masukan nomor telepon"
         iconEmail={false}
         phoneNumber={true}
-        className={`w-full rounded border bg-white-2 py-3 px-4 placeholder:text-base`}
+        className={`w-full rounded bg-white-2 py-3 px-4 placeholder:text-primary-gray-4`}
       />
-
 
       <div className="mt-6 flex justify-end">
         <button

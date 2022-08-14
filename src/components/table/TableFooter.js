@@ -14,7 +14,7 @@ const TableFooter = ({
       <div className="flex items-center gap-2">
         {dataMeta && (
           <div className="text-xs text-primary-gray-7 font-bold">
-            Menampilkan {dataMeta?.page}-{dataMeta?.limit * dataMeta?.page} dari{' '}
+            Menampilkan {dataMeta?.page}-{(dataMeta?.limit > dataMeta?.total ? dataMeta?.total : dataMeta?.limit * dataMeta?.page)} dari{' '}
             {dataMeta?.total}
           </div>
         )}
@@ -25,7 +25,7 @@ const TableFooter = ({
           <div className="mr-1 text-xs">Rows per page:</div>
           <select
             onChange={(e) => handleChangeLimit(e)}
-            className="text-xs focus:outline-none"
+            className="text-xs focus:outline-none border-0 focus:border-0 focus:ring-transparent cursor-pointer pr-7"
           >
             <option className="text-xs" value={10}>
               10

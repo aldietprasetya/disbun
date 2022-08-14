@@ -34,7 +34,7 @@ function LoginForm({
             value={values}
             type={type}
             placeholder={placeholder}
-            className={`${className} bg-[#F7F7F7] border-[#EDEDED]`}
+            className={`${className} h-[48px] placeholder:text-sm placeholder:font-normal border-transparent focus:outline-none focus:border-primary-green focus:ring-1 focus:ring-primary-green`}
           />
         )}
         {iconPassword && (
@@ -46,7 +46,7 @@ function LoginForm({
               value={values}
               type={type}
               placeholder={placeholder}
-              className={`${className} bg-[#F7F7F7] border-[#EDEDED]`}
+              className={`${className} h-[48px] placeholder:text-sm placeholder:font-normal border-transparent focus:outline-none focus:border-primary-green focus:ring-1 focus:ring-primary-green`}
             />
             <Icon
               onClick={onClick}
@@ -71,7 +71,7 @@ function LoginForm({
               value={values}
               type={type}
               placeholder={placeholder}
-              className={`${className} bg-[#F7F7F7] border-[#EDEDED]`}
+              className={`${className} h-[48px] placeholder:text-sm placeholder:font-normal border-transparent  focus:outline-none focus:border-primary-green focus:ring-1 focus:ring-primary-green`}
             />
           </div>
         )}

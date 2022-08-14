@@ -2,6 +2,10 @@ import Head from 'next/head'
 import React, { useState, useEffect } from 'react';
 import {useRouter} from 'next/router'
 import _ from 'lodash';
+import axios from 'axios';
+import { appConfig } from 'src/config';
+import { useSnackbar } from 'notistack';
+import CustomComponent from 'src/components/snackbar/CustomComponent';
 import InputForm from '../admin/infografis/InputForm';
 import mng from '../../../styles/Managemen.module.scss'
 import ChildStore from './store/sosial'
@@ -12,6 +16,7 @@ const preventDefault = f => e => {
 }
 
 const FormAspekSosial = () => {
+  const { enqueueSnackbar } = useSnackbar();
   const [isError, setIsError] = useState(false);
 
   const router = useRouter()
@@ -27,7 +32,7 @@ const FormAspekSosial = () => {
   const [pajakRestribusi, setPajakRestribusi] = useState([])
 
   function handleBtnAddPajakRestribusi() {
-    setPajakRestribusi([...pajakRestribusi,[ {'title':'Jenis Pajak/Retribusi','type':'text','placeholder':'Jenis Pajak/Retrbusi','value':''}, {'title':'Nilai (Rp)','placeholder':'Nilai Pajak/Retribusi','type':'text','value':''}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''} ]])
+    setPajakRestribusi([...pajakRestribusi,[ {'title':'Jenis Pajak/Retribusi','type':'text','placeholder':'Jenis Pajak/Retrbusi','value':''}, {'title':'Nilai (Rp)','placeholder':'Nilai Pajak/Retribusi','type':'number','value':''}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''} ]])
   }
 
   ////////////////////////// KAWASAN LINDUNG ////////////////////////////////
@@ -39,7 +44,7 @@ const FormAspekSosial = () => {
   const [konservasi, setKonservasi] = useState([])
 
   function handleBtnAddKonservasi() {
-    setKonservasi([...konservasi,[ {'title':'Jenis Kegiatan Konservasi','type':'text','placeholder':'Jenis Pajak/Retrbusi','value':''}, {'title':'Luas (Ha)','placeholder':'Luas Lahan dalam Ha','type':'text','value':''}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''} ]])
+    setKonservasi([...konservasi,[ {'title':'Jenis Kegiatan Konservasi','type':'text','placeholder':'Jenis Pajak/Retrbusi','value':''}, {'title':'Luas (Ha)','placeholder':'Luas Lahan dalam Ha','type':'number','value':''}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''} ]])
   }
 
   ////////////////////////// PENGAWASAN LINGKUNGAN ////////////////////////////////
@@ -47,7 +52,7 @@ const FormAspekSosial = () => {
   const [pengawasan, setPengawasan] = useState([])
 
   function handleBtnAddPengawasan() {
-    setPengawasan([...pengawasan,[ {'title':'Masalah Lingkungan','type':'text','placeholder':'Jenis Masalah Lingkungan','value':''}, {'title':'Waktu kejadian','placeholder':'DD/MM/YYYY','type':'text','value':''}, {'title':'Frekuensi (kali)','type':'text','placeholder':'Jumlah','value':''}, {'title':'Upaya Penyelesaian','type':'text','placeholder':'Deskripsi Upaya','value':''}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''} ]])
+    setPengawasan([...pengawasan,[ {'title':'Masalah Lingkungan','type':'text','placeholder':'Jenis Masalah Lingkungan','value':'', 'isOpt':false}, {'title':'Waktu kejadian','placeholder':'DD/MM/YYYY','type':'text','value':'', 'isOpt':'cal'}, {'title':'Frekuensi (kali)','type':'number','placeholder':'Jumlah','value':'', 'isOpt':false}, {'title':'Upaya Penyelesaian','type':'text','placeholder':'Deskripsi Upaya','value':'', 'isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'', 'isOpt':false} ]])
   }
 
   ////////////////////////// KEMITRAAN USAHA ////////////////////////////////
@@ -55,7 +60,7 @@ const FormAspekSosial = () => {
   const [kemitraan, setKemitraan] = useState([])
 
   function handleBtnAddKemitraan() {
-    setKemitraan([...kemitraan,[ {'title':'Nama Kelompok Tani','type':'text','placeholder':'Nama Poktan','value':''}, {'title':'Nomor','placeholder':'Nomor','type':'text','value':''}, {'title':'Waktu Perjanjian','type':'text','placeholder':'DD/MM/YYYY','value':''}, {'title':'Lamanya perjanjian','type':'text','placeholder':'Durasi','value':''}, {'title':'Jenis perjanjian','type':'text','placeholder':'Jenis Perjanjian','value':''} ]])
+    setKemitraan([...kemitraan,[ {'title':'Nama Kelompok Tani','type':'text','placeholder':'Nama Poktan','value':'', 'isOpt':false}, {'title':'Nomor','placeholder':'Nomor','type':'text','value':'', 'isOpt':false}, {'title':'Waktu Perjanjian','type':'text','placeholder':'DD/MM/YYYY','value':'', 'isOpt':'cal'}, {'title':'Lamanya perjanjian','type':'number','placeholder':'Durasi','value':'', 'isOpt':false}, {'title':'Jenis perjanjian','type':'text','placeholder':'Jenis Perjanjian','value':'', 'isOpt':false} ]])
   }
 
   ////////////////////////// OTHER FUNCTION ////////////////////////////////
@@ -126,7 +131,7 @@ const FormAspekSosial = () => {
       let legalInv = {}
       item.forEach(() => {
         legalInv.retributionType = item[0].value
-        legalInv.value = item[1].value
+        legalInv.value = Number(item[1].value)
         legalInv.description = item[2].value
       });
       data.retribution.push(legalInv)
@@ -136,7 +141,7 @@ const FormAspekSosial = () => {
       let legalInv = {}
       item.forEach(() => {
         legalInv.conservationType = item[0].value
-        legalInv.area = item[1].value
+        legalInv.area = Number(item[1].value)
         legalInv.description = item[2].value
       });
       data.conservation.push(legalInv)
@@ -147,7 +152,7 @@ const FormAspekSosial = () => {
       item.forEach(() => {
         legalInv.problem = item[0].value
         legalInv.dateOccurency = item[1].value
-        legalInv.frequency = item[2].value
+        legalInv.frequency = Number(item[2].value)
         legalInv.effort = item[3].value
         legalInv.description = item[4].value
       });
@@ -158,9 +163,9 @@ const FormAspekSosial = () => {
       let legalInv = {}
       item.forEach(() => {
         legalInv.groupName = item[0].value
-        legalInv.agreementDate = item[1].value
-        legalInv.agreementNumber = item[2].value
-        legalInv.duration = item[3].value
+        legalInv.agreementNumber = item[1].value
+        legalInv.agreementDate = item[2].value
+        legalInv.duration = Number(item[3].value)
         legalInv.agreementType = item[4].value
       });
       data.businessPartnership.push(legalInv)
@@ -169,8 +174,8 @@ const FormAspekSosial = () => {
     kawasanLindung.forEach((item, i) => {
       let legalInv = {}
       item.forEach(() => {
-        legalInv.area = item[0].value
-        legalInv.year = item[1].value
+        legalInv.area = Number(item[0].value)
+        legalInv.year = Number(item[1].value)
         legalInv.effort = item[2].value
       });
       data.protectedArea = legalInv
@@ -178,22 +183,49 @@ const FormAspekSosial = () => {
 
     localStorage.setItem("dataSubmitSosial", JSON.stringify(data));
 
+    const postReport = axios.post(
+      `${appConfig.baseUrl}/reports/${localStorage.getItem('reportId')}/others`,
+      data
+    );
+
+    postReport.then(
+      function(dt) {
+
+        if (dt.data.status == 'success') {
+          router.push({
+            pathname: "/user/pelaporan-perkebunan/konfirmasi/"
+          })
+        }
+
+      },
+      function(err) {
+
+        enqueueSnackbar('', {
+          anchorOrigin: {
+            vertical: 'top',
+            horizontal: 'right',
+          },
+          content: (key, message) => (
+            <CustomComponent
+              id={key}
+              message="Mohon pastikan form yang anda isi telah lengkap."
+              variant="error"
+              title="Gagal Submit!"
+            />
+          ),
+        });
+
+      }
+    )
+
     console.log('Data Send Sosial')
     console.log('=========================================================')
     console.log(data)
     console.log('=========================================================')
-
-    router.push({
-      pathname: "/user/pelaporan-perkebunan/konfirmasi/"
-    })
   })
 
   return (
     <>
-      <Head>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
-      </Head>
-
       <ChildStore/>
 
       <form>
@@ -303,10 +335,32 @@ const FormAspekSosial = () => {
                 }
                 {
                   items.map((item,ii) => (
-                    <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
-                      <span className={mng.base__inputtitle}>{item.title}</span>
-                      <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, kemitraan, setKemitraan, i, ii)}/>
-                    </label>
+                    <>
+                      {
+                        item.isOpt == "cal" ? (
+                          <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
+                            <InputForm
+                              titleForm={item.title}
+                              titleName={item.title}
+                              onChange={(e) => formRegularChange(e, kemitraan, setKemitraan, i, ii)}
+                              type="date"
+                              values={item.value}
+                              placeholder={item.placeholder}
+                              id="datePicker"
+                              className={`${
+                                isError && 'border-primary-red-1 bg-primary-red-2'
+                              } ${mng["base__inputbase"]} w-full rounded  bg-white-2 py-2 px-3 text-sm uppercase text-primary-gray-4`}
+                              iconEmail="true"
+                            />
+                          </label>
+                        ) : (
+                          <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
+                            <span className={mng.base__inputtitle}>{item.title}</span>
+                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, kemitraan, setKemitraan, i, ii)}/>
+                          </label>
+                        )
+                      }
+                    </>
                   ))
                 }
                 </div>
@@ -336,10 +390,32 @@ const FormAspekSosial = () => {
                 }
                 {
                   items.map((item,ii) => (
-                    <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
-                      <span className={mng.base__inputtitle}>{item.title}</span>
-                      <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, pengawasan, setPengawasan, i, ii)}/>
-                    </label>
+                    <>
+                      {
+                        item.isOpt == "cal" ? (
+                          <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
+                            <InputForm
+                              titleForm={item.title}
+                              titleName={item.title}
+                              onChange={(e) => formRegularChange(e, pengawasan, setPengawasan, i, ii)}
+                              type="date"
+                              values={item.value}
+                              placeholder={item.placeholder}
+                              id="datePicker"
+                              className={`${
+                                isError && 'border-primary-red-1 bg-primary-red-2'
+                              } ${mng["base__inputbase"]} w-full rounded  bg-white-2 py-2 px-3 text-sm uppercase text-primary-gray-4`}
+                              iconEmail="true"
+                            />
+                          </label>
+                        ) : (
+                          <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
+                            <span className={mng.base__inputtitle}>{item.title}</span>
+                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, pengawasan, setPengawasan, i, ii)}/>
+                          </label>
+                        )
+                      }
+                    </>
                   ))
                 }
                 </div>

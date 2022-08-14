@@ -1,24 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Icon } from '@iconify/react';
 import {useRouter} from 'next/router'
+import { useSession } from "next-auth/react";
+import axios from 'axios';
+import _ from 'lodash';
+import { appConfig } from 'src/config';
+import { useSnackbar } from 'notistack';
+import CustomComponent from 'src/components/snackbar/CustomComponent';
 import InputForm from 'src/components/pages/admin/infografis/InputForm';
 import mng from 'src/styles/Managemen.module.scss';
 import TableMasterData from './NilaiMasterTable';
 
 const PenilaianPerkebunanPageComponent = () => {
+  const { data: session } = useSession();
+  if (session) {
+    axios.defaults.headers.common['Authorization'] = `Bearer ${session.user.accessToken}`
+  }
+
+  const { enqueueSnackbar } = useSnackbar();
   const [selectedTab, setSelectedTab] = useState('PELAPORAN');
   const [searchField, setSearchField] = useState('')
 
   const router = useRouter()
 
-
   ///// table /////
-  const [dataMeta, setDataMeta] = useState({
-    page: 1,
-    limit: 10,
-    total: 20
-  });
-  const [page, setPage] = useState(1);
+  const [dataMeta, setDataMeta] = useState({});
+  const [currPage, setCurrPage] = useState(1);
 
   const handleChangeLimit = (e) => {
     setLimit(e.target.value);
@@ -26,12 +33,14 @@ const PenilaianPerkebunanPageComponent = () => {
 
   const handleNextPage = () => {
     if (dataMeta.page * dataMeta.limit <= dataMeta.total) {
-      setPage(page + 1);
+      setCurrPage(currPage+1);
+      setDataMeta({...dataMeta, page: currPage+1})
     }
   };
   const handlePrevPage = () => {
     if (dataMeta.page !== 1) {
-      setPage(page - 1);
+      setCurrPage(currPage-1);
+      setDataMeta({...dataMeta, page: currPage-1})
     }
   };
 
@@ -43,18 +52,40 @@ const PenilaianPerkebunanPageComponent = () => {
 
   const columns = ['NAMA KEBUN','KOTA / KABUPATEN','ADMINISTRATUR/MANAJER','JENIS PENGAJUAN','TERAKHIR DILIHAT','STATUS PENGAJUAN','AKSI'];
 
-  const data = [
-   { kebun: "Kebun A", kota: "Kabupaten Bandung Barat", admin: "Asep", jenis: 'Penilaian Perkebunan', date: '2022-07-05T03:32:11.502Z', status: 'Draft' },
-   { kebun: "Kebun B", kota: "Kabupaten Bogor", admin: "Mirna", jenis: 'Penilaian Perkebunan', date: '2022-07-05T03:32:11.502Z', status: 'Draft' },
-   { kebun: "Kebun C", kota: "Kabupaten Bandung Barat", admin: "Udin", jenis: 'Penilaian Perkebunan', date: '2022-07-05T03:32:11.502Z', status: 'Draft' },
-   { kebun: "Kebun D", kota: "Kota Cimahi", admin: "Fahmi", jenis: 'Penilaian Perkebunan', date: '2022-07-05T03:32:11.502Z', status: 'Draft' },
-   { kebun: "Kebun E", kota: "Kabupaten Bandung Barat", admin: "Dina", jenis: 'Penilaian Perkebunan', date: '2022-07-05T03:32:11.502Z', status: 'Draft' },
-   { kebun: "Kebun F", kota: "Kabupaten Bandung Barat", admin: "HIdayat", jenis: 'Penilaian Perkebunan', date: '2022-07-05T03:32:11.502Z', status: 'Draft' },
-   { kebun: "Kebun G", kota: "Kabupaten Bandung Barat", admin: "Haidar", jenis: 'Penilaian Perkebunan', date: '2022-07-05T03:32:11.502Z', status: 'Draft' },
-   { kebun: "Kebun H", kota: "Kabupaten Bandung Barat", admin: "Haris", jenis: 'Penilaian Perkebunan', date: '2022-07-05T03:32:11.502Z', status: 'Draft' },
-   { kebun: "Kebun I", kota: "Kabupaten Bandung Barat", admin: "Mega", jenis: 'Penilaian Perkebunan', date: '2022-07-05T03:32:11.502Z', status: 'Draft' },
-   { kebun: "Kebun J", kota: "Kabupaten Bandung Barat", admin: "Firman", jenis: 'Penilaian Perkebunan', date: '2022-07-05T03:32:11.502Z', status: 'Draft' },
-  ];
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    if (session) {
+      const reports = axios.get(`${appConfig.baseUrl}/evaluations`);
+      reports.then(
+        function(dt) {
+          let dataStore = []
+
+          setDataMeta({
+            page: 1,
+            limit: 10,
+            total: dt.data.data.evaluations.length
+          })
+
+          dt.data.data.evaluations.forEach((item, i) => {
+            let data = {
+              kebun: item.garden_name,
+              kota: item.city,
+              admin: item.corporate_name,
+              jenis: 'Penilaian Perkebunan',
+              date: item.updated_at,
+              status: (item.state == "Diterima" ? "Approve" : "Draft")
+            }
+            dataStore.push(data)
+          });
+          setData(dataStore)
+        },
+        function(err) {
+          console.log(err)
+        }
+      )
+    }
+  }, [session])
 
   const handleRekapSearch = () => {
     alert('search alert')
@@ -93,7 +124,7 @@ const PenilaianPerkebunanPageComponent = () => {
           headerTable={columns}
           data={data}
           dataMeta={dataMeta}
-          currentPage={page}
+          currentPage={currPage}
           handleChangeLimit={handleChangeLimit}
           handleNextPage={handleNextPage}
           handlePrevPage={handlePrevPage}

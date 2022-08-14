@@ -1,4 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
+import Select from 'react-select';
+import axios from 'axios';
+import { appConfig } from 'src/config';
 import { Icon } from '@iconify/react';
 
 function InputForm({
@@ -20,6 +23,8 @@ function InputForm({
   margin = 'mb-1.5',
   textArea = '',
   selectionArea = '',
+  selectArea = null,
+  options = [],
   radioName = '',
   radioId = '',
   radioValue = '',
@@ -43,7 +48,7 @@ function InputForm({
             value={values}
             type={type}
             placeholder={placeholder}
-            className={`${className} placeholder:text-sm placeholder:font-normal border-transparent`}
+            className={`${className} h-[48px] placeholder:text-sm placeholder:font-normal border-transparent focus:outline-none focus:border-primary-green focus:ring-1 focus:ring-primary-green`}
             id={id}
           />
         )}
@@ -71,7 +76,7 @@ function InputForm({
         )}
         {phoneNumber && (
           <div className="flex gap-3">
-            <div className="flex items-center justify-center rounded-md bg-white-2 py-3 px-4 text-sm">
+            <div className="flex h-[48px] items-center justify-center rounded-md bg-white-2 py-3 px-4 text-sm">
               +62
             </div>
             <input
@@ -81,17 +86,27 @@ function InputForm({
               value={values}
               type={type}
               placeholder={placeholder}
-              className={`${className} placeholder:text-sm placeholder:font-normal border-transparent`}
+              className={`${className} h-[48px] placeholder:text-sm placeholder:font-normal border-transparent  focus:outline-none focus:border-primary-green focus:ring-1 focus:ring-primary-green`}
             />
           </div>
         )}
         {textArea && (
           <textarea
             name={titleName}
-            className={`${className} placeholder:text-sm placeholder:font-normal border-transparent`}
+            className={`${className} placeholder:text-sm placeholder:font-normal border-transparent  focus:outline-none focus:border-primary-green focus:ring-1 focus:ring-primary-green`}
             value={values}
             onChange={onChange}
             placeholder={placeholder}
+          />
+        )}
+        {selectArea && (
+          <Select
+            value={values}
+            onChange={onChange}
+            options={options}
+            placeholder={placeholder}
+            isSearchable={false}
+            classNamePrefix={`react-select`}
           />
         )}
         {selectionArea && (

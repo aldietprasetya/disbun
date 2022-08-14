@@ -7,19 +7,19 @@ const storeManajemen = props => {
 
     let sosialReportState = {
       retribution: [
-        [ {'title':'Jenis Pajak/Retribusi','type':'text','placeholder':'Jenis Pajak/Retrbusi','value':''}, {'title':'Nilai (Rp)','placeholder':'Nilai Pajak/Retribusi','type':'text','value':''}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''} ]
+        [ {'title':'Jenis Pajak/Retribusi','type':'text','placeholder':'Jenis Pajak/Retrbusi','value':''}, {'title':'Nilai (Rp)','placeholder':'Nilai Pajak/Retribusi','type':'number','value':''}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''} ]
       ],
       protectedArea: [
-        [ {'title':'Luas Kawasan Lindung (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''}, {'title':'Dikelola Sejak tahun','placeholder':'YYYY','type':'text','value':''}, {'title':'Usaha Pelestarian','type':'textarea','placeholder':'Tulis usaha pelestarian yang dilakukan.','value':''} ]
+        [ {'title':'Luas Kawasan Lindung (Ha)','type':'number','placeholder':'Luas Lahan dalam Ha','value':''}, {'title':'Dikelola Sejak tahun','placeholder':'YYYY','type':'number','value':''}, {'title':'Usaha Pelestarian','type':'textarea','placeholder':'Tulis usaha pelestarian yang dilakukan.','value':''} ]
       ],
       conservation: [
-        [ {'title':'Jenis Kegiatan Konservasi','type':'text','placeholder':'Jenis Pajak/Retrbusi','value':''}, {'title':'Luas (Ha)','placeholder':'Luas Lahan dalam Ha','type':'text','value':''}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''} ]
+        [ {'title':'Jenis Kegiatan Konservasi','type':'text','placeholder':'Jenis Pajak/Retrbusi','value':''}, {'title':'Luas (Ha)','placeholder':'Luas Lahan dalam Ha','type':'number','value':''}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''} ]
       ],
       environmentalMonitoring: [
-        [ {'title':'Masalah Lingkungan','type':'text','placeholder':'Jenis Masalah Lingkungan','value':''}, {'title':'Waktu kejadian','placeholder':'DD/MM/YYYY','type':'text','value':''}, {'title':'Frekuensi (kali)','type':'text','placeholder':'Jumlah','value':''}, {'title':'Upaya Penyelesaian','type':'text','placeholder':'Deskripsi Upaya','value':''}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''} ]
+        [ {'title':'Masalah Lingkungan','type':'text','placeholder':'Jenis Masalah Lingkungan','value':'', 'isOpt':false}, {'title':'Waktu kejadian','placeholder':'DD/MM/YYYY','type':'text','value':'', 'isOpt':'cal'}, {'title':'Frekuensi (kali)','type':'number','placeholder':'Jumlah','value':'', 'isOpt':false}, {'title':'Upaya Penyelesaian','type':'text','placeholder':'Deskripsi Upaya','value':'', 'isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'', 'isOpt':false} ]
       ],
       businessPartnership: [
-        [ {'title':'Nama Kelompok Tani','type':'text','placeholder':'Nama Poktan','value':''}, {'title':'Nomor','placeholder':'Nomor','type':'text','value':''}, {'title':'Waktu Perjanjian','type':'text','placeholder':'DD/MM/YYYY','value':''}, {'title':'Lamanya perjanjian','type':'text','placeholder':'Durasi','value':''}, {'title':'Jenis perjanjian','type':'text','placeholder':'Jenis Perjanjian','value':''} ]
+        [ {'title':'Nama Kelompok Tani','type':'text','placeholder':'Nama Poktan','value':'', 'isOpt':false}, {'title':'Nomor','placeholder':'Nomor','type':'text','value':'', 'isOpt':false}, {'title':'Waktu Perjanjian','type':'text','placeholder':'DD/MM/YYYY','value':'', 'isOpt':'cal'}, {'title':'Lamanya perjanjian','type':'number','placeholder':'Durasi','value':'', 'isOpt':false}, {'title':'Jenis perjanjian','type':'text','placeholder':'Jenis Perjanjian','value':'', 'isOpt':false} ]
       ],
     }
 
@@ -36,7 +36,7 @@ const storeManajemen = props => {
 
       retrievedDataApi.retribution.forEach((e, i) => {
         const formData = [
-          [ {'title':'Jenis Pajak/Retribusi','type':'text','placeholder':'Jenis Pajak/Retrbusi','value':''}, {'title':'Nilai (Rp)','placeholder':'Nilai Pajak/Retribusi','type':'text','value':''}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''} ]
+          [ {'title':'Jenis Pajak/Retribusi','type':'text','placeholder':'Jenis Pajak/Retrbusi','value':''}, {'title':'Nilai (Rp)','placeholder':'Nilai Pajak/Retribusi','type':'number','value':''}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''} ]
         ]
         formData.forEach((form,ii) => {
           form.forEach((ee, iii) => {
@@ -53,7 +53,7 @@ const storeManajemen = props => {
       });
 
       const formDatat = [
-        [ {'title':'Luas Kawasan Lindung (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':''}, {'title':'Dikelola Sejak tahun','placeholder':'YYYY','type':'text','value':''}, {'title':'Usaha Pelestarian','type':'textarea','placeholder':'Tulis usaha pelestarian yang dilakukan.','value':''} ]
+        [ {'title':'Luas Kawasan Lindung (Ha)','type':'number','placeholder':'Luas Lahan dalam Ha','value':''}, {'title':'Dikelola Sejak tahun','placeholder':'YYYY','type':'number','value':''}, {'title':'Usaha Pelestarian','type':'textarea','placeholder':'Tulis usaha pelestarian yang dilakukan.','value':''} ]
       ]
       formDatat.forEach((item2, ii) => {
         item2.forEach((t, ii) => {
@@ -64,7 +64,7 @@ const storeManajemen = props => {
 
       retrievedDataApi.conservation.forEach((e, i) => {
         const formData = [
-          [ {'title':'Jenis Kegiatan Konservasi','type':'text','placeholder':'Jenis Pajak/Retrbusi','value':''}, {'title':'Luas (Ha)','placeholder':'Luas Lahan dalam Ha','type':'text','value':''}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''} ]
+          [ {'title':'Jenis Kegiatan Konservasi','type':'text','placeholder':'Jenis Pajak/Retrbusi','value':''}, {'title':'Luas (Ha)','placeholder':'Luas Lahan dalam Ha','type':'number','value':''}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''} ]
         ]
         formData.forEach((form,ii) => {
           form.forEach((ee, iii) => {
@@ -76,7 +76,7 @@ const storeManajemen = props => {
 
       retrievedDataApi.environmentalMonitoring.forEach((e, i) => {
         const formData = [
-          [ {'title':'Masalah Lingkungan','type':'text','placeholder':'Jenis Masalah Lingkungan','value':''}, {'title':'Waktu kejadian','placeholder':'DD/MM/YYYY','type':'text','value':''}, {'title':'Frekuensi (kali)','type':'text','placeholder':'Jumlah','value':''}, {'title':'Upaya Penyelesaian','type':'text','placeholder':'Deskripsi Upaya','value':''}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':''} ]
+          [ {'title':'Masalah Lingkungan','type':'text','placeholder':'Jenis Masalah Lingkungan','value':'', 'isOpt':false}, {'title':'Waktu kejadian','placeholder':'DD/MM/YYYY','type':'text','value':'', 'isOpt':'cal'}, {'title':'Frekuensi (kali)','type':'number','placeholder':'Jumlah','value':'', 'isOpt':false}, {'title':'Upaya Penyelesaian','type':'text','placeholder':'Deskripsi Upaya','value':'', 'isOpt':false}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'', 'isOpt':false} ]
         ]
         formData.forEach((form,ii) => {
           form.forEach((ee, iii) => {
@@ -88,7 +88,7 @@ const storeManajemen = props => {
 
       retrievedDataApi.businessPartnership.forEach((e, i) => {
         const formData = [
-          [ {'title':'Nama Kelompok Tani','type':'text','placeholder':'Nama Poktan','value':''}, {'title':'Nomor','placeholder':'Nomor','type':'text','value':''}, {'title':'Waktu Perjanjian','type':'text','placeholder':'DD/MM/YYYY','value':''}, {'title':'Lamanya perjanjian','type':'text','placeholder':'Durasi','value':''}, {'title':'Jenis perjanjian','type':'text','placeholder':'Jenis Perjanjian','value':''} ]
+          [ {'title':'Nama Kelompok Tani','type':'text','placeholder':'Nama Poktan','value':'', 'isOpt':false}, {'title':'Nomor','placeholder':'Nomor','type':'text','value':'', 'isOpt':false}, {'title':'Waktu Perjanjian','type':'text','placeholder':'DD/MM/YYYY','value':'', 'isOpt':'cal'}, {'title':'Lamanya perjanjian','type':'number','placeholder':'Durasi','value':'', 'isOpt':false}, {'title':'Jenis perjanjian','type':'text','placeholder':'Jenis Perjanjian','value':'', 'isOpt':false} ]
         ]
         formData.forEach((form,ii) => {
           form.forEach((ee, iii) => {

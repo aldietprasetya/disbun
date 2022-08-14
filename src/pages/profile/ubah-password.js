@@ -123,14 +123,14 @@ const UbahPasswordPage = () => {
             <div className="mb-2 text-xs font-semibold">
               Kata Sandi Sekarang<span className="text-red-400">*</span>
             </div>
-            <div className="flex items-center justify-between rounded border bg-[#F7F7F7] pr-3 ">
+            <div className="flex items-center justify-between rounded bg-[#F7F7F7] pr-3 ">
               <input
                 name="password"
                 type={typePassword.prevPassword ? 'text' : 'password'}
                 onChange={(event) => handleChange(event, 'prevPassword')}
                 values={password.prevPassword}
                 placeholder="Masukan Kata Sandi anda"
-                className="flex-1 rounded bg-[#F7F7F7] border-[#EDEDED] py-2 px-3 text-sm placeholder:text-sm"
+                className="h-[48px] placeholder:text-sm placeholder:font-normal border-transparent focus:outline-none focus:border-primary-green focus:ring-1 focus:ring-primary-green w-full rounded bg-white-2 py-3 px-4 placeholder:text-primary-gray-4"
               />
               <Icon
                 onClick={() =>
@@ -155,14 +155,14 @@ const UbahPasswordPage = () => {
             <div className="mb-2 text-xs font-semibold">
               Masukan Kata Sandi baru anda<span className="text-red-400">*</span>
             </div>
-            <div className="flex items-center justify-between rounded border bg-[#F7F7F7] border-[#EDEDED] pr-3 ">
+            <div className="flex items-center justify-between rounded bg-[#F7F7F7] border-[#EDEDED] pr-3 ">
               <input
                 name="password"
                 type={typePassword.mainPassword ? 'text' : 'password'}
                 onChange={(event) => handleChange(event, 'mainPassword')}
                 values={password.mainPassword}
                 placeholder="Masukan password anda"
-                className="flex-1 rounded bg-[#F7F7F7] border-[#EDEDED] py-2 px-3 text-sm placeholder:text-sm"
+                className="h-[48px] placeholder:text-sm placeholder:font-normal border-transparent focus:outline-none focus:border-primary-green focus:ring-1 focus:ring-primary-green w-full rounded bg-white-2 py-3 px-4 placeholder:text-primary-gray-4"
               />
               <Icon
                 onClick={() =>
@@ -194,14 +194,14 @@ const UbahPasswordPage = () => {
             <div className="mb-2 text-xs font-semibold">
               Konfirmasi kata sandi anda<span className="text-red-400">*</span>
             </div>
-            <div className="flex items-center justify-between rounded border bg-[#F7F7F7] border-[#EDEDED] pr-3 ">
+            <div className="flex items-center justify-between rounded bg-[#F7F7F7] border-[#EDEDED] pr-3 ">
               <input
                 name="password"
                 type={typePassword.confirmPassword ? 'text' : 'password'}
                 onChange={(event) => handleChange(event, 'confirmPassword')}
                 values={password.confirmPassword}
                 placeholder="Masukan password anda"
-                className="flex-1 rounded bg-[#F7F7F7] border-[#EDEDED] py-2 px-3 text-sm placeholder:text-sm"
+                className="h-[48px] placeholder:text-sm placeholder:font-normal border-transparent focus:outline-none focus:border-primary-green focus:ring-1 focus:ring-primary-green w-full rounded bg-white-2 py-3 px-4 placeholder:text-primary-gray-4"
               />
               <Icon
                 onClick={() =>

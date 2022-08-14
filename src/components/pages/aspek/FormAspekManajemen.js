@@ -2,6 +2,10 @@ import Head from 'next/head'
 import React, { useState, useEffect } from 'react'
 import {useRouter} from 'next/router'
 import _ from 'lodash';
+import axios from 'axios';
+import { appConfig } from 'src/config';
+import { useSnackbar } from 'notistack';
+import CustomComponent from 'src/components/snackbar/CustomComponent';
 import InputForm from '../admin/infografis/InputForm';
 import mng from '../../../styles/Managemen.module.scss'
 import ChildStore from './store/manajemen'
@@ -12,7 +16,7 @@ const preventDefault = f => e => {
 }
 
 const FormAspekManajemen = () => {
-
+  const { enqueueSnackbar } = useSnackbar();
   const router = useRouter()
 
   const [initialLoad, setInitialLoad] = useState(true)
@@ -181,16 +185,17 @@ const FormAspekManajemen = () => {
 
     data.administrator = [{
       "administratorName": administrasi,
-      "administratorCount": tenagaKerja[0].value,
-      "staffCount": tenagaKerja[1].value,
-      "monthlyLaborCount": tenagaKerja[2].value,
-      "freelanceDailyLaborCount": tenagaKerja[3].value,
-      "permanentDailyLaborCount": tenagaKerja[4].value,
-      "projectLaborCount": tenagaKerja[5].value
+      "administratorCount": Number(tenagaKerja[0].value),
+      "staffCount": Number(tenagaKerja[1].value),
+      "monthlyLaborCount": Number(tenagaKerja[2].value),
+      "freelanceDailyLaborCount": Number(tenagaKerja[3].value),
+      "permanentDailyLaborCount":Number(tenagaKerja[4].value),
+      "projectLaborCount": Number(tenagaKerja[5].value)
     }]
 
     komisaris.forEach((item, i) => {
       let setObj = {
+        // [(item.title == 'Komisaris Utama' ? 'majorCommissionerName' : 'commisionerName'+i)]: item.value
         [(item.title == 'Komisaris Utama' ? 'majorCommissionerName' : 'commisionerName'+i)]: item.value
       }
       data.commissioner[0] = {...data.commissioner[0], ...setObj}
@@ -198,6 +203,7 @@ const FormAspekManajemen = () => {
 
     direksi.forEach((item, i) => {
       let setObj = {
+        // [(item.title == 'Direktur Utama' ? 'majorDirectorName' : 'directorName'+i)]: item.value
         [(item.title == 'Direktur Utama' ? 'majorDirectorName' : 'directorName'+i)]: item.value
       }
       data.director[0] = {...data.director[0], ...setObj}
@@ -207,23 +213,54 @@ const FormAspekManajemen = () => {
       let rencanaInv = {}
       item.forEach(() => {
         rencanaInv.activity = item[0].value
-        rencanaInv.year = item[1].value
-        rencanaInv.volume = item[2].value
-        rencanaInv.value = item[3].value
+        rencanaInv.year = Number(item[1].value)
+        rencanaInv.volume = Number(item[2].value)
+        rencanaInv.value = Number(item[3].value)
       });
       data.investment.push(rencanaInv)
     });
 
     localStorage.setItem("dataSubmit", JSON.stringify(data));
 
+    const postReport = axios.post(
+      `${appConfig.baseUrl}/reports/${localStorage.getItem('reportId')}/managements`,
+      data
+    );
+
+    postReport.then(
+      function(dt) {
+
+        if (dt.data.status == 'success') {
+          router.push({
+            pathname: "/user/pelaporan-perkebunan/aspek-kebun/"
+          })
+        }
+
+      },
+      function(err) {
+
+        enqueueSnackbar('', {
+          anchorOrigin: {
+            vertical: 'top',
+            horizontal: 'right',
+          },
+          content: (key, message) => (
+            <CustomComponent
+              id={key}
+              message="Mohon pastikan form yang anda isi telah lengkap."
+              variant="error"
+              title="Gagal Submit!"
+            />
+          ),
+        });
+
+      }
+    )
+
     console.log('Data Send Manajemen')
     console.log('=========================================================')
     console.log(data)
     console.log('=========================================================')
-
-    router.push({
-      pathname: "/user/pelaporan-perkebunan/aspek-kebun/"
-    })
   })
 
   function clearData() {
@@ -235,10 +272,6 @@ const FormAspekManajemen = () => {
 
   return (
     <>
-      <Head>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
-      </Head>
-
       <ChildStore/>
 
       <form>
@@ -362,9 +395,6 @@ const FormAspekManajemen = () => {
               <span className="ml-1.5">Clear data</span>
             </div>
           */}
-          <div className={`${mng["base__btnclear"]} ${"mt-1"}`} onClick={clearData}>
-            <span className="ml-1.5">Clear data</span>
-          </div>
 
           <button className={`${mng["base__btnsimpan"]} ${"float-right mt-1"}`} onClick={storeData} disabled={!btnValid}>
             Simpan dan Lanjutkan

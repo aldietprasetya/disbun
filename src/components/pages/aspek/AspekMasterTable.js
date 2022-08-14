@@ -39,7 +39,7 @@ const TableMasterPelaporanPerkebunan = ({
         <span className="w-[6px] h-[6px] bg-[#3267E3] mr-1.5 rounded-sm"></span>{e}
       </div>
     }
-    if (e == 'Diterima') {
+    if (e == 'Approve') {
       return <div className="bg-[#ECF8F1] inline-flex px-[8px] py-[2px] items-center justify-center rounded text-[#27AE60] font-medium text-xs">
         <span className="w-[6px] h-[6px] bg-[#27AE60] mr-1.5 rounded-sm"></span>{e}
       </div>
@@ -66,62 +66,74 @@ const TableMasterPelaporanPerkebunan = ({
             </tr>
           </thead>
           <tbody>
-            {data?.map((item, index) => {
-              return (
-                <tr
-                  key={index}
-                  className={`${index % 2 === 0 ? 'bg-white' : 'bg-[#FAFAFA]'}` }
-                >
-                  <td className={`${table.table__body_col}`}>
-                    {item.kebun}
-                  </td>
-                  <td className={`${table.table__body_col}`}>
-                    {item.kota}
-                  </td>
-                  <td className={`${table.table__body_col}`}>
-                    {item.admin}
-                  </td>
-                  <td className={`${table.table__body_col} text-left`}>
-                    {item.jenis}
-                  </td>
-                  <td className={`${table.table__body_col} text-left`}>
-                    <span className="bg-[#E9EDF5] rounded px-[10px] py-[2px]">{item.date}</span>
-                  </td>
-                  <td className={`${table.table__body_col}`}>
-                    {changeState(item.status)}
-                  </td>
+            {data.length > 0 ? (
+              <>
+                {data?.map((item, index) => {
+                  return (
+                    <tr
+                      key={index}
+                      className={`${index % 2 === 0 ? 'bg-white' : 'bg-[#FAFAFA]'}` }
+                    >
+                      <td className={`${table.table__body_col}`}>
+                        {item.kebun}
+                      </td>
+                      <td className={`${table.table__body_col}`}>
+                        {item.kota}
+                      </td>
+                      <td className={`${table.table__body_col}`}>
+                        {item.admin}
+                      </td>
+                      <td className={`${table.table__body_col} text-left`}>
+                        {item.jenis}
+                      </td>
+                      <td className={`${table.table__body_col} text-left`}>
+                        <span className="bg-[#E9EDF5] rounded px-[10px] py-[2px]">{item.date}</span>
+                      </td>
+                      <td className={`${table.table__body_col}`}>
+                        {changeState(item.status)}
+                      </td>
 
-                  <td className="whitespace-nowrap px-8 py-3 text-xs font-light text-gray-900 ">
-                    <div className="relative">
-                      <div
-                        className="cursor-pointer"
-                        onClick={() => handleMenuOpen(index)}
-                      >
-                        <Icon
-                          icon="carbon:overflow-menu-horizontal"
-                          className="text-lg"
-                        />
-                      </div>
-                      <MenuFloating isOpen={menuIsOpen === index}>
-                        <div className="w-full px-2 py-3">
-                          <div className="mb-4 flex gap-3">
-                            <img src="/icon/search-status.svg" alt="eyes" />
-                            <div className="cursor-pointer"
-                              onClick={() => handleDetailOpen(item)}
-                            >Lihat Detail</div>
+                      <td className="whitespace-nowrap px-8 py-3 text-xs font-light text-gray-900 ">
+                        <div className="relative">
+                          <div
+                            className="cursor-pointer"
+                            onClick={() => handleMenuOpen(index)}
+                          >
+                            <Icon
+                              icon="carbon:overflow-menu-horizontal"
+                              className="text-lg"
+                            />
                           </div>
-                          <div className="flex w-full gap-3">
-                            <img src="/icon/export.svg" alt="eyes" />
-                            <div className="cursor-pointer">Export</div>
-                          </div>
+                          <MenuFloating isOpen={menuIsOpen === index}>
+                            <div className="w-full px-2 py-3">
+                              <div className="mb-4 flex gap-3">
+                                <img src="/icon/search-status.svg" alt="eyes" />
+                                <div className="cursor-pointer"
+                                  onClick={() => handleDetailOpen(item)}
+                                >Lihat Detail</div>
+                              </div>
+                              <div className="flex w-full gap-3">
+                                <img src="/icon/export.svg" alt="eyes" />
+                                <div className="cursor-pointer">Export</div>
+                              </div>
+                            </div>
+                          </MenuFloating>
                         </div>
-                      </MenuFloating>
-                    </div>
-                  </td>
+                      </td>
 
-                </tr>
-              );
-            })}
+                    </tr>
+                  );
+                })}
+              </>
+            ) : (
+              <tr
+                className={`bg-white h-[120px]`}
+              >
+                <td className={`${table.table__body_col} text-center`} colspan="7">
+                  Data Belum Tersedia...
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
