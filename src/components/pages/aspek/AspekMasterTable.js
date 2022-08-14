@@ -138,13 +138,17 @@ const TableMasterPelaporanPerkebunan = ({
         </table>
       </div>
       {/* footer */}
-      <TableFooter
-        dataMeta={dataMeta}
-        currentPage={currentPage}
-        handleChangeLimit={handleChangeLimit}
-        handleNextPage={handleNextPage}
-        handlePrevPage={handlePrevPage}
-      />
+      {data.length > 0 ? (
+        <TableFooter
+          dataMeta={dataMeta}
+          currentPage={currentPage}
+          handleChangeLimit={handleChangeLimit}
+          handleNextPage={handleNextPage}
+          handlePrevPage={handlePrevPage}
+        />
+      ) : (
+        <></>
+      )}
     </div>
   );
 };

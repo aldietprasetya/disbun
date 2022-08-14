@@ -66,7 +66,9 @@ const TableMasterPenilaianPerkebunan = ({
             </tr>
           </thead>
           <tbody>
-            {data?.map((item, index) => {
+            {data.length > 0 ? (
+              <>
+                {data?.map((item, index) => {
               return (
                 <tr
                   key={index}
@@ -122,17 +124,31 @@ const TableMasterPenilaianPerkebunan = ({
                 </tr>
               );
             })}
+              </>
+            ) : (
+              <tr
+                className={`bg-white h-[120px]`}
+              >
+                <td className={`${table.table__body_col} text-center`} colspan="7">
+                  Data Belum Tersedia...
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
       {/* footer */}
-      <TableFooter
-        dataMeta={dataMeta}
-        currentPage={currentPage}
-        handleChangeLimit={handleChangeLimit}
-        handleNextPage={handleNextPage}
-        handlePrevPage={handlePrevPage}
-      />
+      {data.length > 0 ? (
+        <TableFooter
+          dataMeta={dataMeta}
+          currentPage={currentPage}
+          handleChangeLimit={handleChangeLimit}
+          handleNextPage={handleNextPage}
+          handlePrevPage={handlePrevPage}
+        />
+      ) : (
+        <></>
+      )}
     </div>
   );
 };
