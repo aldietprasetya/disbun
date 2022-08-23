@@ -1102,7 +1102,7 @@ const FormKebun = () => {
   return (
     <>
       <Head>
-        
+
       </Head>
       <span className={mng.base__subtitle}>Bahan Tanaman</span>
 
@@ -1793,7 +1793,7 @@ const FormKebun = () => {
                 <div className={`${mng["base__formlabel_unique1"]}`} key={i}>
                   {
                     i > 0 ?
-                    <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => komoditasOptRemoveLabel(i)}>
+                    <span className={`${"material-symbols-outlined"} ${mng["base__formlabel_icondelinvest"]}`} onClick={() => removeLabel(i, komoditasOpt, setKomoditasOpt)}>
                       do_not_disturb_on
                     </span>
                     :

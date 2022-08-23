@@ -165,14 +165,45 @@ const FormLapor = () => {
   const storeData = preventDefault(() => {
     localStorage.setItem("laporNilai", JSON.stringify(dataSubmit));
 
+    const postReport = axios.post(
+      `${appConfig.baseUrl}/evaluations/${localStorage.getItem('evaluationId')}/summaries`,
+      dataSubmit
+    );
+
+    postReport.then(
+      function(dt) {
+
+        if (dt.data.status == 'success') {
+          router.push({
+            pathname: "/user/penilaian-perkebunan/konfirmasi"
+          })
+        }
+
+      },
+      function(err) {
+
+        enqueueSnackbar('', {
+          anchorOrigin: {
+            vertical: 'top',
+            horizontal: 'right',
+          },
+          content: (key, message) => (
+            <CustomComponent
+              id={key}
+              message="Mohon pastikan form yang anda isi telah lengkap."
+              variant="error"
+              title="Gagal Submit!"
+            />
+          ),
+        });
+
+      }
+    )
+
     console.log('Data Send Pelaporan Nilai')
     console.log('=========================================================')
     console.log(dataSubmit)
     console.log('=========================================================')
-
-    router.push({
-      pathname: "/user/penilaian-perkebunan/konfirmasi"
-    })
   })
 
   function clearData() {
@@ -182,7 +213,7 @@ const FormLapor = () => {
   return (
     <>
       <Head>
-        
+
       </Head>
 
       <form>

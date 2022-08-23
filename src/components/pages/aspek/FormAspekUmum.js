@@ -828,8 +828,9 @@ const FormAspekUmum = (props) => {
                         <InputForm
                           titleForm={item.title}
                           titleName={item.title}
-                          onChange={(e) => formRegularChange(e.value, izin, setIzin, i, ii)}
+                          onChange={(e) => formRegularChange(e, izin, setIzin, i, ii)}
                           type="text"
+                          values={item.value}
                           placeholder={item.placeholder}
                           className={`${
                             isError && 'border-primary-red-1 bg-primary-red-2'

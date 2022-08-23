@@ -10,6 +10,7 @@ export default function Home() {
 
   if (session) {
     axios.defaults.headers.common['Authorization'] = `Bearer ${session.user.accessToken}`
+    localStorage.setItem('dXNyUm9sZVY',session.user.acquiredUser.role)
     if (session.user.acquiredUser.role === 1) {
       router.push({
         pathname: "/user"

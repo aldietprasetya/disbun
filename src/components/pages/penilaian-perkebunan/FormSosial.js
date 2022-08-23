@@ -1,7 +1,12 @@
 import Head from 'next/head'
 import React, { useState, useEffect } from 'react'
 import {useRouter} from 'next/router'
+import { useSession } from "next-auth/react";
 import _ from 'lodash';
+import axios from 'axios';
+import { appConfig } from 'src/config';
+import { useSnackbar } from 'notistack';
+import CustomComponent from 'src/components/snackbar/CustomComponent';
 import InputFileButton from 'src/components/customInput/InputFileButton';
 import InputForm from '../admin/infografis/InputForm';
 import mng from 'src/styles/Managemen.module.scss'
@@ -12,6 +17,8 @@ const preventDefault = f => e => {
 }
 
 const FormSosial = () => {
+  const { data: session } = useSession();
+  const { enqueueSnackbar } = useSnackbar();
   const [isError, setIsError] = useState(false);
 
   const router = useRouter()
@@ -21,6 +28,8 @@ const FormSosial = () => {
   const [data, setData] = useState(null)
   const [dataPass, setDataPass] = useState({})
   const [dataSubmit, setDataSubmit] = useState([])
+  const [isoImg, setIsoImg] = useState();
+  const [isoImgBase, setIsoImgBase] = useState();
 
   ////////////////////////// INPUT FORM STATE ////////////////////////////////
 
@@ -65,9 +74,9 @@ const FormSosial = () => {
       {'title':'Jenis Tanaman','placeholder':'masukkan jenis tanaman','type':'text','value':'','isOpt':false},
       {'title':'Kecamatan','placeholder':'masukkan lokasi kecamatan','type':'text','value':'','isOpt':false},
       {'title':'Kabupaten','placeholder':'masukkan lokasi kabupaten','type':'text','value':'','isOpt':false},
-      {'title':'Target Keseluruhan (ha)','placeholder':'masukkan luas dalam ha','type':'text','value':'','isOpt':false},
-      {'title':'Target sampai tahun ini (ha)','placeholder':'masukkan luas dalam ha','type':'text','value':'','isOpt':false},
-      {'title':'Realisasi sampai Saat ini (ha)','placeholder':'masukkan realisasi luas dalam ha','type':'text','value':'','isOpt':false}
+      {'title':'Target Keseluruhan (ha)','placeholder':'masukkan luas dalam ha','type':'number','value':'','isOpt':false},
+      {'title':'Target sampai tahun ini (ha)','placeholder':'masukkan luas dalam ha','type':'number','value':'','isOpt':false},
+      {'title':'Realisasi sampai Saat ini (ha)','placeholder':'masukkan realisasi luas dalam ha','type':'number','value':'','isOpt':false}
     ]
   ])
 
@@ -76,9 +85,9 @@ const FormSosial = () => {
       {'title':'Jenis Tanaman','placeholder':'masukkan jenis tanaman','type':'text','value':'','isOpt':false},
       {'title':'Kecamatan','placeholder':'masukkan lokasi kecamatan','type':'text','value':'','isOpt':false},
       {'title':'Kabupaten','placeholder':'masukkan lokasi kabupaten','type':'text','value':'','isOpt':false},
-      {'title':'Target Keseluruhan (ha)','placeholder':'masukkan luas dalam ha','type':'text','value':'','isOpt':false},
-      {'title':'Target sampai tahun ini (ha)','placeholder':'masukkan luas dalam ha','type':'text','value':'','isOpt':false},
-      {'title':'Realisasi sampai Saat ini (ha)','placeholder':'masukkan realisasi luas dalam ha','type':'text','value':'','isOpt':false}
+      {'title':'Target Keseluruhan (ha)','placeholder':'masukkan luas dalam ha','type':'number','value':'','isOpt':false},
+      {'title':'Target sampai tahun ini (ha)','placeholder':'masukkan luas dalam ha','type':'number','value':'','isOpt':false},
+      {'title':'Realisasi sampai Saat ini (ha)','placeholder':'masukkan realisasi luas dalam ha','type':'number','value':'','isOpt':false}
     ]])
   }
 
@@ -93,11 +102,11 @@ const FormSosial = () => {
       {
         'sectionTitle': 'Kerapatan Tanaman (% dari populasi standar)',
         'sectionData': [
-          {'title':'100%','type':'text','placeholder':'presentase','value':''},
-          {'title':'>80%-<100%','type':'text','placeholder':'presentase','value':''},
-          {'title':'60-80%','type':'text','placeholder':'presentase','value':''},
-          {'title':'<60%','type':'text','placeholder':'presentase','value':''},
-          {'title':'Jumlah','type':'text','placeholder':'presentase','value':''}
+          {'title':'100%','type':'number','placeholder':'presentase','value':''},
+          {'title':'>80%-<100%','type':'number','placeholder':'presentase','value':''},
+          {'title':'60-80%','type':'number','placeholder':'presentase','value':''},
+          {'title':'<60%','type':'number','placeholder':'presentase','value':''},
+          {'title':'Jumlah','type':'number','placeholder':'presentase','value':''}
         ]
       },
     ]
@@ -114,11 +123,11 @@ const FormSosial = () => {
       {
         'sectionTitle': 'Kerapatan Tanaman (% dari populasi standar)',
         'sectionData': [
-          {'title':'100%','type':'text','placeholder':'presentase','value':''},
-          {'title':'>80%-<100%','type':'text','placeholder':'presentase','value':''},
-          {'title':'60-80%','type':'text','placeholder':'presentase','value':''},
-          {'title':'<60%','type':'text','placeholder':'presentase','value':''},
-          {'title':'Jumlah','type':'text','placeholder':'presentase','value':''}
+          {'title':'100%','type':'number','placeholder':'presentase','value':''},
+          {'title':'>80%-<100%','type':'number','placeholder':'presentase','value':''},
+          {'title':'60-80%','type':'number','placeholder':'presentase','value':''},
+          {'title':'<60%','type':'number','placeholder':'presentase','value':''},
+          {'title':'Jumlah','type':'number','placeholder':'presentase','value':''}
         ]
       }
     ]])
@@ -135,11 +144,11 @@ const FormSosial = () => {
       {
         'sectionTitle': 'Keseragaman Tanaman (% dari populasi standar)',
         'sectionData': [
-          {'title':'100%','type':'text','placeholder':'presentase','value':''},
-          {'title':'>80%-<100%','type':'text','placeholder':'presentase','value':''},
-          {'title':'60-80%','type':'text','placeholder':'presentase','value':''},
-          {'title':'<60%','type':'text','placeholder':'presentase','value':''},
-          {'title':'Jumlah','type':'text','placeholder':'presentase','value':''}
+          {'title':'100%','type':'number','placeholder':'presentase','value':''},
+          {'title':'>80%-<100%','type':'number','placeholder':'presentase','value':''},
+          {'title':'60-80%','type':'number','placeholder':'presentase','value':''},
+          {'title':'<60%','type':'number','placeholder':'presentase','value':''},
+          {'title':'Jumlah','type':'number','placeholder':'presentase','value':''}
         ]
       },
     ]
@@ -156,11 +165,11 @@ const FormSosial = () => {
       {
         'sectionTitle': 'Keseragaman Tanaman (% dari populasi standar)',
         'sectionData': [
-          {'title':'100%','type':'text','placeholder':'presentase','value':''},
-          {'title':'>80%-<100%','type':'text','placeholder':'presentase','value':''},
-          {'title':'60-80%','type':'text','placeholder':'presentase','value':''},
-          {'title':'<60%','type':'text','placeholder':'presentase','value':''},
-          {'title':'Jumlah','type':'text','placeholder':'presentase','value':''}
+          {'title':'100%','type':'number','placeholder':'presentase','value':''},
+          {'title':'>80%-<100%','type':'number','placeholder':'presentase','value':''},
+          {'title':'60-80%','type':'number','placeholder':'presentase','value':''},
+          {'title':'<60%','type':'number','placeholder':'presentase','value':''},
+          {'title':'Jumlah','type':'number','placeholder':'presentase','value':''}
         ]
       }
     ]])
@@ -177,11 +186,11 @@ const FormSosial = () => {
       {
         'sectionTitle': 'Serangan OPT (% dari populasi standar)',
         'sectionData': [
-          {'title':'100%','type':'text','placeholder':'presentase','value':''},
-          {'title':'>80%-<100%','type':'text','placeholder':'presentase','value':''},
-          {'title':'60-80%','type':'text','placeholder':'presentase','value':''},
-          {'title':'<60%','type':'text','placeholder':'presentase','value':''},
-          {'title':'Jumlah','type':'text','placeholder':'presentase','value':''}
+          {'title':'100%','type':'number','placeholder':'presentase','value':''},
+          {'title':'>80%-<100%','type':'number','placeholder':'presentase','value':''},
+          {'title':'60-80%','type':'number','placeholder':'presentase','value':''},
+          {'title':'<60%','type':'number','placeholder':'presentase','value':''},
+          {'title':'Jumlah','type':'number','placeholder':'presentase','value':''}
         ]
       },
     ]
@@ -198,11 +207,11 @@ const FormSosial = () => {
       {
         'sectionTitle': 'Serangan OPT (% dari populasi standar)',
         'sectionData': [
-          {'title':'100%','type':'text','placeholder':'presentase','value':''},
-          {'title':'>80%-<100%','type':'text','placeholder':'presentase','value':''},
-          {'title':'60-80%','type':'text','placeholder':'presentase','value':''},
-          {'title':'<60%','type':'text','placeholder':'presentase','value':''},
-          {'title':'Jumlah','type':'text','placeholder':'presentase','value':''}
+          {'title':'100%','type':'number','placeholder':'presentase','value':''},
+          {'title':'>80%-<100%','type':'number','placeholder':'presentase','value':''},
+          {'title':'60-80%','type':'number','placeholder':'presentase','value':''},
+          {'title':'<60%','type':'number','placeholder':'presentase','value':''},
+          {'title':'Jumlah','type':'number','placeholder':'presentase','value':''}
         ]
       },
     ]])
@@ -213,7 +222,7 @@ const FormSosial = () => {
   const [lembagaEko, setLembagaEko] = useState([
     [
       {'title':'Jenis Lembaga Ekonomi','placeholder':'masukkan jenis lembaga ekonomi','type':'text','value':'','isOpt':false},
-      {'title':'Jumlah','placeholder':'masukkan jumlah','type':'text','value':'','isOpt':false},
+      {'title':'Jumlah','placeholder':'masukkan jumlah','type':'number','value':'','isOpt':false},
       {'title':'Keterangan','placeholder':'masukkan keterangan','type':'text','value':'','isOpt':false}
     ]
   ])
@@ -221,7 +230,7 @@ const FormSosial = () => {
   function handleBtnLembagaEko() {
     setLembagaEko([...lembagaEko,[
       {'title':'Jenis Lembaga Ekonomi','placeholder':'masukkan jenis lembaga ekonomi','type':'text','value':'','isOpt':false},
-      {'title':'Jumlah','placeholder':'masukkan jumlah','type':'text','value':'','isOpt':false},
+      {'title':'Jumlah','placeholder':'masukkan jumlah','type':'number','value':'','isOpt':false},
       {'title':'Keterangan','placeholder':'masukkan keterangan','type':'text','value':'','isOpt':false}
     ]])
   }
@@ -233,16 +242,16 @@ const FormSosial = () => {
       'sectionTitle': 'Bantuan Penyediaan Benih/Bibit Unggul Bersertifikat dan Sarana Produksi untuk Kebun Masyarakat Sekitar',
       'sectionData': [
         {'title':'Jenis Benih/Bibit yang disalurkan','type':'text','placeholder':'masukkan jenis benih/bibit','value':''},
-        {'title':'Jumlah yang disalurkan','type':'text','placeholder':'masukkan jumlah benih/bibit dalam kg','value':''},
-        {'title':'Jumlah masyarakat sekitar yang dilayani (KK)','type':'text','placeholder':'jumlah dalam satuan kepal keluarga','value':''}
+        {'title':'Jumlah yang disalurkan','type':'number','placeholder':'masukkan jumlah benih/bibit dalam kg','value':''},
+        {'title':'Jumlah masyarakat sekitar yang dilayani (KK)','type':'number','placeholder':'jumlah dalam satuan kepal keluarga','value':''}
       ]
     },
     {
       'sectionTitle': 'Mekanisme penyaluran',
       'sectionData': [
-        {'title':'Cuma-Cuma','type':'text','placeholder':'dalam kg','value':''},
-        {'title':'Bayar Sebagian','type':'text','placeholder':'dalam kg','value':''},
-        {'title':'Bayar Semua','type':'text','placeholder':'dalam kg','value':''},
+        {'title':'Cuma-Cuma','type':'number','placeholder':'dalam kg','value':''},
+        {'title':'Bayar Sebagian','type':'number','placeholder':'dalam kg','value':''},
+        {'title':'Bayar Semua','type':'number','placeholder':'dalam kg','value':''},
         {'title':'Keterangan','type':'text','placeholder':'masukkan keterangan','value':''}
       ]
     },]
@@ -254,16 +263,16 @@ const FormSosial = () => {
         'sectionTitle': 'Bantuan Penyediaan Benih/Bibit Unggul Bersertifikat dan Sarana Produksi untuk Kebun Masyarakat Sekitar',
         'sectionData': [
           {'title':'Jenis Benih/Bibit yang disalurkan','type':'text','placeholder':'masukkan jenis benih/bibit','value':''},
-          {'title':'Jumlah yang disalurkan','type':'text','placeholder':'masukkan jumlah benih/bibit dalam kg','value':''},
-          {'title':'Jumlah masyarakat sekitar yang dilayani (KK)','type':'text','placeholder':'jumlah dalam satuan kepal keluarga','value':''}
+          {'title':'Jumlah yang disalurkan','type':'number','placeholder':'masukkan jumlah benih/bibit dalam kg','value':''},
+          {'title':'Jumlah masyarakat sekitar yang dilayani (KK)','type':'number','placeholder':'jumlah dalam satuan kepal keluarga','value':''}
         ]
       },
       {
         'sectionTitle': 'Mekanisme penyaluran',
         'sectionData': [
-          {'title':'Cuma-Cuma','type':'text','placeholder':'dalam kg','value':''},
-          {'title':'Bayar Sebagian','type':'text','placeholder':'dalam kg','value':''},
-          {'title':'Bayar Semua','type':'text','placeholder':'dalam kg','value':''},
+          {'title':'Cuma-Cuma','type':'number','placeholder':'dalam kg','value':''},
+          {'title':'Bayar Sebagian','type':'number','placeholder':'dalam kg','value':''},
+          {'title':'Bayar Semua','type':'number','placeholder':'dalam kg','value':''},
           {'title':'Keterangan','type':'text','placeholder':'masukkan keterangan','value':''}
         ]
       },
@@ -275,8 +284,8 @@ const FormSosial = () => {
   const [latihSekitar, setLatihSekitar] = useState([
     [
       {'title':'Jenis pelatihan','placeholder':'masukkan jenis pelatihan','type':'text','value':'','isOpt':false},
-      {'title':'Jumlah Peserta (orang)','placeholder':'jumlah orang','type':'text','value':'','isOpt':false},
-      {'title':'Durasi (hari)','placeholder':'durasi','type':'text','value':'','isOpt':false},
+      {'title':'Jumlah Peserta (orang)','placeholder':'jumlah orang','type':'number','value':'','isOpt':false},
+      {'title':'Durasi (hari)','placeholder':'durasi','type':'number','value':'','isOpt':false},
       {'title':'Keterangan','placeholder':'keterangan','type':'text','value':'','isOpt':false}
     ]
   ])
@@ -284,8 +293,8 @@ const FormSosial = () => {
   function handleBtnLatihSekitar() {
     setLatihSekitar([...latihSekitar,[
       {'title':'Jenis pelatihan','placeholder':'masukkan jenis pelatihan','type':'text','value':'','isOpt':false},
-      {'title':'Jumlah Peserta (orang)','placeholder':'jumlah orang','type':'text','value':'','isOpt':false},
-      {'title':'Durasi (hari)','placeholder':'durasi','type':'text','value':'','isOpt':false},
+      {'title':'Jumlah Peserta (orang)','placeholder':'jumlah orang','type':'number','value':'','isOpt':false},
+      {'title':'Durasi (hari)','placeholder':'durasi','type':'number','value':'','isOpt':false},
       {'title':'Keterangan','placeholder':'keterangan','type':'text','value':'','isOpt':false}
     ]])
   }
@@ -295,8 +304,8 @@ const FormSosial = () => {
   const [beasiswa, setBeasiswa] = useState([
     [
       {'title':'Jenis Beasiswa','placeholder':'masukkan jenis beasiswa','type':'text','value':'','isOpt':false},
-      {'title':'Jumlah (orang)','placeholder':'jumlah','type':'text','value':'','isOpt':false},
-      {'title':'Biaya/Tahun/Orang (rp)','placeholder':'masukkan nominal','type':'text','value':'','isOpt':false},
+      {'title':'Jumlah (orang)','placeholder':'jumlah','type':'number','value':'','isOpt':false},
+      {'title':'Biaya/Tahun/Orang (rp)','placeholder':'masukkan nominal','type':'number','value':'','isOpt':false},
       {'title':'Keterangan','placeholder':'masukkan keterangan','type':'text','value':'','isOpt':false}
     ]
   ])
@@ -304,8 +313,8 @@ const FormSosial = () => {
   function handleBtnBeasiswa() {
     setBeasiswa([...beasiswa,[
       {'title':'Jenis Beasiswa','placeholder':'masukkan jenis beasiswa','type':'text','value':'','isOpt':false},
-      {'title':'Jumlah (orang)','placeholder':'jumlah','type':'text','value':'','isOpt':false},
-      {'title':'Biaya/Tahun/Orang (rp)','placeholder':'masukkan nominal','type':'text','value':'','isOpt':false},
+      {'title':'Jumlah (orang)','placeholder':'jumlah','type':'number','value':'','isOpt':false},
+      {'title':'Biaya/Tahun/Orang (rp)','placeholder':'masukkan nominal','type':'number','value':'','isOpt':false},
       {'title':'Keterangan','placeholder':'masukkan keterangan','type':'text','value':'','isOpt':false}
     ]])
   }
@@ -316,7 +325,7 @@ const FormSosial = () => {
     [
       {'title':'Jenis Kegiatan','placeholder':'masukkan jenis kegiatan','type':'text','value':'','isOpt':false},
       {'title':'Bentuk Keikutsertaan','placeholder':'masukkan keterangan','type':'text','value':'','isOpt':false},
-      {'title':'Jumlah','placeholder':'masukkan jumlah orang','type':'text','value':'','isOpt':false},
+      {'title':'Jumlah','placeholder':'masukkan jumlah orang','type':'number','value':'','isOpt':false},
       {'title':'Lokasi Kegiatan','placeholder':'masukkan lokasi','type':'text','value':'','isOpt':false},
       {'title':'Keterangan','placeholder':'masukkan keterangan','type':'text','value':'','isOpt':false}
     ]
@@ -326,7 +335,7 @@ const FormSosial = () => {
     setKegiatangRoyong([...kegiatangRoyong,[
       {'title':'Jenis Kegiatan','placeholder':'masukkan jenis kegiatan','type':'text','value':'','isOpt':false},
       {'title':'Bentuk Keikutsertaan','placeholder':'masukkan keterangan','type':'text','value':'','isOpt':false},
-      {'title':'Jumlah','placeholder':'masukkan jumlah orang','type':'text','value':'','isOpt':false},
+      {'title':'Jumlah','placeholder':'masukkan jumlah orang','type':'number','value':'','isOpt':false},
       {'title':'Lokasi Kegiatan','placeholder':'masukkan lokasi','type':'text','value':'','isOpt':false},
       {'title':'Keterangan','placeholder':'masukkan keterangan','type':'text','value':'','isOpt':false}
     ]])
@@ -356,7 +365,7 @@ const FormSosial = () => {
     [
       {'title':'Sumber Konflik','placeholder':'sebutkan sumber konflik','type':'text','value':'','isOpt':false},
       {'title':'Bentuk Konflik','placeholder':'masukkan keterangan','type':'text','value':'','isOpt':false},
-      {'title':'Jumlah (kali)','placeholder':'masukkan jumlah frekuensi','type':'text','value':'','isOpt':false},
+      {'title':'Jumlah (kali)','placeholder':'masukkan jumlah frekuensi','type':'number','value':'','isOpt':false},
       {'title':'Cara Penyelesaian','placeholder':'masukkan keterangan','type':'text','value':'','isOpt':false},
       {'title':'Penyelesaian Tuntas/Tidak','placeholder':'masukkan keterangan','type':'text','value':'','isOpt':false}
     ]
@@ -366,7 +375,7 @@ const FormSosial = () => {
     setKonflik([...konflik,[
       {'title':'Sumber Konflik','placeholder':'sebutkan sumber konflik','type':'text','value':'','isOpt':false},
       {'title':'Bentuk Konflik','placeholder':'masukkan keterangan','type':'text','value':'','isOpt':false},
-      {'title':'Jumlah (kali)','placeholder':'masukkan jumlah frekuensi','type':'text','value':'','isOpt':false},
+      {'title':'Jumlah (kali)','placeholder':'masukkan jumlah frekuensi','type':'number','value':'','isOpt':false},
       {'title':'Cara Penyelesaian','placeholder':'masukkan keterangan','type':'text','value':'','isOpt':false},
       {'title':'Penyelesaian Tuntas/Tidak','placeholder':'masukkan keterangan','type':'text','value':'','isOpt':false}
     ]])
@@ -410,6 +419,18 @@ const FormSosial = () => {
       }
     });
     setState(list);
+  }
+
+  function getBase64(file) {
+    var reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = function () {
+      console.log(reader.result);
+      setIsoImgBase(reader.result.toString().replace(/^data:(.*,)?/, ''))
+    };
+    reader.onerror = function (error) {
+      console.log('Error: ', error);
+    };
   }
 
   useEffect(() => {
@@ -585,7 +606,7 @@ const FormSosial = () => {
           formBeasiswa.forEach((dtFrm, i) => {
             dtFrm[0].value = dt.scholarshipType
             dtFrm[1].value = dt.peopleCount
-            dtFrm[2].value = dt.duration
+            dtFrm[2].value = dt.tuition
             dtFrm[3].value = dt.description
             replicateData.societyScholarship.push(dtFrm)
           })
@@ -605,7 +626,7 @@ const FormSosial = () => {
 
         setAsalBenih(retrievedObject.gardenQuality.seedSource)
         setFaskes(retrievedObject.social.healthFacility)
-        setTenagaMedis(retrievedObject.social.hasMedicalPersonel)
+        setTenagaMedis(retrievedObject.social.hasMedicalPersonel == true ? 'Iya' : 'Tidak')
         setFaspin(retrievedObject.social.educationalFacility)
         setFasjal(retrievedObject.social.roadFacility)
         setFasol(retrievedObject.social.sportFacility)
@@ -613,27 +634,27 @@ const FormSosial = () => {
         setPresentase(retrievedObject.businessPartnership.partnershipPercentage)
         setKegiatanLancar(retrievedObject.businessPartnership.employeeCooperativeDescription)
 
-        setBangunFaskesOpt(retrievedObject.social.buildHealthFacility)
-        setKualitasFasketOpt(retrievedObject.social.upgradeHealthFacility)
+        setBangunFaskesOpt(retrievedObject.social.buildHealthFacility == true ? 'Iya' : 'Tidak')
+        setKualitasFasketOpt(retrievedObject.social.upgradeHealthFacility == true ? 'Iya' : 'Tidak')
         setTenagaMedisOpt(retrievedObject.social.medicalPersonelType)
-        setBangunFaspinOpt(retrievedObject.social.buildEducationalFacility)
-        setKualitasFaspinOpt(retrievedObject.social.upgradeEducationalFacility)
-        setBangunFasjalOpt(retrievedObject.social.buildRoadFacility)
-        setKualitasFasjalOpt(retrievedObject.social.upgradeRoadFacility)
-        setAlatFasjalOpt(retrievedObject.social.provideRoadInstrument)
-        setBangunFasolOpt(retrievedObject.social.buildSportFacility)
-        setKualitasFasolOpt(retrievedObject.social.upgradeSportFacility)
-        setAlatFasolOpt(retrievedObject.social.provideSportTrainer)
-        setBangunFasbudOpt(retrievedObject.social.buildArtFacility)
-        setKualitasFasbudOpt(retrievedObject.social.upgradeArtFacility)
-        setAlatFasbudOpt(retrievedObject.social.provideArtTrainer)
-        setSertifikatBenihOpt(retrievedObject.gardenQuality.hasP3GI)
+        setBangunFaspinOpt(retrievedObject.social.buildEducationalFacility == true ? 'Iya' : 'Tidak')
+        setKualitasFaspinOpt(retrievedObject.social.upgradeEducationalFacility == true ? 'Iya' : 'Tidak')
+        setBangunFasjalOpt(retrievedObject.social.buildRoadFacility == true ? 'Iya' : 'Tidak')
+        setKualitasFasjalOpt(retrievedObject.social.upgradeRoadFacility == true ? 'Iya' : 'Tidak')
+        setAlatFasjalOpt(retrievedObject.social.provideRoadInstrument == true ? 'Iya' : 'Tidak')
+        setBangunFasolOpt(retrievedObject.social.buildSportFacility == true ? 'Iya' : 'Tidak')
+        setKualitasFasolOpt(retrievedObject.social.upgradeSportFacility == true ? 'Iya' : 'Tidak')
+        setAlatFasolOpt(retrievedObject.social.provideSportTrainer == true ? 'Iya' : 'Tidak')
+        setBangunFasbudOpt(retrievedObject.social.buildArtFacility == true ? 'Iya' : 'Tidak')
+        setKualitasFasbudOpt(retrievedObject.social.upgradeArtFacility == true ? 'Iya' : 'Tidak')
+        setAlatFasbudOpt(retrievedObject.social.provideArtTrainer == true ? 'Iya' : 'Tidak')
+        setSertifikatBenihOpt(retrievedObject.gardenQuality.hasP3GI == true ? 'Ada' : 'Tidak')
         setPembinaanKebonOpt(retrievedObject.gardenDevelopment.hasGardenDevelopment)
-        seKopMasyarakatOpt(retrievedObject.businessPartnership.hasCooperative)
-        seKopKaryawantOpt(retrievedObject.businessPartnership.hasCooperativePartnership)
+        seKopMasyarakatOpt(retrievedObject.businessPartnership.hasCooperative == true ? 'Ada' : 'Tidak')
+        seKopKaryawantOpt(retrievedObject.businessPartnership.hasCooperativePartnership == true ? 'Ada' : 'Tidak')
         sePembinaanDilakukan(retrievedObject.gardenDevelopment.developmentPattern)
         sePembinaanFrekuensi(retrievedObject.gardenDevelopment.developmentFrequency)
-        seMitraOpt(retrievedObject.businessPartnership.hasEmployeeCooperative)
+        seMitraOpt(retrievedObject.businessPartnership.hasEmployeeCooperative == true ? 'Sudah' : 'Belum')
       }
     }
     setInitialLoad(false)
@@ -643,30 +664,30 @@ const FormSosial = () => {
 
     let data = {
       "social": {
-            "buildHealthFacility": bangunFaskesOpt,
-            "upgradeHealthFacility": kualitasFaskesOpt,
+            "buildHealthFacility": bangunFaskesOpt == 'Iya' ? true : false,
+            "upgradeHealthFacility": kualitasFaskesOpt == 'Iya' ? true : false,
             "healthFacility": faskes,
-            "hasMedicalPersonel": tenagaMedisOpt,
+            "hasMedicalPersonel": tenagaMedisOpt == 'Iya' ? true : false,
             "medicalPersonelType": tenagaMedis,
-            "buildEducationalFacility": bangunFaspinOpt,
-            "upgradeEducationalFacility": kualitasFaspinOpt,
+            "buildEducationalFacility": bangunFaspinOpt == 'Iya' ? true : false,
+            "upgradeEducationalFacility": kualitasFaspinOpt == 'Iya' ? true : false,
             "educationalFacility": faspin,
-            "buildRoadFacility": bangunFasjalOpt,
-            "upgradeRoadFacility": kualitasFasjalOpt,
+            "buildRoadFacility": bangunFasjalOpt == 'Iya' ? true : false,
+            "upgradeRoadFacility": kualitasFasjalOpt == 'Iya' ? true : false,
             "roadFacility": fasjal,
-            "provideRoadInstrument": alatFasjalOpt,
-            "buildSportFacility": bangunFasolOpt,
-            "upgradeSportFacility": kualitasFasolOpt,
+            "provideRoadInstrument": alatFasjalOpt == 'Iya' ? true : false,
+            "buildSportFacility": bangunFasolOpt == 'Iya' ? true : false,
+            "upgradeSportFacility": kualitasFasolOpt == 'Iya' ? true : false,
             "sportFacility": fasol,
-            "provideSportTrainer": alatFasolOpt,
-            "buildArtFacility": bangunFasbudOpt,
-            "upgradeArtFacility": kualitasFasbudOpt,
-            "provideArtTrainer": alatFasbudOpt
+            "provideSportTrainer": alatFasolOpt == 'Iya' ? true : false,
+            "buildArtFacility": bangunFasbudOpt == 'Iya' ? true : false,
+            "upgradeArtFacility": kualitasFasbudOpt == 'Iya' ? true : false,
+            "provideArtTrainer": alatFasbudOpt == 'Iya' ? true : false
         },
       "socialGarden": [],
       "gardenQuality": {
             "seedSource": asalBenih,
-            "hasP3GI": sertifikatBenihOpt,
+            "hasP3GI": sertifikatBenihOpt == 'Ada' ? true : false,
             "file": {}
         },
       "plantDensity": [],
@@ -678,11 +699,11 @@ const FormSosial = () => {
           "developmentFrequency": pembinaanFrekuensi
         },
       "businessPartnership": {
-          "hasCooperative": kopMasyarakatOpt,
-          "hasCooperativePartnership": kopKaryawantOpt,
+          "hasCooperative": kopMasyarakatOpt == 'Ada' ? true : false,
+          "hasCooperativePartnership": kopKaryawantOpt == 'Ada' ? true : false,
           "partnershipActivity": kegiatanMitra,
-          "partnershipPercentage": presentase,
-          "hasEmployeeCooperative": mitraOpt,
+          "partnershipPercentage": Number(presentase),
+          "hasEmployeeCooperative": mitraOpt == 'Sudah' ? true : false,
           "employeeCooperativeDescription": kegiatanLancar
         },
       "economicInstitution": [],
@@ -698,11 +719,11 @@ const FormSosial = () => {
       let dataTemp = {}
       item.forEach((e, i, arr) => {
         dataTemp.seedType = arr[0].sectionData[0].value
-        dataTemp.distributedSeedWeight = arr[0].sectionData[1].value
-        dataTemp.peopleCount = arr[0].sectionData[2].value
-        dataTemp.freeSeedWeight = arr[1].sectionData[0].value
-        dataTemp.fullPaidWeight = arr[1].sectionData[1].value
-        dataTemp.partialPaidWeight = arr[1].sectionData[2].value
+        dataTemp.distributedSeedWeight = Number(arr[0].sectionData[1].value)
+        dataTemp.peopleCount = Number(arr[0].sectionData[2].value)
+        dataTemp.freeSeedWeight = Number(arr[1].sectionData[0].value)
+        dataTemp.fullPaidWeight = Number(arr[1].sectionData[1].value)
+        dataTemp.partialPaidWeight = Number(arr[1].sectionData[2].value)
         dataTemp.description = arr[1].sectionData[3].value
       });
       data.seedSupplySupport.push(dataTemp)
@@ -712,11 +733,11 @@ const FormSosial = () => {
       let dataTemp = {}
       item.forEach((e, i, arr) => {
         dataTemp.plantType = arr[0].sectionData[0].value
-        dataTemp.opt100percnetage = arr[1].sectionData[0].value
-        dataTemp.opt80_100percentage = arr[1].sectionData[1].value
-        dataTemp.opt60_80percentage = arr[1].sectionData[2].value
-        dataTemp.opt60percentage = arr[1].sectionData[3].value
-        dataTemp.total = arr[1].sectionData[4].value
+        dataTemp.opt100percnetage = Number(arr[1].sectionData[0].value)
+        dataTemp.opt80_100percentage = Number(arr[1].sectionData[1].value)
+        dataTemp.opt60_80percentage = Number(arr[1].sectionData[2].value)
+        dataTemp.opt60percentage = Number(arr[1].sectionData[3].value)
+        dataTemp.total = Number(arr[1].sectionData[4].value)
       });
       data.optAttack.push(dataTemp)
     });
@@ -725,11 +746,11 @@ const FormSosial = () => {
       let dataTemp = {}
       item.forEach((e, i, arr) => {
         dataTemp.plantType = arr[0].sectionData[0].value
-        dataTemp.density100percnetage = arr[1].sectionData[0].value
-        dataTemp.density80_100percentage = arr[1].sectionData[1].value
-        dataTemp.density60_80percentage = arr[1].sectionData[2].value
-        dataTemp.density60percentage = arr[1].sectionData[3].value
-        dataTemp.total = arr[1].sectionData[4].value
+        dataTemp.density100percnetage = Number(arr[1].sectionData[0].value)
+        dataTemp.density80_100percentage = Number(arr[1].sectionData[1].value)
+        dataTemp.density60_80percentage = Number(arr[1].sectionData[2].value)
+        dataTemp.density60percentage = Number(arr[1].sectionData[3].value)
+        dataTemp.total = Number(arr[1].sectionData[4].value)
       });
       data.plantDensity.push(dataTemp)
     });
@@ -738,11 +759,11 @@ const FormSosial = () => {
       let dataTemp = {}
       item.forEach((e, i, arr) => {
         dataTemp.plantType = arr[0].sectionData[0].value
-        dataTemp.homogenity100percnetage = arr[1].sectionData[0].value
-        dataTemp.homogenity80_100percentage = arr[1].sectionData[1].value
-        dataTemp.homogenity60_80percentage = arr[1].sectionData[2].value
-        dataTemp.homogenity60percentage = arr[1].sectionData[3].value
-        dataTemp.total = arr[1].sectionData[4].value
+        dataTemp.homogenity100percnetage = Number(arr[1].sectionData[0].value)
+        dataTemp.homogenity80_100percentage = Number(arr[1].sectionData[1].value)
+        dataTemp.homogenity60_80percentage = Number(arr[1].sectionData[2].value)
+        dataTemp.homogenity60percentage = Number(arr[1].sectionData[3].value)
+        dataTemp.total = Number(arr[1].sectionData[4].value)
       });
       data.plantHomogenity.push(dataTemp)
     });
@@ -752,7 +773,7 @@ const FormSosial = () => {
       item.forEach(() => {
         inv.conflictType = item[0].value
         inv.conflictSouce = item[1].value
-        inv.conflictCount = item[2].value
+        inv.conflictCount = Number(item[2].value)
         inv.solution = item[3].value
         inv.description = item[4].value
       });
@@ -774,7 +795,7 @@ const FormSosial = () => {
       item.forEach(() => {
         inv.activityType = item[0].value
         inv.participationType = item[1].value
-        inv.peopleCount = item[2].value
+        inv.peopleCount = Number(item[2].value)
         inv.location = item[3].value
         inv.description = item[4].value
       });
@@ -787,20 +808,18 @@ const FormSosial = () => {
         inv.plantType = item[0].value
         inv.districtId = item[1].value
         inv.cityId = item[2].value
-        inv.totalTargetArea = item[3].value
-        inv.currentTargetArea = item[4].value
-        inv.realArea = item[5].value
+        inv.totalTargetArea = Number(item[3].value)
+        inv.currentTargetArea = Number(item[4].value)
+        inv.realArea = Number(item[5].value)
       });
       data.socialGarden.push(inv)
     });
-
-    console.log(data)
 
     lembagaEko.forEach((item, i) => {
       let inv = {}
       item.forEach(() => {
         inv.institutionType = item[0].value
-        inv.count = item[1].value
+        inv.count = Number(item[1].value)
         inv.description = item[2].value
       });
       data.economicInstitution.push(inv)
@@ -810,8 +829,8 @@ const FormSosial = () => {
       let inv = {}
       item.forEach(() => {
         inv.trainingType = item[0].value
-        inv.peopleCount = item[1].value
-        inv.duration = item[2].value
+        inv.peopleCount = Number(item[1].value)
+        inv.duration = Number(item[2].value)
         inv.description = item[3].value
       });
       data.societyTraining.push(inv)
@@ -821,8 +840,8 @@ const FormSosial = () => {
       let inv = {}
       item.forEach(() => {
         inv.scholarshipType = item[0].value
-        inv.peopleCount = item[1].value
-        inv.duration = item[2].value
+        inv.peopleCount = Number(item[1].value)
+        inv.tuition = Number(item[2].value)
         inv.description = item[3].value
       });
       data.societyScholarship.push(inv)
@@ -847,6 +866,50 @@ const FormSosial = () => {
 
   const storeData = preventDefault(() => {
     localStorage.setItem("sosialNilai", JSON.stringify(dataSubmit));
+
+    let file = {
+      fileName: isoImg[0].name,
+      data: isoImgBase
+    }
+
+    let data = _.cloneDeep(dataSubmit);
+
+    data[0].gardenQuality.file = file
+
+    const res = axios.post(
+      `${appConfig.baseUrl}/evaluations/${localStorage.getItem('evaluationId')}/socials`,
+      data[0]
+    );
+
+    res.then(
+      function(dt) {
+
+        if (dt.data.status == 'success') {
+          router.push({
+            pathname: "/user/penilaian-perkebunan/ekonomi"
+          })
+        }
+
+      },
+      function(err) {
+
+        enqueueSnackbar('', {
+          anchorOrigin: {
+            vertical: 'top',
+            horizontal: 'right',
+          },
+          content: (key, message) => (
+            <CustomComponent
+              id={key}
+              message="Mohon pastikan form yang anda isi telah lengkap."
+              variant="error"
+              title="Gagal Submit!"
+            />
+          ),
+        });
+
+      }
+    )
   })
 
   function clearData() {
@@ -856,7 +919,7 @@ const FormSosial = () => {
   return (
     <>
       <Head>
-        
+
       </Head>
 
       <form>
@@ -1369,8 +1432,28 @@ const FormSosial = () => {
                     Format dokumen: .jpg .jpeg .png
                   </div>
                 </div>
-                <InputFileButton />
+                <InputFileButton
+                  handleImage={(img) => {
+                    setIsoImg(img);
+                    getBase64(img[0])
+                  }}
+                />
               </div>
+              {
+                isoImg ? (
+                  <div className="flex items-center mt-6 mb-3 pb-4 border-b border-[#EDEDED]">
+                    <img src="/images/auth/gallery.svg" className="w-[24px] mr-3" />
+                    <div>
+                      <p className="text-sm">{isoImg[0].path}</p>
+                      <p className="text-xs	text-[#27AE60]">Uploaded</p>
+                    </div>
+                    <div className="ml-auto flex">
+                      <div className="border border-[#CDD3D8] text-[11px] px-2 py-1 font-semibold">{((isoImg[0].size) / 1048576).toFixed(2)}MB</div>
+                      <img onClick={() => setIsoImg()} src="/images/auth/close-circle.svg" className="w-[16px] cursor-pointer ml-3" />
+                    </div>
+                  </div>
+                ) : <></>
+              }
             </div>
           ) : (
             <></>
@@ -1633,7 +1716,7 @@ const FormSosial = () => {
                       </label>
                       <label className={mng.base__formlabel}>
                         <span className={mng.base__inputtitle}>Berapa perkiraan presentase dari total belanja perusahaan yang dimitrakan pada koperasi masyarakat tersebut?</span>
-                        <input type="text" placeholder="jelaskan" value={presentase} className={mng.base__inputbase} onChange={(e) => setPresentase(e.target.value)}/>
+                        <input type="number" placeholder="jelaskan" value={presentase} className={mng.base__inputbase} onChange={(e) => setPresentase(e.target.value)}/>
                       </label>
                     </div>
                   ) : (

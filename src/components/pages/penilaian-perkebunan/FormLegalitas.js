@@ -1,7 +1,12 @@
 import Head from 'next/head'
 import React, { useState, useEffect } from 'react'
 import {useRouter} from 'next/router'
+import { useSession } from "next-auth/react";
 import _ from 'lodash';
+import axios from 'axios';
+import { appConfig } from 'src/config';
+import { useSnackbar } from 'notistack';
+import CustomComponent from 'src/components/snackbar/CustomComponent';
 import InputForm from '../admin/infografis/InputForm';
 import InputFileButton from 'src/components/customInput/InputFileButton';
 import mng from '../../../styles/Managemen.module.scss'
@@ -12,6 +17,9 @@ const preventDefault = f => e => {
 }
 
 const FormLegalitas = () => {
+  const { enqueueSnackbar } = useSnackbar();
+  const { data: session } = useSession();
+
   const [isError, setIsError] = useState(false);
 
   const router = useRouter()
@@ -21,6 +29,155 @@ const FormLegalitas = () => {
   const [data, setData] = useState(null)
   const [dataPass, setDataPass] = useState({})
   const [dataSubmit, setDataSubmit] = useState({})
+  const [cityId, setCityId] = useState('');
+  const [districtId, setDistrictId] = useState('');
+  const [villageId, setVillageId] = useState('');
+
+  const iklimOpt = [
+    { id:1, value: 'Tropis', label: 'Tropis' },
+    { id:2, value: 'Subtropis', label: 'Subtropis' },
+    { id:3, value: 'Sedang', label: 'Sedang' },
+    { id:4, value: 'Dingin', label: 'Dingin' }
+  ];
+
+  let [year, setYear] = useState([]);
+  let [hgu, setHgu] = useState([]);
+  let [kota, setKota] = useState([]);
+  let [iup, setIup] = useState([]);
+  let [kebun, setKebun] = useState([]);
+  useEffect(() => {
+    if (session) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${session.user.accessToken}`
+
+      let hguArr = []
+      let yearArr = []
+      let kotaArr = []
+      let iupArr = []
+      let kebunArr = []
+      const getHgu = axios.get(`${appConfig.baseUrl}/hgu-types`);
+      getHgu.then(dt => {
+        dt.data.data.acquiredHguTypes.forEach((item, i) => {
+          const val = {
+            id: item.id,
+            value: item.hgu_name,
+            label: item.hgu_name
+          }
+          hguArr.push(val)
+        });
+        setHgu(hguArr)
+      })
+
+      const getKota = axios.get(`${appConfig.baseUrl}/cities`);
+      getKota.then(dt => {
+        dt.data.data.acquiredCities.forEach((item, i) => {
+          const val = {
+            id: item.id,
+            value: item.city,
+            label: item.city
+          }
+          kotaArr.push(val)
+        });
+        setKota(kotaArr)
+      })
+
+      const getIup = axios.get(`${appConfig.baseUrl}/company-statuses`);
+      getIup.then(
+        function(dt) {
+          dt.data.data.acquiredCompanyStatuses.forEach((item, i) => {
+            const val = {
+              id: item.id,
+              value: item.company_status_name,
+              label: item.company_status_name
+            }
+            iupArr.push(val)
+          });
+          setIup(iupArr)
+        },
+        function(err) {
+          console.log(err)
+        }
+      )
+
+      const getYear = axios.get(`${appConfig.baseUrl}/evaluation-periods`);
+      getYear.then(
+        function(dt) {
+          dt.data.data.evaluationPeriod.forEach((item, i) => {
+            const val = {
+              id: item.id,
+              value: item.evaluation_period,
+              label: item.evaluation_period
+            }
+            yearArr.push(val)
+          });
+          setYear(yearArr)
+        },
+        function(err) {
+          console.log(err)
+        }
+      )
+
+      const getKeb = axios.get(`${appConfig.baseUrl}/gardens`);
+      getKeb.then(
+        function(dt) {
+          dt.data.data.acquiredGardens.forEach((item, i) => {
+            const val = {
+              id: item.id,
+              value: (item.garden_name + "/" + item.factory_name),
+              label: (item.garden_name + "/" + item.factory_name)
+            }
+            kebunArr.push(val)
+          });
+          setKebun(kebunArr)
+        },
+        function(err) {
+          console.log(err)
+        }
+      )
+    }
+  }, [session])
+
+  let [kecamatan, setKecamatan] = useState([]);
+  useEffect(() => {
+    setDistrictId('')
+    setVillageId('')
+
+    if (cityId != '') {
+      let kecamatanArr = []
+      const fetch = axios.get(`${appConfig.baseUrl}/districts/${cityId.id}`);
+      fetch.then(dt => {
+        dt.data.data.acquiredDistrict.forEach((item, i) => {
+          const val = {
+            id: item.id,
+            value: item.district,
+            label: item.district
+          }
+          kecamatanArr.push(val)
+        });
+        setKecamatan(kecamatanArr)
+      })
+    }
+  },[cityId])
+
+  let [desa, setDesa] = useState([]);
+  useEffect(() => {
+    setVillageId('')
+
+    if (districtId != '') {
+      let desaArr = []
+      const fetch = axios.get(`${appConfig.baseUrl}/villages/${districtId.id}`);
+      fetch.then(dt => {
+        dt.data.data.acquiredVillage.forEach((item, i) => {
+          const val = {
+            id: item.id,
+            value: item.village,
+            label: item.village
+          }
+          desaArr.push(val)
+        });
+        setDesa(desaArr)
+      })
+    }
+  },[districtId])
 
   ////////////////////////// INPUT FORM STATE ////////////////////////////////
 
@@ -44,7 +201,7 @@ const FormLegalitas = () => {
   ////////////////////////// Lokasi Kebun ////////////////////////////////
 
   const [lokasi, setLokasi] = useState([
-    [ {'title':'Kota/Kabupaten','placeholder':'Pilih Kota/Kab.','type':'text','value':'','isOpt':true}, {'title':'kecamatan','placeholder':'Pilih Kecamatan','type':'text','value':'','isOpt':true}, {'title':'Kelurahan/Desa','placeholder':'Pilih Kel/Desa','type':'text','value':'','isOpt':true} ]
+    [ {'title':'Kota/Kabupaten','placeholder':'Pilih Kota/Kab.','type':'text','value':'','isOpt':'kota'}, {'title':'kecamatan','placeholder':'Pilih Kecamatan','type':'text','value':'','isOpt':'kecamatan'}, {'title':'Kelurahan/Desa','placeholder':'Pilih Kel/Desa','type':'text','value':'','isOpt':'desa'} ]
   ])
 
   ////////////////////////// Lingkup Usaha (Pilih Salah Satu dan Lengkapi) ////////////////////////////////
@@ -60,7 +217,7 @@ const FormLegalitas = () => {
       {'title':'No. SK HGU','placeholder':'Nomor SK HGU','type':'text','value':'','isOpt':'normal'},
       {'title':'Tanggal SK HGU','placeholder':'DD/MM/YYYY','type':'text','value':'','isOpt':'cal'},
       {'title':'Jenis Tanaman (dapat lebih dari satu)','placeholder':'Masukkan jenis tanaman','type':'text','value':'','isOpt':'normal'},
-      {'title':'Luas Lahan (Ha)','placeholder':'Luas Lahan dalam Ha','type':'text','value':'','isOpt':'normal'},
+      {'title':'Luas Lahan (Ha)','placeholder':'Luas Lahan dalam Ha','type':'number','value':'','isOpt':'normal'},
       {'title':'Tanggal Berakhirnya HGU','placeholder':'DD/MM/YYYY','type':'text','value':'','isOpt':'cal'},
       {'title':'No. Sertifikat','placeholder':'Masukkan nomor sertifikat','type':'text','value':'','isOpt':'normal'},
       {'title':'Jenis HGU','placeholder':'Pilih Jenis HGU','type':'text','value':'','isOpt':'opt'},
@@ -73,7 +230,7 @@ const FormLegalitas = () => {
       {'title':'No. SK HGU','placeholder':'Nomor SK HGU','type':'text','value':'','isOpt':'normal'},
       {'title':'Tanggal SK HGU','placeholder':'DD/MM/YYYY','type':'text','value':'','isOpt':'cal'},
       {'title':'Jenis Tanaman (dapat lebih dari satu)','placeholder':'Masukkan jenis tanaman','type':'text','value':'','isOpt':'normal'},
-      {'title':'Luas Lahan (Ha)','placeholder':'Luas Lahan dalam Ha','type':'text','value':'','isOpt':'normal'},
+      {'title':'Luas Lahan (Ha)','placeholder':'Luas Lahan dalam Ha','type':'number','value':'','isOpt':'normal'},
       {'title':'Tanggal Berakhirnya HGU','placeholder':'DD/MM/YYYY','type':'text','value':'','isOpt':'cal'},
       {'title':'No. Sertifikat','placeholder':'Masukkan nomor sertifikat','type':'text','value':'','isOpt':'normal'},
       {'title':'Jenis HGU','placeholder':'Pilih Jenis HGU','type':'text','value':'','isOpt':'opt'},
@@ -126,11 +283,11 @@ const FormLegalitas = () => {
   ////////////////////////// Tanah dan Iklim ////////////////////////////////
 
   const [tanahIklim, setTanahIklim] = useState([
-    [ { 'sectionTitle': 'Tanah', 'sectionData': [ {'title':'Jenis Tanah','type':'text','placeholder':'Pilih Jenis Tanah','value':'','isOpt':'opt'}, {'title':'Ketinggian dari Muka air laut (m)','type':'text','placeholder':'Nilai Ketinggian','value':'','isOpt':'normal'}, ] }, { 'sectionTitle': 'Lereng Datar (0-8 %)', 'sectionData': [ {'title':'Luas (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':'normal'}, {'title':'Persentase (%)','type':'text','placeholder':'Persentase','value':'','isOpt':'normal'}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':'normal'}, ] }, { 'sectionTitle': 'Lereng Landai (8-15 %)', 'sectionData': [ {'title':'Luas (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':'normal'}, {'title':'Persentase (%)','type':'text','placeholder':'Persentase','value':'','isOpt':'normal'}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':'normal'}, ] }, { 'sectionTitle': 'Lereng Berombak (15-24 %)', 'sectionData': [ {'title':'Luas (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':'normal'}, {'title':'Persentase (%)','type':'text','placeholder':'Persentase','value':'','isOpt':'normal'}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':'normal'}, ] }, { 'sectionTitle': 'Lereng Berbukit (24-45 %)', 'sectionData': [ {'title':'Luas (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':'normal'}, {'title':'Persentase (%)','type':'text','placeholder':'Persentase','value':'','isOpt':'normal'}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':'normal'}, ] }, { 'sectionTitle': 'Lereng Bergunung (>45 %)', 'sectionData': [ {'title':'Luas (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':'normal'}, {'title':'Persentase (%)','type':'text','placeholder':'Persentase','value':'','isOpt':'normal'}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':'normal'}, ] }, { 'sectionTitle': '', 'sectionData': [ {'title':'Tekstur Tanah','type':'text','placeholder':'Tekstur Tanah','value':'','isOpt':'normal'}, {'title':'Drainase','type':'text','placeholder':'Kondisi Drainase','value':'','isOpt':'normal'}, {'title':'Kedalaman efektif solum (m)','type':'text','placeholder':'Nilai Kedalaman dalam meter','value':'','isOpt':'normal'}, {'title':'Sumber Informasi','type':'text','placeholder':'Sumber Informasi','value':'','isOpt':'normal'}, ] } ]
+    [ { 'sectionTitle': 'Tanah', 'sectionData': [ {'title':'Jenis Tanah','type':'text','placeholder':'Pilih Jenis Tanah','value':'','isOpt':'opt'}, {'title':'Ketinggian dari Muka air laut (m)','type':'number','placeholder':'Nilai Ketinggian','value':'','isOpt':'normal'}, ] }, { 'sectionTitle': 'Lereng Datar (0-8 %)', 'sectionData': [ {'title':'Luas (Ha)','type':'number','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':'normal'}, {'title':'Persentase (%)','type':'number','placeholder':'Persentase','value':'','isOpt':'normal'}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':'normal'}, ] }, { 'sectionTitle': 'Lereng Landai (8-15 %)', 'sectionData': [ {'title':'Luas (Ha)','type':'number','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':'normal'}, {'title':'Persentase (%)','type':'number','placeholder':'Persentase','value':'','isOpt':'normal'}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':'normal'}, ] }, { 'sectionTitle': 'Lereng Berombak (15-24 %)', 'sectionData': [ {'title':'Luas (Ha)','type':'text','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':'normal'}, {'title':'Persentase (%)','type':'number','placeholder':'Persentase','value':'','isOpt':'normal'}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':'normal'}, ] }, { 'sectionTitle': 'Lereng Berbukit (24-45 %)', 'sectionData': [ {'title':'Luas (Ha)','type':'number','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':'normal'}, {'title':'Persentase (%)','type':'number','placeholder':'Persentase','value':'','isOpt':'normal'}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':'normal'}, ] }, { 'sectionTitle': 'Lereng Bergunung (>45 %)', 'sectionData': [ {'title':'Luas (Ha)','type':'number','placeholder':'Luas Lahan dalam Ha','value':'','isOpt':'normal'}, {'title':'Persentase (%)','type':'number','placeholder':'Persentase','value':'','isOpt':'normal'}, {'title':'Keterangan','type':'text','placeholder':'Keterangan','value':'','isOpt':'normal'}, ] }, { 'sectionTitle': '', 'sectionData': [ {'title':'Tekstur Tanah','type':'text','placeholder':'Tekstur Tanah','value':'','isOpt':'normal'}, {'title':'Drainase','type':'text','placeholder':'Kondisi Drainase','value':'','isOpt':'normal'}, {'title':'Kedalaman efektif solum (m)','type':'number','placeholder':'Nilai Kedalaman dalam meter','value':'','isOpt':'normal'}, {'title':'Sumber Informasi','type':'text','placeholder':'Sumber Informasi','value':'','isOpt':'normal'}, ] } ]
   ])
 
   const [gambut, setGambut] = useState([
-    [ {'title':'Ketebalan gambut (m)','placeholder':'Nilai Ketebalan Gambut (m)','type':'text','value':'','isOpt':'normal'}, {'title':'Tingkat dekomposisi','placeholder':'Pilih Tingkat Dekomposisi','type':'text','value':'','isOpt':'opt'}, {'title':'Lapisan Tanah di Bawah Gambut','placeholder':'Lapisan tanah di bawah gambut','type':'textarea','value':'','isOpt':'normal'}, ]
+    [ {'title':'Ketebalan gambut (m)','placeholder':'Nilai Ketebalan Gambut (m)','type':'number','value':'','isOpt':'normal'}, {'title':'Tingkat dekomposisi','placeholder':'Pilih Tingkat Dekomposisi','type':'text','value':'','isOpt':'opt'}, {'title':'Lapisan Tanah di Bawah Gambut','placeholder':'Lapisan tanah di bawah gambut','type':'textarea','value':'','isOpt':'normal'}, ]
   ])
 
   ////////////////////////// Iklim ////////////////////////////////
@@ -145,22 +302,22 @@ const FormLegalitas = () => {
   ////////////////////////// Kelas Kesesuaian Lahan ////////////////////////////////
 
   const [sesuaiLahan, setSesuaiLahan] = useState([
-    [{ 'sectionTitle': 'Kelas Kesesuaian Lahan', 'sectionData': [ {'title':'Jenis Komoditas','type':'text','placeholder':'Tulis Komoditas Tanaman','value':''}, ] }, { 'sectionTitle': 'Kelas Lahan S1', 'sectionData': [ {'title':'Lokasi','type':'text','placeholder':'Masukkan lokasi','value':''}, {'title':'Luas (Ha)','type':'text','placeholder':'Luas dalam Ha','value':''}, {'title':'Ditetapkan Oleh','type':'text','placeholder':'Yang Menetapkan','value':''}, ] }, { 'sectionTitle': 'Kelas Lahan S2', 'sectionData': [ {'title':'Lokasi','type':'text','placeholder':'Masukkan lokasi','value':''}, {'title':'Luas (Ha)','type':'text','placeholder':'Luas dalam Ha','value':''}, {'title':'Ditetapkan Oleh','type':'text','placeholder':'Yang Menetapkan','value':''}, ] }, { 'sectionTitle': 'Kelas Lahan S3', 'sectionData': [ {'title':'Lokasi','type':'text','placeholder':'Masukkan lokasi','value':''}, {'title':'Luas (Ha)','type':'text','placeholder':'Luas dalam Ha','value':''}, {'title':'Ditetapkan Oleh','type':'text','placeholder':'Yang Menetapkan','value':''}, ] }]
+    [{ 'sectionTitle': 'Kelas Kesesuaian Lahan', 'sectionData': [ {'title':'Jenis Komoditas','type':'text','placeholder':'Tulis Komoditas Tanaman','value':''}, ] }, { 'sectionTitle': 'Kelas Lahan S1', 'sectionData': [ {'title':'Lokasi','type':'text','placeholder':'Masukkan lokasi','value':''}, {'title':'Luas (Ha)','type':'number','placeholder':'Luas dalam Ha','value':''}, {'title':'Ditetapkan Oleh','type':'text','placeholder':'Yang Menetapkan','value':''}, ] }, { 'sectionTitle': 'Kelas Lahan S2', 'sectionData': [ {'title':'Lokasi','type':'text','placeholder':'Masukkan lokasi','value':''}, {'title':'Luas (Ha)','type':'number','placeholder':'Luas dalam Ha','value':''}, {'title':'Ditetapkan Oleh','type':'text','placeholder':'Yang Menetapkan','value':''}, ] }, { 'sectionTitle': 'Kelas Lahan S3', 'sectionData': [ {'title':'Lokasi','type':'text','placeholder':'Masukkan lokasi','value':''}, {'title':'Luas (Ha)','type':'number','placeholder':'Luas dalam Ha','value':''}, {'title':'Ditetapkan Oleh','type':'text','placeholder':'Yang Menetapkan','value':''}, ] }]
   ])
 
   function handleBtnAddSesuaiLahan() {
-    setSesuaiLahan([...sesuaiLahan,[{ 'sectionTitle': 'Kelas Kesesuaian Lahan', 'sectionData': [ {'title':'Jenis Komoditas','type':'text','placeholder':'Tulis Komoditas Tanaman','value':''}, ] }, { 'sectionTitle': 'Kelas Lahan S1', 'sectionData': [ {'title':'Lokasi','type':'text','placeholder':'Masukkan lokasi','value':''}, {'title':'Luas (Ha)','type':'text','placeholder':'Luas dalam Ha','value':''}, {'title':'Ditetapkan Oleh','type':'text','placeholder':'Yang Menetapkan','value':''}, ] }, { 'sectionTitle': 'Kelas Lahan S2', 'sectionData': [ {'title':'Lokasi','type':'text','placeholder':'Masukkan lokasi','value':''}, {'title':'Luas (Ha)','type':'text','placeholder':'Luas dalam Ha','value':''}, {'title':'Ditetapkan Oleh','type':'text','placeholder':'Yang Menetapkan','value':''}, ] }, { 'sectionTitle': 'Kelas Lahan S3', 'sectionData': [ {'title':'Lokasi','type':'text','placeholder':'Masukkan lokasi','value':''}, {'title':'Luas (Ha)','type':'text','placeholder':'Luas dalam Ha','value':''}, {'title':'Ditetapkan Oleh','type':'text','placeholder':'Yang Menetapkan','value':''}, ] }]])
+    setSesuaiLahan([...sesuaiLahan,[{ 'sectionTitle': 'Kelas Kesesuaian Lahan', 'sectionData': [ {'title':'Jenis Komoditas','type':'text','placeholder':'Tulis Komoditas Tanaman','value':''}, ] }, { 'sectionTitle': 'Kelas Lahan S1', 'sectionData': [ {'title':'Lokasi','type':'text','placeholder':'Masukkan lokasi','value':''}, {'title':'Luas (Ha)','type':'number','placeholder':'Luas dalam Ha','value':''}, {'title':'Ditetapkan Oleh','type':'text','placeholder':'Yang Menetapkan','value':''}, ] }, { 'sectionTitle': 'Kelas Lahan S2', 'sectionData': [ {'title':'Lokasi','type':'text','placeholder':'Masukkan lokasi','value':''}, {'title':'Luas (Ha)','type':'number','placeholder':'Luas dalam Ha','value':''}, {'title':'Ditetapkan Oleh','type':'text','placeholder':'Yang Menetapkan','value':''}, ] }, { 'sectionTitle': 'Kelas Lahan S3', 'sectionData': [ {'title':'Lokasi','type':'text','placeholder':'Masukkan lokasi','value':''}, {'title':'Luas (Ha)','type':'number','placeholder':'Luas dalam Ha','value':''}, {'title':'Ditetapkan Oleh','type':'text','placeholder':'Yang Menetapkan','value':''}, ] }]])
   }
 
   ////////////////////////// Data Tahun ////////////////////////////////
 
   const [dataTahun, setDataTahun] = useState([
-    [{ 'sectionTitle': '', 'sectionData': [ {'title':'Tahun','type':'text','placeholder':'YYYY','value':''}, ] }, { 'sectionTitle': 'Januari', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'text','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'text','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': 'Februari', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'text','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'text','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': 'Maret', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'text','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'text','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': 'April', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'text','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'text','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': 'Mei', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'text','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'text','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': 'Juni', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'text','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'text','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': 'Juli', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'text','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'text','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': 'Agustus', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'text','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'text','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': 'September', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'text','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'text','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': 'Oktober', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'text','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'text','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': 'November', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'text','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'text','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': 'Desember', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'text','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'text','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': '', 'sectionData': [ {'title':'Rata-rata/Bulan CH≥60 mm','type':'text','placeholder':'automated','value':''}, {'title':'rata-rata HH dengan CH≥60 mm','type':'text','placeholder':'automated','value':''}, {'title':'Rata-rata/Bulan CH<60 mm','type':'text','placeholder':'automated','value':''}, {'title':'rata-rata HH dengan CH<60 mm','type':'text','placeholder':'automated','value':''}, ] }]
+    [{ 'sectionTitle': '', 'sectionData': [ {'title':'Tahun','type':'number','placeholder':'YYYY','value':''}, ] }, { 'sectionTitle': 'Januari', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'number','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'number','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': 'Februari', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'number','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'number','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': 'Maret', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'number','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'number','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': 'April', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'number','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'number','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': 'Mei', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'number','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'number','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': 'Juni', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'number','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'number','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': 'Juli', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'number','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'number','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': 'Agustus', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'number','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'number','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': 'September', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'number','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'number','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': 'Oktober', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'number','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'number','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': 'November', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'number','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'number','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': 'Desember', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'number','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'number','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': '', 'sectionData': [ {'title':'Rata-rata/Bulan CH≥60 mm','type':'number','placeholder':'automated','value':''}, {'title':'rata-rata HH dengan CH≥60 mm','type':'number','placeholder':'automated','value':''}, {'title':'Rata-rata/Bulan CH<60 mm','type':'number','placeholder':'automated','value':''}, {'title':'rata-rata HH dengan CH<60 mm','type':'number','placeholder':'automated','value':''}, ] }]
   ])
 
   function handleBtnAddDataTahun() {
     setDataTahun([...dataTahun,[
-      { 'sectionTitle': '', 'sectionData': [ {'title':'Tahun','type':'text','placeholder':'YYYY','value':''}, ] }, { 'sectionTitle': 'Januari', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'text','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'text','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': 'Februari', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'text','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'text','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': 'Maret', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'text','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'text','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': 'April', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'text','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'text','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': 'Mei', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'text','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'text','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': 'Juni', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'text','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'text','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': 'Juli', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'text','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'text','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': 'Agustus', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'text','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'text','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': 'September', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'text','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'text','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': 'Oktober', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'text','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'text','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': 'November', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'text','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'text','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': 'Desember', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'text','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'text','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': '', 'sectionData': [ {'title':'Rata-rata/Bulan CH≥60 mm','type':'text','placeholder':'automated','value':''}, {'title':'rata-rata HH dengan CH≥60 mm','type':'text','placeholder':'automated','value':''}, {'title':'Rata-rata/Bulan CH<60 mm','type':'text','placeholder':'automated','value':''}, {'title':'rata-rata HH dengan CH<60 mm','type':'text','placeholder':'automated','value':''}, ] }
+      { 'sectionTitle': '', 'sectionData': [ {'title':'Tahun','type':'number','placeholder':'YYYY','value':''}, ] }, { 'sectionTitle': 'Januari', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'number','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'number','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': 'Februari', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'number','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'number','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': 'Maret', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'number','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'number','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': 'April', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'number','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'number','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': 'Mei', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'number','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'number','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': 'Juni', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'number','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'number','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': 'Juli', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'number','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'number','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': 'Agustus', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'number','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'number','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': 'September', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'number','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'number','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': 'Oktober', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'number','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'number','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': 'November', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'number','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'number','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': 'Desember', 'sectionData': [ {'title':'Curah Hujan (mm)','type':'number','placeholder':'Nilai curah hujan','value':''}, {'title':'Jumlah Hari Hujan','type':'number','placeholder':'Jumlah','value':''}, ] }, { 'sectionTitle': '', 'sectionData': [ {'title':'Rata-rata/Bulan CH≥60 mm','type':'number','placeholder':'automated','value':''}, {'title':'rata-rata HH dengan CH≥60 mm','type':'number','placeholder':'automated','value':''}, {'title':'Rata-rata/Bulan CH<60 mm','type':'number','placeholder':'automated','value':''}, {'title':'rata-rata HH dengan CH<60 mm','type':'number','placeholder':'automated','value':''}, ] }
     ]])
   }
 
@@ -171,13 +328,12 @@ const FormLegalitas = () => {
   }
 
   function formRegularChange(e, state, setState, index, index2) {
-    const { name, value } = e.target;
     const list = [...state];
     list.forEach((item, i) => {
       if (i == index) {
         item.forEach((item2, ii) => {
           if (ii == index2) {
-            item2.value = value
+            item2.value = e
           }
         });
       }
@@ -186,7 +342,6 @@ const FormLegalitas = () => {
   }
 
   function formSectionChange(e, state, setState, index, index2, index3) {
-    const { name, value } = e.target;
     const list = [...state];
     list.forEach((item, i) => {
       if (i == index) {
@@ -194,7 +349,7 @@ const FormLegalitas = () => {
           if (ii == index2) {
             item2.sectionData.forEach((item3, iii) => {
               if (iii == index3) {
-                item3.value = value
+                item3.value = e
               }
             });
           }
@@ -276,7 +431,7 @@ const FormLegalitas = () => {
           dtFrm[0].value = retrievedObject.skPirTrans.no
           dtFrm[1].value = retrievedObject.skPirTrans.date
           dtFrm[2].value = retrievedObject.skPirTrans.licensor
-          dtFrm[3].value = retrievedObject.skPirTrans.file
+          // dtFrm[3].value = retrievedObject.skPirTrans.file
           replicateData.skRencana.push(dtFrm)
         })
 
@@ -285,7 +440,7 @@ const FormLegalitas = () => {
           dtFrm[0].value = retrievedObject.skPirBun.no
           dtFrm[1].value = retrievedObject.skPirBun.date
           dtFrm[2].value = retrievedObject.skPirBun.licensor
-          dtFrm[3].value = retrievedObject.skPirBun.file
+          // dtFrm[3].value = retrievedObject.skPirBun.file
           replicateData.skTugas.push(dtFrm)
         })
 
@@ -294,7 +449,7 @@ const FormLegalitas = () => {
           dtFrm[0].value = retrievedObject.iup.no
           dtFrm[1].value = retrievedObject.iup.date
           dtFrm[2].value = retrievedObject.iup.licensor
-          dtFrm[3].value = retrievedObject.iup.file
+          // dtFrm[3].value = retrievedObject.iup.file
           replicateData.skUsahaBudi.push(dtFrm)
         })
 
@@ -303,7 +458,7 @@ const FormLegalitas = () => {
           dtFrm[0].value = retrievedObject.skBpkm.no
           dtFrm[1].value = retrievedObject.skBpkm.date
           dtFrm[2].value = retrievedObject.skBpkm.licensor
-          dtFrm[3].value = retrievedObject.skBpkm.file
+          // dtFrm[3].value = retrievedObject.skBpkm.file
           replicateData.skUsahaIndustri.push(dtFrm)
         })
 
@@ -312,7 +467,7 @@ const FormLegalitas = () => {
           dtFrm[0].value = retrievedObject.spup.no
           dtFrm[1].value = retrievedObject.spup.date
           dtFrm[2].value = retrievedObject.spup.licensor
-          dtFrm[3].value = retrievedObject.spup.file
+          // dtFrm[3].value = retrievedObject.spup.file
           replicateData.skUsahaTani.push(dtFrm)
         })
 
@@ -321,7 +476,7 @@ const FormLegalitas = () => {
           dtFrm[0].value = retrievedObject.skBudidayaPerkebunan.no
           dtFrm[1].value = retrievedObject.skBudidayaPerkebunan.date
           dtFrm[2].value = retrievedObject.skBudidayaPerkebunan.licensor
-          dtFrm[3].value = retrievedObject.skBudidayaPerkebunan.file
+          // dtFrm[3].value = retrievedObject.skBudidayaPerkebunan.file
           replicateData.skUsahaDaftar.push(dtFrm)
         })
 
@@ -330,7 +485,7 @@ const FormLegalitas = () => {
           dtFrm[0].value = retrievedObject.skIndustriPerkebunan.no
           dtFrm[1].value = retrievedObject.skIndustriPerkebunan.date
           dtFrm[2].value = retrievedObject.skIndustriPerkebunan.licensor
-          dtFrm[3].value = retrievedObject.skIndustriPerkebunan.file
+          // dtFrm[3].value = retrievedObject.skIndustriPerkebunan.file
           replicateData.skUsahaKebun.push(dtFrm)
         })
 
@@ -345,7 +500,9 @@ const FormLegalitas = () => {
           const formData = _.cloneDeep(hkUsaha)
           formData.forEach((form,ii) => {
             form.forEach((ee, iii) => {
-              ee.value = e[Object.keys(e)[iii]]
+              if (ee.title != 'Lampiran Dokumen Lengkap HGU') {
+                ee.value = e[Object.keys(e)[iii]]
+              }
             })
             replicateData.hkUsaha.push(form)
           })
@@ -355,7 +512,9 @@ const FormLegalitas = () => {
           const formData = _.cloneDeep(hguProses)
           formData.forEach((form,ii) => {
             form.forEach((ee, iii) => {
-              ee.value = e[Object.keys(e)[iii]]
+              if (ee.title != 'Lampiran Berkas HGU Dalam Proses') {
+                ee.value = e[Object.keys(e)[iii]]
+              }
             })
             replicateData.hguProses.push(form)
           })
@@ -438,7 +597,7 @@ const FormLegalitas = () => {
 
         setSkUsahaKebun(replicateData.skUsahaKebun)
 
-        setTanahIklim([ [{ 'sectionTitle': 'Tanah', 'sectionData': [{ 'title': 'Jenis Tanah', 'type': 'text', 'placeholder': 'Pilih Jenis Tanah', 'value': retrievedObject.land.landType, 'isOpt': 'opt' }, { 'title': 'Ketinggian dari Muka air laut (m)', 'type': 'text', 'placeholder': 'Nilai Ketinggian', 'value': retrievedObject.land.msal, 'isOpt': 'normal' }, ] }, { 'sectionTitle': 'Lereng Datar (0-8 %)', 'sectionData': [{ 'title': 'Luas (Ha)', 'type': 'text', 'placeholder': 'Luas Lahan dalam Ha', 'value': retrievedObject.land.flatArea, 'isOpt': 'normal' }, { 'title': 'Persentase (%)', 'type': 'text', 'placeholder': 'Persentase', 'value': retrievedObject.land.flatPercentage, 'isOpt': 'normal' }, { 'title': 'Keterangan', 'type': 'text', 'placeholder': 'Keterangan', 'value': retrievedObject.land.flatDescription, 'isOpt': 'normal' }, ] }, { 'sectionTitle': 'Lereng Landai (8-15 %)', 'sectionData': [{ 'title': 'Luas (Ha)', 'type': 'text', 'placeholder': 'Luas Lahan dalam Ha', 'value': retrievedObject.land.slopeArea, 'isOpt': 'normal' }, { 'title': 'Persentase (%)', 'type': 'text', 'placeholder': 'Persentase', 'value': retrievedObject.land.slopePercentage, 'isOpt': 'normal' }, { 'title': 'Keterangan', 'type': 'text', 'placeholder': 'Keterangan', 'value': retrievedObject.land.slopeDescription, 'isOpt': 'normal' }, ] }, { 'sectionTitle': 'Lereng Berombak (15-24 %)', 'sectionData': [{ 'title': 'Luas (Ha)', 'type': 'text', 'placeholder': 'Luas Lahan dalam Ha', 'value': retrievedObject.land.midArea, 'isOpt': 'normal' }, { 'title': 'Persentase (%)', 'type': 'text', 'placeholder': 'Persentase', 'value': retrievedObject.land.midPercentage, 'isOpt': 'normal' }, { 'title': 'Keterangan', 'type': 'text', 'placeholder': 'Keterangan', 'value': retrievedObject.land.midDescription, 'isOpt': 'normal' }, ] }, { 'sectionTitle': 'Lereng Berbukit (24-45 %)', 'sectionData': [{ 'title': 'Luas (Ha)', 'type': 'text', 'placeholder': 'Luas Lahan dalam Ha', 'value': retrievedObject.land.steeptArea, 'isOpt': 'normal' }, { 'title': 'Persentase (%)', 'type': 'text', 'placeholder': 'Persentase', 'value': retrievedObject.land.steepPercentage, 'isOpt': 'normal' }, { 'title': 'Keterangan', 'type': 'text', 'placeholder': 'Keterangan', 'value': retrievedObject.land.steepDescription, 'isOpt': 'normal' }, ] }, { 'sectionTitle': 'Lereng Bergunung (>45 %)', 'sectionData': [{ 'title': 'Luas (Ha)', 'type': 'text', 'placeholder': 'Luas Lahan dalam Ha', 'value': retrievedObject.land.verySteepArea, 'isOpt': 'normal' }, { 'title': 'Persentase (%)', 'type': 'text', 'placeholder': 'Persentase', 'value': retrievedObject.land.verySteepPercentage, 'isOpt': 'normal' }, { 'title': 'Keterangan', 'type': 'text', 'placeholder': 'Keterangan', 'value': retrievedObject.land.verySteepDescription, 'isOpt': 'normal' }, ] }, { 'sectionTitle': '', 'sectionData': [{ 'title': 'Tekstur Tanah', 'type': 'text', 'placeholder': 'Tekstur Tanah', 'value': retrievedObject.land.texture, 'isOpt': 'normal' }, { 'title': 'Drainase', 'type': 'text', 'placeholder': 'Kondisi Drainase', 'value': retrievedObject.land.drainage, 'isOpt': 'normal' }, { 'title': 'Kedalaman efektif solum (m)', 'type': 'text', 'placeholder': 'Nilai Kedalaman dalam meter', 'value': retrievedObject.land.solumDepth, 'isOpt': 'normal' }, { 'title': 'Sumber Informasi', 'type': 'text', 'placeholder': 'Sumber Informasi', 'value': retrievedObject.land.source, 'isOpt': 'normal' }, ] }] ])
+        setTanahIklim([ [{ 'sectionTitle': 'Tanah', 'sectionData': [{ 'title': 'Jenis Tanah', 'type': 'text', 'placeholder': 'Pilih Jenis Tanah', 'value': retrievedObject.land.landType, 'isOpt': 'opt' }, { 'title': 'Ketinggian dari Muka air laut (m)', 'type': 'number', 'placeholder': 'Nilai Ketinggian', 'value': retrievedObject.land.msal, 'isOpt': 'normal' }, ] }, { 'sectionTitle': 'Lereng Datar (0-8 %)', 'sectionData': [{ 'title': 'Luas (Ha)', 'type': 'number', 'placeholder': 'Luas Lahan dalam Ha', 'value': retrievedObject.land.flatArea, 'isOpt': 'normal' }, { 'title': 'Persentase (%)', 'type': 'number', 'placeholder': 'Persentase', 'value': retrievedObject.land.flatPercentage, 'isOpt': 'normal' }, { 'title': 'Keterangan', 'type': 'text', 'placeholder': 'Keterangan', 'value': retrievedObject.land.flatDescription, 'isOpt': 'normal' }, ] }, { 'sectionTitle': 'Lereng Landai (8-15 %)', 'sectionData': [{ 'title': 'Luas (Ha)', 'type': 'number', 'placeholder': 'Luas Lahan dalam Ha', 'value': retrievedObject.land.slopeArea, 'isOpt': 'normal' }, { 'title': 'Persentase (%)', 'type': 'number', 'placeholder': 'Persentase', 'value': retrievedObject.land.slopePercentage, 'isOpt': 'normal' }, { 'title': 'Keterangan', 'type': 'text', 'placeholder': 'Keterangan', 'value': retrievedObject.land.slopeDescription, 'isOpt': 'normal' }, ] }, { 'sectionTitle': 'Lereng Berombak (15-24 %)', 'sectionData': [{ 'title': 'Luas (Ha)', 'type': 'number', 'placeholder': 'Luas Lahan dalam Ha', 'value': retrievedObject.land.midArea, 'isOpt': 'normal' }, { 'title': 'Persentase (%)', 'type': 'number', 'placeholder': 'Persentase', 'value': retrievedObject.land.midPercentage, 'isOpt': 'normal' }, { 'title': 'Keterangan', 'type': 'text', 'placeholder': 'Keterangan', 'value': retrievedObject.land.midDescription, 'isOpt': 'normal' }, ] }, { 'sectionTitle': 'Lereng Berbukit (24-45 %)', 'sectionData': [{ 'title': 'Luas (Ha)', 'type': 'number', 'placeholder': 'Luas Lahan dalam Ha', 'value': retrievedObject.land.steeptArea, 'isOpt': 'normal' }, { 'title': 'Persentase (%)', 'type': 'number', 'placeholder': 'Persentase', 'value': retrievedObject.land.steepPercentage, 'isOpt': 'normal' }, { 'title': 'Keterangan', 'type': 'text', 'placeholder': 'Keterangan', 'value': retrievedObject.land.steepDescription, 'isOpt': 'normal' }, ] }, { 'sectionTitle': 'Lereng Bergunung (>45 %)', 'sectionData': [{ 'title': 'Luas (Ha)', 'type': 'number', 'placeholder': 'Luas Lahan dalam Ha', 'value': retrievedObject.land.verySteepArea, 'isOpt': 'normal' }, { 'title': 'Persentase (%)', 'type': 'number', 'placeholder': 'Persentase', 'value': retrievedObject.land.verySteepPercentage, 'isOpt': 'normal' }, { 'title': 'Keterangan', 'type': 'text', 'placeholder': 'Keterangan', 'value': retrievedObject.land.verySteepDescription, 'isOpt': 'normal' }, ] }, { 'sectionTitle': '', 'sectionData': [{ 'title': 'Tekstur Tanah', 'type': 'text', 'placeholder': 'Tekstur Tanah', 'value': retrievedObject.land.texture, 'isOpt': 'normal' }, { 'title': 'Drainase', 'type': 'text', 'placeholder': 'Kondisi Drainase', 'value': retrievedObject.land.drainage, 'isOpt': 'normal' }, { 'title': 'Kedalaman efektif solum (m)', 'type': 'number', 'placeholder': 'Nilai Kedalaman dalam meter', 'value': retrievedObject.land.solumDepth, 'isOpt': 'normal' }, { 'title': 'Sumber Informasi', 'type': 'text', 'placeholder': 'Sumber Informasi', 'value': retrievedObject.land.source, 'isOpt': 'normal' }, ] }] ])
         setGambut(replicateData.gambut)
 
         setIklim(replicateData.iklim)
@@ -491,11 +650,11 @@ const FormLegalitas = () => {
         inv.skHguNo = item[0].value
         inv.skHguDate = item[1].value
         inv.plantType = item[2].value
-        inv.area = item[3].value
+        inv.area = Number(item[3].value)
         inv.expDate = item[4].value
-        inv.hguTypeId = item[5].value
-        inv.certifHguNo = item[6].value
-        inv.file = {}
+        inv.certifHguNo = item[5].value
+        inv.hguTypeId = item[6].value
+        inv.file = item[7].value
       });
       data.legalities.push(inv)
     });
@@ -505,7 +664,7 @@ const FormLegalitas = () => {
       item.forEach(() => {
         inv.skHguNo = item[0].value
         inv.description = item[1].value
-        inv.file = {}
+        inv.file = item[2].value
       });
       data.pendingLegalities.push(inv)
     });
@@ -514,49 +673,49 @@ const FormLegalitas = () => {
       data.skPirTrans.no = item[0].value
       data.skPirTrans.date = item[1].value
       data.skPirTrans.licensor = item[2].value
-      data.skPirTrans.file = {}
+      data.skPirTrans.file = item[3].value
     });
 
     skTugas.forEach((item, i) => {
       data.skPirBun.no = item[0].value
       data.skPirBun.date = item[1].value
       data.skPirBun.licensor = item[2].value
-      data.skPirBun.file = {}
+      data.skPirBun.file = item[3].value
     });
 
     skUsahaBudi.forEach((item, i) => {
       data.iup.no = item[0].value
       data.iup.date = item[1].value
       data.iup.licensor = item[2].value
-      data.iup.file = {}
+      data.iup.file = item[3].value
     });
 
     skUsahaIndustri.forEach((item, i) => {
       data.skBpkm.no = item[0].value
       data.skBpkm.date = item[1].value
       data.skBpkm.licensor = item[2].value
-      data.skBpkm.file = {}
+      data.skBpkm.file = item[3].value
     });
 
     skUsahaTani.forEach((item, i) => {
       data.spup.no = item[0].value
       data.spup.date = item[1].value
       data.spup.licensor = item[2].value
-      data.spup.file = {}
+      data.spup.file = item[3].value
     });
 
     skUsahaDaftar.forEach((item, i) => {
       data.skBudidayaPerkebunan.no = item[0].value
       data.skBudidayaPerkebunan.date = item[1].value
       data.skBudidayaPerkebunan.licensor = item[2].value
-      data.skBudidayaPerkebunan.file = {}
+      data.skBudidayaPerkebunan.file = item[3].value
     });
 
     skUsahaKebun.forEach((item, i) => {
       data.skIndustriPerkebunan.no = item[0].value
       data.skIndustriPerkebunan.date = item[1].value
       data.skIndustriPerkebunan.licensor = item[2].value
-      data.skIndustriPerkebunan.file = {}
+      data.skIndustriPerkebunan.file = item[3].value
     });
 
     sesuaiLahan.forEach((item, i) => {
@@ -581,48 +740,48 @@ const FormLegalitas = () => {
       item.forEach((e, i, arr) => {
         dataTemp.climateType = iklim[0][0].value
         dataTemp.rainfallSource = iklim[0][1].value
-        dataTemp.year = arr[0].sectionData[0].value
+        dataTemp.year = Number(arr[0].sectionData[0].value)
 
-        dataTemp.januaryRainfall = arr[1].sectionData[0].value
-        dataTemp.januaryRainfallDays = arr[1].sectionData[1].value
+        dataTemp.januaryRainfall = Number(arr[1].sectionData[0].value)
+        dataTemp.januaryRainfallDays = Number(arr[1].sectionData[1].value)
 
-        dataTemp.februaryRainfall = arr[2].sectionData[0].value
-        dataTemp.februaryRainfallDays = arr[2].sectionData[1].value
+        dataTemp.februaryRainfall = Number(arr[2].sectionData[0].value)
+        dataTemp.februaryRainfallDays = Number(arr[2].sectionData[1].value)
 
-        dataTemp.marchRainfall = arr[3].sectionData[0].value
-        dataTemp.marchRainfallDays = arr[3].sectionData[1].value
+        dataTemp.marchRainfall = Number(arr[3].sectionData[0].value)
+        dataTemp.marchRainfallDays = Number(arr[3].sectionData[1].value)
 
-        dataTemp.aprilRainfall = arr[4].sectionData[0].value
-        dataTemp.aprilRainfallDays = arr[4].sectionData[1].value
+        dataTemp.aprilRainfall = Number(arr[4].sectionData[0].value)
+        dataTemp.aprilRainfallDays = Number(arr[4].sectionData[1].value)
 
-        dataTemp.mayRainfall = arr[5].sectionData[0].value
-        dataTemp.mayRainfallDays = arr[5].sectionData[1].value
+        dataTemp.mayRainfall = Number(arr[5].sectionData[0].value)
+        dataTemp.mayRainfallDays = Number(arr[5].sectionData[1].value)
 
-        dataTemp.juneRainfall = arr[6].sectionData[0].value
-        dataTemp.juneRainfallDays = arr[6].sectionData[1].value
+        dataTemp.juneRainfall = Number(arr[6].sectionData[0].value)
+        dataTemp.juneRainfallDays = Number(arr[6].sectionData[1].value)
 
-        dataTemp.julyRainfall = arr[7].sectionData[0].value
-        dataTemp.julyRainfallDays = arr[7].sectionData[1].value
+        dataTemp.julyRainfall = Number(arr[7].sectionData[0].value)
+        dataTemp.julyRainfallDays = Number(arr[7].sectionData[1].value)
 
-        dataTemp.augustRainfall = arr[8].sectionData[0].value
-        dataTemp.augustRainfallDays = arr[8].sectionData[1].value
+        dataTemp.augustRainfall = Number(arr[8].sectionData[0].value)
+        dataTemp.augustRainfallDays = Number(arr[8].sectionData[1].value)
 
-        dataTemp.septemberRainfall = arr[9].sectionData[0].value
-        dataTemp.septemberRainfallDays = arr[9].sectionData[1].value
+        dataTemp.septemberRainfall = Number(arr[9].sectionData[0].value)
+        dataTemp.septemberRainfallDays = Number(arr[9].sectionData[1].value)
 
-        dataTemp.octoberRainfall = arr[10].sectionData[0].value
-        dataTemp.octoberRainfallDays = arr[10].sectionData[1].value
+        dataTemp.octoberRainfall = Number(arr[10].sectionData[0].value)
+        dataTemp.octoberRainfallDays = Number(arr[10].sectionData[1].value)
 
-        dataTemp.novemberRainfall = arr[11].sectionData[0].value
-        dataTemp.novemberRainfallDays = arr[11].sectionData[1].value
+        dataTemp.novemberRainfall = Number(arr[11].sectionData[0].value)
+        dataTemp.novemberRainfallDays = Number(arr[11].sectionData[1].value)
 
-        dataTemp.decemberRainfall = arr[12].sectionData[0].value
-        dataTemp.decemberRainfallDays = arr[12].sectionData[1].value
+        dataTemp.decemberRainfall = Number(arr[12].sectionData[0].value)
+        dataTemp.decemberRainfallDays = Number(arr[12].sectionData[1].value)
 
-        dataTemp.avgRainfallHigh = arr[13].sectionData[0].value
-        dataTemp.avgRainfallLow = arr[13].sectionData[1].value
-        dataTemp.avgDayHigh = arr[13].sectionData[2].value
-        dataTemp.avgDayLow = arr[13].sectionData[3].value
+        dataTemp.avgRainfallHigh = Number(arr[13].sectionData[0].value)
+        dataTemp.avgRainfallLow = Number(arr[13].sectionData[1].value)
+        dataTemp.avgDayHigh = Number(arr[13].sectionData[2].value)
+        dataTemp.avgDayLow = Number(arr[13].sectionData[3].value)
       });
       data.climates.push(dataTemp)
     });
@@ -630,31 +789,31 @@ const FormLegalitas = () => {
     tanahIklim.forEach((item, i) => {
       item.forEach((e, i, arr) => {
         data.land.landType = arr[0].sectionData[0].value
-        data.land.msal = arr[0].sectionData[1].value
-        data.land.flatArea = arr[1].sectionData[0].value
-        data.land.flatPercentage = arr[1].sectionData[1].value
+        data.land.msal = Number(arr[0].sectionData[1].value)
+        data.land.flatArea = Number(arr[1].sectionData[0].value)
+        data.land.flatPercentage = Number(arr[1].sectionData[1].value)
         data.land.flatDescription = arr[1].sectionData[2].value
-        data.land.slopeArea = arr[2].sectionData[0].value
-        data.land.slopePercentage = arr[2].sectionData[1].value
+        data.land.slopeArea = Number(arr[2].sectionData[0].value)
+        data.land.slopePercentage = Number(arr[2].sectionData[1].value)
         data.land.slopeDescription = arr[2].sectionData[2].value
-        data.land.midArea = arr[3].sectionData[0].value
-        data.land.midPercentage = arr[3].sectionData[1].value
+        data.land.midArea = Number(arr[3].sectionData[0].value)
+        data.land.midPercentage = Number(arr[3].sectionData[1].value)
         data.land.midDescription = arr[3].sectionData[2].value
-        data.land.steeptArea = arr[4].sectionData[0].value
-        data.land.steepPercentage = arr[4].sectionData[1].value
+        data.land.steeptArea = Number(arr[4].sectionData[0].value)
+        data.land.steepPercentage = Number(arr[4].sectionData[1].value)
         data.land.steepDescription = arr[4].sectionData[2].value
-        data.land.verySteepArea = arr[5].sectionData[0].value
-        data.land.verySteepPercentage = arr[5].sectionData[1].value
+        data.land.verySteepArea = Number(arr[5].sectionData[0].value)
+        data.land.verySteepPercentage = Number(arr[5].sectionData[1].value)
         data.land.verySteepDescription = arr[5].sectionData[2].value
         data.land.texture = arr[6].sectionData[0].value
         data.land.drainage = arr[6].sectionData[1].value
-        data.land.solumDepth = arr[6].sectionData[2].value
+        data.land.solumDepth = Number(arr[6].sectionData[2].value)
         data.land.source = arr[6].sectionData[3].value
       })
     });
 
     gambut.forEach((item, i) => {
-      data.land.peatDepth = item[0].value
+      data.land.peatDepth = Number(item[0].value)
       data.land.decompositionLevel = item[1].value
       data.land.landUnderPeat = item[2].value
     })
@@ -672,8 +831,135 @@ const FormLegalitas = () => {
     }
   },[dataPass,dataSubmit])
 
-  const storeData = preventDefault(() => {
+  function getBase64(file) {
+    return new Promise(function(resolve) {
+      if (file) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          var base64 = e.target.result.toString().replace(/^data:(.*,)?/, '');
+          resolve(base64)
+        };
+        reader.readAsDataURL(file);
+      }
+    })
+  }
+
+  const storeData = preventDefault(async () => {
     localStorage.setItem("legalitasNilai", JSON.stringify(dataSubmit));
+
+    let data = _.cloneDeep([dataSubmit]);
+
+    data[0].legalities.forEach(async (item, i) => {
+      if (item.file) {
+        let id = item.hguTypeId.id
+        let file = {
+          fileName: item.file[0].name,
+          data: await getBase64(item.file[0])
+        }
+        item.hguTypeId = id
+        item.file = file
+      }
+    });
+    data[0].pendingLegalities.forEach(async (item, i) => {
+      if (item.file) {
+        let file = {
+          fileName: item.file[0].name,
+          data: await getBase64(item.file[0])
+        }
+        item.file = file
+      }
+    });
+    if (data[0].skPirTrans.file) {
+      data[0].skPirTrans.file = {
+        fileName: data[0].skPirTrans.file[0].name,
+        data: await getBase64(data[0].skPirTrans.file[0])
+      }
+    }
+    if (data[0].skPirBun.file) {
+      data[0].skPirBun.file = {
+        fileName: data[0].skPirBun.file[0].name,
+        data: await getBase64(data[0].skPirBun.file[0])
+      }
+    }
+    if (data[0].iup.file) {
+      data[0].iup.file = {
+        fileName: data[0].iup.file[0].name,
+        data: await getBase64(data[0].iup.file[0])
+      }
+    }
+    if (data[0].skBpkm.file) {
+      data[0].skBpkm.file = {
+        fileName: data[0].skBpkm.file[0].name,
+        data: await getBase64(data[0].skBpkm.file[0])
+      }
+    }
+    if (data[0].spup.file) {
+      data[0].spup.file = {
+        fileName: data[0].spup.file[0].name,
+        data: await getBase64(data[0].spup.file[0])
+      }
+    }
+    if (data[0].skIndustriPerkebunan.file) {
+      data[0].skIndustriPerkebunan.file = {
+        fileName: data[0].skIndustriPerkebunan.file[0].name,
+        data: await getBase64(data[0].skIndustriPerkebunan.file[0])
+      }
+    }
+
+    data[0].periodId = data[0].periodId.id
+    data[0].gardenId = data[0].gardenId.id
+    data[0].companyStatusId = data[0].companyStatusId.id
+    data[0].land.landType = data[0].land.landType.value
+    data[0].land.decompositionLevel = data[0].land.decompositionLevel.value
+
+    delete data[0].gardenDistrict
+    delete data[0].gardenCity
+    delete data[0].gardenVillage
+
+    data[0].climates.forEach((item, i) => {
+      item.climateType = item.climateType.value
+    });
+
+    console.log(data[0])
+
+    const res = axios.post(
+      `${appConfig.baseUrl}/evaluations`,
+      data[0]
+    );
+
+    res.then(
+      function(dt) {
+
+        if (dt.data.status == 'success') {
+          if (_.isEmpty(dt.data.data)) {
+            localStorage.setItem("evaluationId", dt.data.data.addedEvaluation.evaluationId);
+          }
+          router.push({
+            pathname: "/user/penilaian-perkebunan/manajemen"
+          })
+        }
+
+      },
+      function(err) {
+
+        enqueueSnackbar('', {
+          anchorOrigin: {
+            vertical: 'top',
+            horizontal: 'right',
+          },
+          content: (key, message) => (
+            <CustomComponent
+              id={key}
+              message="Mohon pastikan form yang anda isi telah lengkap."
+              variant="error"
+              title="Gagal Submit!"
+            />
+          ),
+        });
+
+      }
+    )
+
   })
 
   function clearData() {
@@ -691,14 +977,12 @@ const FormLegalitas = () => {
             <InputForm
               titleForm="Periode Tahun Penilaian"
               titleName="Periode Tahun Penilaian"
-              onChange={(e) => setPeriodeThnPenilaian(e.target.value)}
+              onChange={(e) => setPeriodeThnPenilaian(e)}
               type="text"
               values={periodeThnPenilaian}
               placeholder="Pilih Periode Tahun Penilaian"
-              className={`${
-                isError && 'border-primary-red-1 bg-primary-red-2'
-              }`}
-              selectionArea={true}
+              selectArea={true}
+              options={year}
             />
           </label>
 
@@ -721,16 +1005,14 @@ const FormLegalitas = () => {
                               type="text"
                               values={item.value}
                               placeholder={item.placeholder}
-                              className={`${
-                                isError && 'border-primary-red-1 bg-primary-red-2'
-                              }`}
-                              selectionArea={true}
+                              selectArea={true}
+                              options={iup}
                             />
                           </label>
                         ) : (
                           <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
                             <span className={mng.base__inputtitle}>{item.title}</span>
-                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, identitas, setIdentitas, i, ii)}/>
+                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e.target.value, identitas, setIdentitas, i, ii)}/>
                           </label>
                         )
                       }
@@ -757,7 +1039,7 @@ const FormLegalitas = () => {
                               titleForm={item.title}
                               titleName={item.title}
                               phoneNumber="true"
-                              onChange={(e) => formRegularChange(e, kantorPusat, setKantorPusat, i, ii)}
+                              onChange={(e) => formRegularChange(e.target.value, kantorPusat, setKantorPusat, i, ii)}
                               type="text"
                               values={item.value}
                               placeholder={item.placeholder}
@@ -769,7 +1051,7 @@ const FormLegalitas = () => {
                         ) : (
                           <label className={`${mng["base__formlabel"]} float-left w-[47%] pr-2`} key={ii}>
                             <span className={mng.base__inputtitle}>{item.title}</span>
-                            <textarea className={`${mng["base__inputbase"]} min-h-[153px]`} type={item.type} rows="20" placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, kantorPusat, setKantorPusat, i, ii)}></textarea>
+                            <textarea className={`${mng["base__inputbase"]} min-h-[153px]`} type={item.type} rows="20" placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e.target.value, kantorPusat, setKantorPusat, i, ii)}></textarea>
                           </label>
                         )
                       }
@@ -795,7 +1077,7 @@ const FormLegalitas = () => {
                               titleForm={item.title}
                               titleName={item.title}
                               phoneNumber="true"
-                              onChange={(e) => formRegularChange(e, kantorWakil, setKantorWakil, i, ii)}
+                              onChange={(e) => formRegularChange(e.target.value, kantorWakil, setKantorWakil, i, ii)}
                               type="text"
                               values={item.value}
                               placeholder={item.placeholder}
@@ -807,7 +1089,7 @@ const FormLegalitas = () => {
                         ) : (
                           <label className={`${mng["base__formlabel"]} float-left w-[47%] pr-2`} key={ii}>
                             <span className={mng.base__inputtitle}>{item.title}</span>
-                            <textarea className={`${mng["base__inputbase"]} min-h-[153px]`} type={item.type} rows="20" placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, kantorWakil, setKantorWakil, i, ii)}></textarea>
+                            <textarea className={`${mng["base__inputbase"]} min-h-[153px]`} type={item.type} rows="20" placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e.target.value, kantorWakil, setKantorWakil, i, ii)}></textarea>
                           </label>
                         )
                       }
@@ -823,14 +1105,12 @@ const FormLegalitas = () => {
             <InputForm
               titleForm="Nama Kebun/Pabrik"
               titleName="Nama Kebun/Pabrik"
-              onChange={(e) => setNamaKebun(e.target.value)}
+              onChange={(e) => setNamaKebun(e)}
               type="text"
               values={namaKebun}
               placeholder="Nama Perusahaan Perkebunan"
-              className={`${
-                isError && 'border-primary-red-1 bg-primary-red-2'
-              }`}
-              selectionArea={true}
+              selectArea={true}
+              options={kebun}
             />
           </label>
 
@@ -841,20 +1121,59 @@ const FormLegalitas = () => {
                 <div className={`${mng["base__formlabel_tri"]}`} key={i}>
                 {
                   items.map((item,ii) => (
-                    <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
-                      <InputForm
-                        titleForm={item.title}
-                        titleName={item.title}
-                        onChange={(e) => formRegularChange(e, lokasi, setLokasi, i, ii)}
-                        type="text"
-                        values={item.value}
-                        placeholder={item.placeholder}
-                        className={`${
-                          isError && 'border-primary-red-1 bg-primary-red-2'
-                        }`}
-                        selectionArea={true}
-                      />
-                    </label>
+                    <>
+                      {
+                        item.isOpt == 'kota' ? (
+                          <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
+                            <InputForm
+                              titleForm={item.title}
+                              titleName={item.title}
+                              onChange={(e) => {
+                                formRegularChange(e, lokasi, setLokasi, i, ii);
+                                setCityId(e);
+                              }}
+                              type="text"
+                              values={item.value}
+                              placeholder={item.placeholder}
+                              selectArea={true}
+                              options={kota}
+                            />
+                          </label>
+                        ) : item.isOpt == 'kecamatan' ? (
+                          <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
+                            <InputForm
+                              titleForm={item.title}
+                              titleName={item.title}
+                              onChange={(e) => {
+                                formRegularChange(e, lokasi, setLokasi, i, ii);
+                                setDistrictId(e);
+                              }}
+                              type="text"
+                              values={item.value}
+                              placeholder={item.placeholder}
+                              selectArea={true}
+                              options={kecamatan}
+                            />
+                          </label>
+                        ) : (
+                          <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
+                            <InputForm
+                              titleForm={item.title}
+                              titleName={item.title}
+                              onChange={(e) => {
+                                formRegularChange(e, lokasi, setLokasi, i, ii);
+                                setVillageId(e);
+                              }}
+                              type="text"
+                              values={item.value}
+                              placeholder={item.placeholder}
+                              selectArea={true}
+                              options={desa}
+                            />
+                          </label>
+                        )
+                      }
+                    </>
                   ))
                 }
                 </div>
@@ -872,7 +1191,7 @@ const FormLegalitas = () => {
                   items.map((item,ii) => (
                     <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
                       <span className={mng.base__inputtitle}>{item.title}</span>
-                      <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, lingkupUsaha, setLingkupUsaha, i, ii)}/>
+                      <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e.target.value, lingkupUsaha, setLingkupUsaha, i, ii)}/>
                     </label>
                   ))
                 }
@@ -906,16 +1225,37 @@ const FormLegalitas = () => {
                     <>
                       {
                         item.isOpt == "unggah" ? (
-                          <div className="flex w-full items-center justify-between mb-3">
-                            <div>
-                              <div className=" text-sm font-semibold">
-                                Lampiran Berkas HGU Dalam Proses
+                          <div className="w-full">
+                            <div className="flex w-full items-center justify-between mb-3">
+                              <div>
+                                <div className=" text-sm font-semibold">
+                                  Lampiran Berkas HGU Dalam Proses
+                                </div>
+                                <div className="text-[11px] text-[#B3B3B3]">
+                                  Format dokumen: .jpg .jpeg .png
+                                </div>
                               </div>
-                              <div className="text-[11px] text-[#B3B3B3]">
-                                Format dokumen: .jpg .jpeg .png
-                              </div>
+                              <InputFileButton
+                                handleImage={(img) => {
+                                  formRegularChange(img, hkUsaha, setHkUsaha, i, ii);
+                                }}
+                              />
                             </div>
-                            <InputFileButton />
+                            {
+                              item.value[0] ? (
+                                <div className="flex items-center mt-6 mb-3 pb-4 border-b border-[#EDEDED]">
+                                  <img src="/images/auth/gallery.svg" className="w-[24px] mr-3" />
+                                  <div>
+                                    <p className="text-sm">{item.value[0].path}</p>
+                                    <p className="text-xs	text-[#27AE60]">Uploaded</p>
+                                  </div>
+                                  <div className="ml-auto flex">
+                                    <div className="border border-[#CDD3D8] text-[11px] px-2 py-1 font-semibold">{((item.value[0].size) / 1048576).toFixed(2)}MB</div>
+                                    <img onClick={() => formRegularChange('', hkUsaha, setHkUsaha, i, ii)} src="/images/auth/close-circle.svg" className="w-[16px] cursor-pointer ml-3" />
+                                  </div>
+                                </div>
+                              ) : <></>
+                            }
                           </div>
                         ) : item.isOpt == 'opt' ? (
                           <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
@@ -926,10 +1266,8 @@ const FormLegalitas = () => {
                               type="text"
                               values={item.value}
                               placeholder={item.placeholder}
-                              className={`${
-                                isError && 'border-primary-red-1 bg-primary-red-2'
-                              }`}
-                              selectionArea={true}
+                              selectArea={true}
+                              options={hgu}
                             />
                           </label>
                         ) : item.isOpt == 'cal' ? (
@@ -937,7 +1275,7 @@ const FormLegalitas = () => {
                             <InputForm
                               titleForm={item.title}
                               titleName={item.title}
-                              onChange={(e) => formRegularChange(e, hkUsaha, setHkUsaha, i, ii)}
+                              onChange={(e) => formRegularChange(e.target.value, hkUsaha, setHkUsaha, i, ii)}
                               type="date"
                               values={item.value}
                               placeholder={item.placeholder}
@@ -951,7 +1289,7 @@ const FormLegalitas = () => {
                         ) : (
                           <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
                             <span className={mng.base__inputtitle}>{item.title}</span>
-                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, hkUsaha, setHkUsaha, i, ii)}/>
+                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e.target.value, hkUsaha, setHkUsaha, i, ii)}/>
                           </label>
                         )
                       }
@@ -989,26 +1327,47 @@ const FormLegalitas = () => {
                     <>
                       {
                         item.isOpt == "unggah" ? (
-                          <div className="flex w-full items-center justify-between mb-3">
-                            <div>
-                              <div className=" text-sm font-semibold">
-                                Lampiran Berkas HGU Dalam Proses
+                          <div className="w-full">
+                            <div className="flex w-full items-center justify-between mb-3">
+                              <div>
+                                <div className=" text-sm font-semibold">
+                                  Lampiran Berkas HGU Dalam Proses
+                                </div>
+                                <div className="text-[11px] text-[#B3B3B3]">
+                                  Format dokumen: .jpg .jpeg .png
+                                </div>
                               </div>
-                              <div className="text-[11px] text-[#B3B3B3]">
-                                Format dokumen: .jpg .jpeg .png
-                              </div>
+                              <InputFileButton
+                                handleImage={(img) => {
+                                  formRegularChange(img, hguProses, setHguProses, i, ii);
+                                }}
+                              />
                             </div>
-                            <InputFileButton />
+                            {
+                              item.value[0] ? (
+                                <div className="flex items-center mt-6 mb-3 pb-4 border-b border-[#EDEDED]">
+                                  <img src="/images/auth/gallery.svg" className="w-[24px] mr-3" />
+                                  <div>
+                                    <p className="text-sm">{item.value[0].path}</p>
+                                    <p className="text-xs	text-[#27AE60]">Uploaded</p>
+                                  </div>
+                                  <div className="ml-auto flex">
+                                    <div className="border border-[#CDD3D8] text-[11px] px-2 py-1 font-semibold">{((item.value[0].size) / 1048576).toFixed(2)}MB</div>
+                                    <img onClick={() => formRegularChange('', hguProses, setHguProses, i, ii)} src="/images/auth/close-circle.svg" className="w-[16px] cursor-pointer ml-3" />
+                                  </div>
+                                </div>
+                              ) : <></>
+                            }
                           </div>
                         ) : item.isOpt == 'textarea' ? (
                           <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
                             <span className={mng.base__inputtitle}>{item.title}</span>
-                            <textarea className={`${mng["base__inputbase"]} min-h-[140px]`} type={item.type} rows="20" placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, hguProses, setHguProses, i, ii)}></textarea>
+                            <textarea className={`${mng["base__inputbase"]} min-h-[140px]`} type={item.type} rows="20" placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e.target.value, hguProses, setHguProses, i, ii)}></textarea>
                           </label>
                         ) : (
                           <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
                             <span className={mng.base__inputtitle}>{item.title}</span>
-                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, hguProses, setHguProses, i, ii)}/>
+                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e.target.value, hguProses, setHguProses, i, ii)}/>
                           </label>
                         )
                       }
@@ -1043,7 +1402,7 @@ const FormLegalitas = () => {
                             <InputForm
                               titleForm={item.title}
                               titleName={item.title}
-                              onChange={(e) => formRegularChange(e, skRencana, setSkRencana, i, ii)}
+                              onChange={(e) => formRegularChange(e.target.value, skRencana, setSkRencana, i, ii)}
                               type="date"
                               values={item.value}
                               placeholder={item.placeholder}
@@ -1055,21 +1414,42 @@ const FormLegalitas = () => {
                             />
                           </label>
                         ) : item.isOpt == 'unggah' ? (
-                          <div className="flex w-full items-center justify-between mb-3">
-                            <div>
-                              <div className=" text-sm font-semibold">
-                                Lampiran Berkas HGU Dalam Proses
+                          <div className="w-full">
+                            <div className="flex w-full items-center justify-between mb-3">
+                              <div>
+                                <div className=" text-sm font-semibold">
+                                  {item.title}
+                                </div>
+                                <div className="text-[11px] text-[#B3B3B3]">
+                                  {item.placeholder}
+                                </div>
                               </div>
-                              <div className="text-[11px] text-[#B3B3B3]">
-                                Format dokumen: .jpg .jpeg .png
-                              </div>
+                              <InputFileButton
+                                handleImage={(img) => {
+                                  formRegularChange(img, skRencana, setSkRencana, i, ii);
+                                }}
+                              />
                             </div>
-                            <InputFileButton />
+                            {
+                              item.value[0] ? (
+                                <div className="flex items-center mt-6 mb-3 pb-4 border-b border-[#EDEDED]">
+                                  <img src="/images/auth/gallery.svg" className="w-[24px] mr-3" />
+                                  <div>
+                                    <p className="text-sm">{item.value[0].path}</p>
+                                    <p className="text-xs	text-[#27AE60]">Uploaded</p>
+                                  </div>
+                                  <div className="ml-auto flex">
+                                    <div className="border border-[#CDD3D8] text-[11px] px-2 py-1 font-semibold">{((item.value[0].size) / 1048576).toFixed(2)}MB</div>
+                                    <img onClick={() => formRegularChange('', skRencana, setSkRencana, i, ii)} src="/images/auth/close-circle.svg" className="w-[16px] cursor-pointer ml-3" />
+                                  </div>
+                                </div>
+                              ) : <></>
+                            }
                           </div>
                         ) : (
                           <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
                             <span className={mng.base__inputtitle}>{item.title}</span>
-                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, skRencana, setSkRencana, i, ii)}/>
+                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e.target.value, skRencana, setSkRencana, i, ii)}/>
                           </label>
                         )
                       }
@@ -1095,7 +1475,7 @@ const FormLegalitas = () => {
                             <InputForm
                               titleForm={item.title}
                               titleName={item.title}
-                              onChange={(e) => formRegularChange(e, skTugas, setSkTugas, i, ii)}
+                              onChange={(e) => formRegularChange(e.target.value, skTugas, setSkTugas, i, ii)}
                               type="date"
                               values={item.value}
                               placeholder={item.placeholder}
@@ -1107,21 +1487,42 @@ const FormLegalitas = () => {
                             />
                           </label>
                         ) : item.isOpt == 'unggah' ? (
-                          <div className="flex w-full items-center justify-between mb-3">
-                            <div>
-                              <div className=" text-sm font-semibold">
-                                Lampiran Berkas HGU Dalam Proses
+                          <div className="w-full">
+                            <div className="flex w-full items-center justify-between mb-3">
+                              <div>
+                                <div className=" text-sm font-semibold">
+                                  {item.title}
+                                </div>
+                                <div className="text-[11px] text-[#B3B3B3]">
+                                  {item.placeholder}
+                                </div>
                               </div>
-                              <div className="text-[11px] text-[#B3B3B3]">
-                                Format dokumen: .jpg .jpeg .png
-                              </div>
+                              <InputFileButton
+                                handleImage={(img) => {
+                                  formRegularChange(img, skTugas, setSkTugas, i, ii);
+                                }}
+                              />
                             </div>
-                            <InputFileButton />
+                            {
+                              item.value[0] ? (
+                                <div className="flex items-center mt-6 mb-3 pb-4 border-b border-[#EDEDED]">
+                                  <img src="/images/auth/gallery.svg" className="w-[24px] mr-3" />
+                                  <div>
+                                    <p className="text-sm">{item.value[0].path}</p>
+                                    <p className="text-xs	text-[#27AE60]">Uploaded</p>
+                                  </div>
+                                  <div className="ml-auto flex">
+                                    <div className="border border-[#CDD3D8] text-[11px] px-2 py-1 font-semibold">{((item.value[0].size) / 1048576).toFixed(2)}MB</div>
+                                    <img onClick={() => formRegularChange('', skTugas, setSkTugas, i, ii)} src="/images/auth/close-circle.svg" className="w-[16px] cursor-pointer ml-3" />
+                                  </div>
+                                </div>
+                              ) : <></>
+                            }
                           </div>
                         ) : (
                           <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
                             <span className={mng.base__inputtitle}>{item.title}</span>
-                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, skTugas, setSkTugas, i, ii)}/>
+                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e.target.value, skTugas, setSkTugas, i, ii)}/>
                           </label>
                         )
                       }
@@ -1147,7 +1548,7 @@ const FormLegalitas = () => {
                             <InputForm
                               titleForm={item.title}
                               titleName={item.title}
-                              onChange={(e) => formRegularChange(e, skUsahaBudi, setSkUsahaBudi, i, ii)}
+                              onChange={(e) => formRegularChange(e.target.value, skUsahaBudi, setSkUsahaBudi, i, ii)}
                               type="date"
                               values={item.value}
                               placeholder={item.placeholder}
@@ -1159,21 +1560,42 @@ const FormLegalitas = () => {
                             />
                           </label>
                         ) : item.isOpt == 'unggah' ? (
-                          <div className="flex w-full items-center justify-between mb-3">
-                            <div>
-                              <div className=" text-sm font-semibold">
-                                Lampiran Berkas HGU Dalam Proses
+                          <div className="w-full">
+                            <div className="flex w-full items-center justify-between mb-3">
+                              <div>
+                                <div className=" text-sm font-semibold">
+                                  {item.title}
+                                </div>
+                                <div className="text-[11px] text-[#B3B3B3]">
+                                  {item.placeholder}
+                                </div>
                               </div>
-                              <div className="text-[11px] text-[#B3B3B3]">
-                                Format dokumen: .jpg .jpeg .png
-                              </div>
+                              <InputFileButton
+                                handleImage={(img) => {
+                                  formRegularChange(img, skUsahaBudi, setSkUsahaBudi, i, ii);
+                                }}
+                              />
                             </div>
-                            <InputFileButton />
+                            {
+                              item.value[0] ? (
+                                <div className="flex items-center mt-6 mb-3 pb-4 border-b border-[#EDEDED]">
+                                  <img src="/images/auth/gallery.svg" className="w-[24px] mr-3" />
+                                  <div>
+                                    <p className="text-sm">{item.value[0].path}</p>
+                                    <p className="text-xs	text-[#27AE60]">Uploaded</p>
+                                  </div>
+                                  <div className="ml-auto flex">
+                                    <div className="border border-[#CDD3D8] text-[11px] px-2 py-1 font-semibold">{((item.value[0].size) / 1048576).toFixed(2)}MB</div>
+                                    <img onClick={() => formRegularChange('', skUsahaBudi, setSkUsahaBudi, i, ii)} src="/images/auth/close-circle.svg" className="w-[16px] cursor-pointer ml-3" />
+                                  </div>
+                                </div>
+                              ) : <></>
+                            }
                           </div>
                         ) : (
                           <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
                             <span className={mng.base__inputtitle}>{item.title}</span>
-                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, skUsahaBudi, setSkUsahaBudi, i, ii)}/>
+                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e.target.value, skUsahaBudi, setSkUsahaBudi, i, ii)}/>
                           </label>
                         )
                       }
@@ -1199,7 +1621,7 @@ const FormLegalitas = () => {
                             <InputForm
                               titleForm={item.title}
                               titleName={item.title}
-                              onChange={(e) => formRegularChange(e, skUsahaIndustri, setSkUsahaIndustri, i, ii)}
+                              onChange={(e) => formRegularChange(e.target.value, skUsahaIndustri, setSkUsahaIndustri, i, ii)}
                               type="date"
                               values={item.value}
                               placeholder={item.placeholder}
@@ -1211,21 +1633,42 @@ const FormLegalitas = () => {
                             />
                           </label>
                         ) : item.isOpt == 'unggah' ? (
-                          <div className="flex w-full items-center justify-between mb-3">
-                            <div>
-                              <div className=" text-sm font-semibold">
-                                Lampiran Berkas HGU Dalam Proses
+                          <div className="w-full">
+                            <div className="flex w-full items-center justify-between mb-3">
+                              <div>
+                                <div className=" text-sm font-semibold">
+                                  {item.title}
+                                </div>
+                                <div className="text-[11px] text-[#B3B3B3]">
+                                  {item.placeholder}
+                                </div>
                               </div>
-                              <div className="text-[11px] text-[#B3B3B3]">
-                                Format dokumen: .jpg .jpeg .png
-                              </div>
+                              <InputFileButton
+                                handleImage={(img) => {
+                                  formRegularChange(img, skUsahaIndustri, setSkUsahaIndustri, i, ii);
+                                }}
+                              />
                             </div>
-                            <InputFileButton />
+                            {
+                              item.value[0] ? (
+                                <div className="flex items-center mt-6 mb-3 pb-4 border-b border-[#EDEDED]">
+                                  <img src="/images/auth/gallery.svg" className="w-[24px] mr-3" />
+                                  <div>
+                                    <p className="text-sm">{item.value[0].path}</p>
+                                    <p className="text-xs	text-[#27AE60]">Uploaded</p>
+                                  </div>
+                                  <div className="ml-auto flex">
+                                    <div className="border border-[#CDD3D8] text-[11px] px-2 py-1 font-semibold">{((item.value[0].size) / 1048576).toFixed(2)}MB</div>
+                                    <img onClick={() => formRegularChange('', skUsahaIndustri, setSkUsahaIndustri, i, ii)} src="/images/auth/close-circle.svg" className="w-[16px] cursor-pointer ml-3" />
+                                  </div>
+                                </div>
+                              ) : <></>
+                            }
                           </div>
                         ) : (
                           <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
                             <span className={mng.base__inputtitle}>{item.title}</span>
-                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, skUsahaIndustri, setSkUsahaIndustri, i, ii)}/>
+                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e.target.value, skUsahaIndustri, setSkUsahaIndustri, i, ii)}/>
                           </label>
                         )
                       }
@@ -1251,7 +1694,7 @@ const FormLegalitas = () => {
                             <InputForm
                               titleForm={item.title}
                               titleName={item.title}
-                              onChange={(e) => formRegularChange(e, skUsahaTani, setSkUsahaTani, i, ii)}
+                              onChange={(e) => formRegularChange(e.target.value, skUsahaTani, setSkUsahaTani, i, ii)}
                               type="date"
                               values={item.value}
                               placeholder={item.placeholder}
@@ -1263,21 +1706,42 @@ const FormLegalitas = () => {
                             />
                           </label>
                         ) : item.isOpt == 'unggah' ? (
-                          <div className="flex w-full items-center justify-between mb-3">
-                            <div>
-                              <div className=" text-sm font-semibold">
-                                Lampiran Berkas HGU Dalam Proses
+                          <div className="w-full">
+                            <div className="flex w-full items-center justify-between mb-3">
+                              <div>
+                                <div className=" text-sm font-semibold">
+                                  {item.title}
+                                </div>
+                                <div className="text-[11px] text-[#B3B3B3]">
+                                  {item.placeholder}
+                                </div>
                               </div>
-                              <div className="text-[11px] text-[#B3B3B3]">
-                                Format dokumen: .jpg .jpeg .png
-                              </div>
+                              <InputFileButton
+                                handleImage={(img) => {
+                                  formRegularChange(img, skUsahaTani, setSkUsahaTani, i, ii);
+                                }}
+                              />
                             </div>
-                            <InputFileButton />
+                            {
+                              item.value[0] ? (
+                                <div className="flex items-center mt-6 mb-3 pb-4 border-b border-[#EDEDED]">
+                                  <img src="/images/auth/gallery.svg" className="w-[24px] mr-3" />
+                                  <div>
+                                    <p className="text-sm">{item.value[0].path}</p>
+                                    <p className="text-xs	text-[#27AE60]">Uploaded</p>
+                                  </div>
+                                  <div className="ml-auto flex">
+                                    <div className="border border-[#CDD3D8] text-[11px] px-2 py-1 font-semibold">{((item.value[0].size) / 1048576).toFixed(2)}MB</div>
+                                    <img onClick={() => formRegularChange('', skUsahaTani, setSkUsahaTani, i, ii)} src="/images/auth/close-circle.svg" className="w-[16px] cursor-pointer ml-3" />
+                                  </div>
+                                </div>
+                              ) : <></>
+                            }
                           </div>
                         ) : (
                           <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
                             <span className={mng.base__inputtitle}>{item.title}</span>
-                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, skUsahaTani, setSkUsahaTani, i, ii)}/>
+                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e.target.value, skUsahaTani, setSkUsahaTani, i, ii)}/>
                           </label>
                         )
                       }
@@ -1303,7 +1767,7 @@ const FormLegalitas = () => {
                             <InputForm
                               titleForm={item.title}
                               titleName={item.title}
-                              onChange={(e) => formRegularChange(e, skUsahaDaftar, setSkUsahaDaftar, i, ii)}
+                              onChange={(e) => formRegularChange(e.target.value, skUsahaDaftar, setSkUsahaDaftar, i, ii)}
                               type="date"
                               values={item.value}
                               placeholder={item.placeholder}
@@ -1315,21 +1779,42 @@ const FormLegalitas = () => {
                             />
                           </label>
                         ) : item.isOpt == 'unggah' ? (
-                          <div className="flex w-full items-center justify-between mb-3">
-                            <div>
-                              <div className=" text-sm font-semibold">
-                                Lampiran Berkas HGU Dalam Proses
+                          <div className="w-full">
+                            <div className="flex w-full items-center justify-between mb-3">
+                              <div>
+                                <div className=" text-sm font-semibold">
+                                  {item.title}
+                                </div>
+                                <div className="text-[11px] text-[#B3B3B3]">
+                                  {item.placeholder}
+                                </div>
                               </div>
-                              <div className="text-[11px] text-[#B3B3B3]">
-                                Format dokumen: .jpg .jpeg .png
-                              </div>
+                              <InputFileButton
+                                handleImage={(img) => {
+                                  formRegularChange(img, skUsahaDaftar, setSkUsahaDaftar, i, ii);
+                                }}
+                              />
                             </div>
-                            <InputFileButton />
+                            {
+                              item.value[0] ? (
+                                <div className="flex items-center mt-6 mb-3 pb-4 border-b border-[#EDEDED]">
+                                  <img src="/images/auth/gallery.svg" className="w-[24px] mr-3" />
+                                  <div>
+                                    <p className="text-sm">{item.value[0].path}</p>
+                                    <p className="text-xs	text-[#27AE60]">Uploaded</p>
+                                  </div>
+                                  <div className="ml-auto flex">
+                                    <div className="border border-[#CDD3D8] text-[11px] px-2 py-1 font-semibold">{((item.value[0].size) / 1048576).toFixed(2)}MB</div>
+                                    <img onClick={() => formRegularChange('', skUsahaDaftar, setSkUsahaDaftar, i, ii)} src="/images/auth/close-circle.svg" className="w-[16px] cursor-pointer ml-3" />
+                                  </div>
+                                </div>
+                              ) : <></>
+                            }
                           </div>
                         ) : (
                           <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
                             <span className={mng.base__inputtitle}>{item.title}</span>
-                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, skUsahaDaftar, setSkUsahaDaftar, i, ii)}/>
+                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e.target.value, skUsahaDaftar, setSkUsahaDaftar, i, ii)}/>
                           </label>
                         )
                       }
@@ -1355,7 +1840,7 @@ const FormLegalitas = () => {
                             <InputForm
                               titleForm={item.title}
                               titleName={item.title}
-                              onChange={(e) => formRegularChange(e, skUsahaKebun, setSkUsahaKebun, i, ii)}
+                              onChange={(e) => formRegularChange(e.target.value, skUsahaKebun, setSkUsahaKebun, i, ii)}
                               type="date"
                               values={item.value}
                               placeholder={item.placeholder}
@@ -1367,21 +1852,42 @@ const FormLegalitas = () => {
                             />
                           </label>
                         ) : item.isOpt == 'unggah' ? (
-                          <div className="flex w-full items-center justify-between mb-3">
-                            <div>
-                              <div className=" text-sm font-semibold">
-                                Lampiran Berkas HGU Dalam Proses
+                          <div className="w-full">
+                            <div className="flex w-full items-center justify-between mb-3">
+                              <div>
+                                <div className=" text-sm font-semibold">
+                                  {item.title}
+                                </div>
+                                <div className="text-[11px] text-[#B3B3B3]">
+                                  {item.placeholder}
+                                </div>
                               </div>
-                              <div className="text-[11px] text-[#B3B3B3]">
-                                Format dokumen: .jpg .jpeg .png
-                              </div>
+                              <InputFileButton
+                                handleImage={(img) => {
+                                  formRegularChange(img, skUsahaKebun, setSkUsahaKebun, i, ii);
+                                }}
+                              />
                             </div>
-                            <InputFileButton />
+                            {
+                              item.value[0] ? (
+                                <div className="flex items-center mt-6">
+                                  <img src="/images/auth/gallery.svg" className="w-[24px] mr-3" />
+                                  <div>
+                                    <p className="text-sm">{item.value[0].path}</p>
+                                    <p className="text-xs	text-[#27AE60]">Uploaded</p>
+                                  </div>
+                                  <div className="ml-auto flex">
+                                    <div className="border border-[#CDD3D8] text-[11px] px-2 py-1 font-semibold">{((item.value[0].size) / 1048576).toFixed(2)}MB</div>
+                                    <img onClick={() => formRegularChange('', skUsahaKebun, setSkUsahaKebun, i, ii)} src="/images/auth/close-circle.svg" className="w-[16px] cursor-pointer ml-3" />
+                                  </div>
+                                </div>
+                              ) : <></>
+                            }
                           </div>
                         ) : (
                           <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
                             <span className={mng.base__inputtitle}>{item.title}</span>
-                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, skUsahaKebun, setSkUsahaKebun, i, ii)}/>
+                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e.target.value, skUsahaKebun, setSkUsahaKebun, i, ii)}/>
                           </label>
                         )
                       }
@@ -1421,16 +1927,14 @@ const FormLegalitas = () => {
                                       type="text"
                                       values={item.value}
                                       placeholder={child.placeholder}
-                                      className={`${
-                                        isError && 'border-primary-red-1 bg-primary-red-2'
-                                      }`}
-                                      selectionArea={true}
+                                      selectArea={true}
+                                      options={iklimOpt}
                                     />
                                   </label>
                                 ) : (
                                   <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={iii}>
                                     <span className={mng.base__inputtitle}>{child.title}</span>
-                                    <input className={mng.base__inputbase} type={child.type} min='0' placeholder={child.placeholder} value={child.value} onChange={(e) => formSectionChange(e, tanahIklim, setTanahIklim, i, ii, iii)}/>
+                                    <input className={mng.base__inputbase} type={child.type} min='0' placeholder={child.placeholder} value={child.value} onChange={(e) => formSectionChange(e.target.value, tanahIklim, setTanahIklim, i, ii, iii)}/>
                                   </label>
                                 )
                               }
@@ -1477,16 +1981,14 @@ const FormLegalitas = () => {
                               type="text"
                               values={item.value}
                               placeholder={item.placeholder}
-                              className={`${
-                                isError && 'border-primary-red-1 bg-primary-red-2'
-                              }`}
-                              selectionArea={true}
+                              selectArea={true}
+                              options={iklimOpt}
                             />
                           </label>
                         ) : (
                           <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
                             <span className={mng.base__inputtitle}>{item.title}</span>
-                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, gambut, setGambut, i, ii)}/>
+                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e.target.value, gambut, setGambut, i, ii)}/>
                           </label>
                         )
                       }
@@ -1524,7 +2026,7 @@ const FormLegalitas = () => {
                           item.sectionData.map((child,iii) => (
                             <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={iii}>
                               <span className={mng.base__inputtitle}>{child.title}</span>
-                              <input className={mng.base__inputbase} type={child.type} min='0' placeholder={child.placeholder} value={child.value} onChange={(e) => formSectionChange(e, sesuaiLahan, setSesuaiLahan, i, ii, iii)}/>
+                              <input className={mng.base__inputbase} type={child.type} min='0' placeholder={child.placeholder} value={child.value} onChange={(e) => formSectionChange(e.target.value, sesuaiLahan, setSesuaiLahan, i, ii, iii)}/>
                             </label>
                           ))
                         }
@@ -1564,16 +2066,14 @@ const FormLegalitas = () => {
                               type="text"
                               values={item.value}
                               placeholder={item.placeholder}
-                              className={`${
-                                isError && 'border-primary-red-1 bg-primary-red-2'
-                              }`}
-                              selectionArea={true}
+                              selectArea={true}
+                              options={iklimOpt}
                             />
                           </label>
                         ) : (
                           <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
                             <span className={mng.base__inputtitle}>{item.title}</span>
-                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, iklim, setIklim, i, ii)}/>
+                            <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e.target.value, iklim, setIklim, i, ii)}/>
                           </label>
                         )
                       }
@@ -1622,7 +2122,7 @@ const FormLegalitas = () => {
                           item.sectionData.map((child,iii) => (
                             <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={iii}>
                               <span className={mng.base__inputtitle}>{child.title}</span>
-                              <input className={mng.base__inputbase} type={child.type} min='0' placeholder={child.placeholder} value={child.value} onChange={(e) => formSectionChange(e, dataTahun, setDataTahun, i, ii, iii)}/>
+                              <input className={mng.base__inputbase} type={child.type} min='0' placeholder={child.placeholder} value={child.value} onChange={(e) => formSectionChange(e.target.value, dataTahun, setDataTahun, i, ii, iii)}/>
                             </label>
                           ))
                         }

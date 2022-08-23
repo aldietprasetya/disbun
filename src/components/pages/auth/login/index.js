@@ -113,7 +113,7 @@ const LoginPage = () => {
               placeholder="Masukan Username anda"
               className={`${
                 isError && 'border-primary-red-1 bg-primary-red-2'
-              } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-base`}
+              } w-full rounded bg-white-2 py-3 px-4 placeholder:text-base`}
             />
             <LoginForm
               titleForm="Password"
@@ -127,7 +127,7 @@ const LoginPage = () => {
               } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-base`}
               classes={`${
                 isError && 'border-primary-red-1 bg-primary-red-2'
-              } flex items-center justify-between rounded border bg-white-2 pr-3`}
+              } flex items-center justify-between rounded bg-white-2 pr-3`}
               iconPassword={true}
               iconEmail={false}
               onClick={() => setTypePassword(!typePassword)}

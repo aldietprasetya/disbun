@@ -4,7 +4,7 @@ import Page from 'src/components/Page';
 import { Icon } from '@iconify/react';
 import { useRouter } from 'next/router';
 import axiosInstance from 'src/lib/axios';
-import MasterBasisData from 'src/components/pages/user/masterBasisData/MasterBasisData';
+import MasterBasisData from 'src/components/pages/admin/masterBasisData/MasterBasisData';
 import { useSnackbar } from 'notistack';
 import CustomComponent from 'src/components/snackbar/CustomComponent';
 
@@ -77,7 +77,7 @@ const MasterBasisDataPage = () => {
             <BreadCrumbs
               links={[
                 {
-                  path: '/user/master-basis-data',
+                  path: '/admin/master-basis-data',
                   title: 'Master Basis Data',
                 },
               ]}

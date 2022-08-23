@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
-import Link from 'next/link';
+import React, { useCallback, useEffect, useState } from 'react';
+import BreadCrumbs from 'src/components/BreadCrumbs';
 import Page from 'src/components/Page';
 import { Icon } from '@iconify/react';
-import BreadCrumbs from 'src/components/BreadCrumbs';
-import RekapitulasiPeriodik from 'src/components/pages/user/infografis/RekapitulasiPeriodik';
-import GrafikProduksiUsaha from 'src/components/pages/user/infografis/GrafikProduksiUsaha';
-import GrafikHargaJual from 'src/components/pages/user/infografis/GrafikHargaJual';
+import { useRouter } from 'next/router';
+import axiosInstance from 'src/lib/axios';
+import MasterBasisData from 'src/components/pages/admin/mnjAkunPerusahaan/MasterBasisData';
+import { useSnackbar } from 'notistack';
+import CustomComponent from 'src/components/snackbar/CustomComponent';
 
 const cards = [
   {
@@ -61,7 +62,66 @@ const Card = ({ title, value, icon, bannerImage, infosImg }) => {
   );
 };
 
-export default function InfografisPage() {
+const ManajemenAkunPerusahaan = () => {
+  const { enqueueSnackbar } = useSnackbar();
+  const router = useRouter();
+  const [page, setPage] = useState(1);
+  const [dataDtwControl, setDataDtwControl] = useState(null);
+  const [dataMeta, setDataMeta] = useState();
+  const [searchField, setSearchField] = useState('');
+  const [keywordSearch, setKeywordSearch] = useState('');
+  const [limit, setLimit] = useState(10);
+
+  const getDataPengendalianDtw = useCallback(async () => {
+    const res = await axiosInstance.get(
+      `/dtw-control/v1/all?limit=${limit}&page=${page}&keyword=${keywordSearch}`,
+    );
+    setDataDtwControl(res.data.data.dtwControl);
+    setDataMeta(res.data.data.meta);
+  }, [page, keywordSearch, limit]);
+
+  useEffect(() => {
+    getDataPengendalianDtw();
+  }, [getDataPengendalianDtw]);
+
+  const handleChangeLimit = (e) => {
+    setLimit(e.target.value);
+  };
+
+  const handleNextPage = () => {
+    if (dataMeta.page * dataMeta.limit <= dataMeta.total) {
+      setPage(page + 1);
+    }
+  };
+  const handlePrevPage = () => {
+    if (dataMeta.page !== 1) {
+      setPage(page - 1);
+    }
+  };
+
+  const handleDownloadData = async () => {
+    try {
+      const res = await axiosInstance.get('/dtw-control/v1/generate-excel');
+      if (res.data.status == 'success') {
+        window.open(res.data.data.excel, '_blank');
+      }
+    } catch (error) {
+      enqueueSnackbar(error.message, {
+        anchorOrigin: {
+          vertical: 'top',
+          horizontal: 'right',
+        },
+        content: (key, message) => (
+          <CustomComponent
+            id={key}
+            message={message}
+            variant="error"
+            title="Download Gagal"
+          />
+        ),
+      });
+    }
+  };
 
   return (
     <Page sidebar={false} backdrop adminMode>
@@ -73,12 +133,12 @@ export default function InfografisPage() {
             variant="0"
             links={[
               {
-                path: '/user/infografis',
-                title: 'Infografis',
+                path: '/admin/mnj-akun-perusahaan',
+                title: 'Manajemen Akun Perusahaan',
               },
             ]}
           />
-          <div className="text-[32px] font-normal text-white leading-9 mt-4">PT. Perkebunan Nusantara VIII</div>
+          <div className="text-[32px] font-normal text-white leading-9 mt-4">Admin PPUP Disbun Jabar</div>
         </div>
 
         <div className="mt-6 flex justify-between">
@@ -97,19 +157,13 @@ export default function InfografisPage() {
         </div>
 
         <div className="mt-6">
-          <RekapitulasiPeriodik />
-        </div>
-
-        <div className="mt-6">
-          <GrafikProduksiUsaha />
-        </div>
-
-        <div className="mt-6">
-          <GrafikHargaJual />
+          <MasterBasisData/>
         </div>
 
       </div>
 
     </Page>
   );
-}
+};
+
+export default ManajemenAkunPerusahaan;

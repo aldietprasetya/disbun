@@ -5,6 +5,8 @@ export default function middleware(req) {
     let sec_cookie = req.cookies["__Secure-next-auth.session-token"];
     const url = req.url
 
+    console.log(req.localStorage)
+
     // if (url != '/login' && !cookie) {
 
       // const url3 = req.nextUrl.clone()
@@ -14,8 +16,9 @@ export default function middleware(req) {
 
     var reqProtected = (
       req.nextUrl.pathname == '/' ||
-      url.includes("/user") ||
-      url.includes("/profile")
+      url.includes("/profile") ||
+      url.includes("/admin") ||
+      url.includes("/user")
     )
 
     var frontProtected = (

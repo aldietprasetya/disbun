@@ -17,13 +17,34 @@ const links = [
   {
     title: 'Infografis',
     path: '/user/infografis',
-    icon: '/icon/web-icon.svg',
+    icon: '/icon/infografis-icon.svg',
     isAdmin: true,
   },
   {
     title: 'Master Basis Data',
     path: '/user/master-basis-data',
     icon: '/icon/web-icon.svg',
+    isAdmin: true,
+  },
+];
+
+const linksAdmin = [
+  {
+    title: 'Infografis',
+    path: '/admin/infografis',
+    icon: '/icon/infografis-icon.svg',
+    isAdmin: true,
+  },
+  {
+    title: 'Master Basis Data',
+    path: '/admin/master-basis-data',
+    icon: '/icon/web-icon.svg',
+    isAdmin: true,
+  },
+  {
+    title: 'Manajemen Akun Perusahaan',
+    path: '/admin/mnj-akun-perusahaan',
+    icon: '/icon/user-icon.svg',
     isAdmin: true,
   },
 ];
@@ -128,7 +149,7 @@ const Navbar = ({ backdrop }) => {
                       </div>
                     ) : (
                       <div className="flex gap-2">
-                        {links.map((link) => {
+                        {linksAdmin.map((link) => {
                           return (
                             <NavItem
                               key={link.path}

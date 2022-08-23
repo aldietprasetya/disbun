@@ -1,7 +1,12 @@
 import Head from 'next/head'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import {useRouter} from 'next/router'
+import { useSession } from "next-auth/react";
 import _ from 'lodash';
+import axios from 'axios';
+import { appConfig } from 'src/config';
+import { useSnackbar } from 'notistack';
+import CustomComponent from 'src/components/snackbar/CustomComponent';
 import InputFileButton from 'src/components/customInput/InputFileButton';
 import InputForm from '../admin/infografis/InputForm';
 import mng from 'src/styles/Managemen.module.scss'
@@ -12,6 +17,8 @@ const preventDefault = f => e => {
 }
 
 const FormPengolahan = () => {
+  const { data: session } = useSession();
+  const { enqueueSnackbar } = useSnackbar();
   const [isError, setIsError] = useState(false);
 
   const router = useRouter()
@@ -21,6 +28,100 @@ const FormPengolahan = () => {
   const [data, setData] = useState(null)
   const [dataPass, setDataPass] = useState({})
   const [dataSubmit, setDataSubmit] = useState([])
+  const [isoImg, setIsoImg] = useState();
+  const [isoImgBase, setIsoImgBase] = useState();
+  const selectCamat = useRef();
+
+  let [kota, setKota] = useState([]);
+  let [iup, setIup] = useState([]);
+  useEffect(() => {
+    if (session) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${session.user.accessToken}`
+
+      let iupArr = []
+      let kotaArr = []
+
+      const getKota = axios.get(`${appConfig.baseUrl}/cities`);
+      getKota.then(dt => {
+        dt.data.data.acquiredCities.forEach((item, i) => {
+          const val = {
+            id: item.id,
+            value: item.city,
+            label: item.city
+          }
+          kotaArr.push(val)
+        });
+        setKota(kotaArr)
+      })
+
+      const getIup = axios.get(`${appConfig.baseUrl}/criterias/result-processings`);
+      getIup.then(
+        function(dt) {
+          dt.data.data.energySource.criterias.forEach((item, i) => {
+            const val = {
+              id: item.id,
+              value: item.criteria,
+              label: item.criteria
+            }
+            iupArr.push(val)
+          });
+          setIup(iupArr)
+        },
+        function(err) {
+          console.log(err)
+        }
+      )
+
+    }
+  }, [session])
+
+  let [kecamatan, setKecamatan] = useState([]);
+  function setCamat(val, i) {
+    if (val[2].value != '') {
+      let kecamatanArr = []
+      const fetch = axios.get(`${appConfig.baseUrl}/districts/${val[2].value.id}`);
+      fetch.then(
+        function(dt) {
+          dt.data.data.acquiredDistrict.forEach((item, i) => {
+            const val = {
+              id: item.id,
+              value: item.district,
+              label: item.district
+            }
+            kecamatanArr.push(val)
+          });
+          setKecamatan(kecamatanArr)
+        },
+        function(err) {
+          console.log(err)
+        }
+      )
+    }
+  }
+
+  let [desa, setDesa] = useState([]);
+  function setPedesaan(val, i) {
+    if (val[3].value != '') {
+      let desaArr = []
+      const fetch = axios.get(`${appConfig.baseUrl}/villages/${val[3].value.id}`);
+      fetch.then(
+        function(dt) {
+          dt.data.data.acquiredVillage.forEach((item, i) => {
+            const val = {
+              id: item.id,
+              value: item.village,
+              label: item.village
+            }
+            desaArr.push(val)
+          });
+          setDesa(desaArr)
+        },
+        function(err) {
+          console.log(err)
+        }
+      )
+    }
+  }
 
   ////////////////////////// INPUT FORM STATE ////////////////////////////////
 
@@ -44,13 +145,13 @@ const FormPengolahan = () => {
   const [kebunPabrik, setKebunPabrik] = useState([
     [
       {'title':'Komoditas','placeholder':'masukkan komoditas','type':'text','value':'','isOpt':false},
-      {'title':'Jumlah (unit)','placeholder':'masukkan jumlah dalam unit','type':'text','value':'','isOpt':false},
-      {'title':'Desa','placeholder':'pilih desa','type':'text','value':'','isOpt':true},
-      {'title':'Kecamatan','placeholder':'masukkan kecamatan','type':'text','value':'','isOpt':false},
-      {'title':'Kabupaten','placeholder':'masukkan kabupaten','type':'text','value':'','isOpt':false},
-      {'title':'Kapasitas Ijin','placeholder':'masukkan kapasitas','type':'text','value':'','isOpt':false},
-      {'title':'Kapasitas Terpasang','placeholder':'masukkan kapasitas','type':'text','value':'','isOpt':false},
-      {'title':'Kapasitas Terpakai','placeholder':'masukkan kapasitas','type':'text','value':'','isOpt':false},
+      {'title':'Jumlah (unit)','placeholder':'masukkan jumlah dalam unit','type':'number','value':'','isOpt':false},
+      {'title':'Kabupaten','placeholder':'masukkan kabupaten','type':'text','value':'','isOpt':'kabupaten'},
+      {'title':'Kecamatan','placeholder':'masukkan kecamatan','type':'text','value':'','isOpt':'kecamatan'},
+      {'title':'Desa','placeholder':'pilih desa','type':'text','value':'','isOpt':'desa'},
+      {'title':'Kapasitas Ijin','placeholder':'masukkan kapasitas','type':'number','value':'','isOpt':false},
+      {'title':'Kapasitas Terpasang','placeholder':'masukkan kapasitas','type':'number','value':'','isOpt':false},
+      {'title':'Kapasitas Terpakai','placeholder':'masukkan kapasitas','type':'number','value':'','isOpt':false},
       {'title':'Instansi Pemberi Ijin','placeholder':'masukkan nama instansi','type':'text','value':'','isOpt':false},
       {'title':'No & Tanggal pemberian ijin','placeholder':'masukkan nomor dan tanggal','type':'text','value':'','isOpt':false},
       {'title':'Keterangan','placeholder':'nama pabrik & lokasi serta penjelasan asal bahan baku dari kebun lain','type':'textArea','value':'','isOpt':false}
@@ -60,13 +161,13 @@ const FormPengolahan = () => {
   function handleBtnKebunPabrik() {
     setKebunPabrik([...kebunPabrik,[
       {'title':'Komoditas','placeholder':'masukkan komoditas','type':'text','value':'','isOpt':false},
-      {'title':'Jumlah (unit)','placeholder':'masukkan jumlah dalam unit','type':'text','value':'','isOpt':false},
-      {'title':'Desa','placeholder':'pilih desa','type':'text','value':'','isOpt':true},
-      {'title':'Kecamatan','placeholder':'masukkan kecamatan','type':'text','value':'','isOpt':false},
-      {'title':'Kabupaten','placeholder':'masukkan kabupaten','type':'text','value':'','isOpt':false},
-      {'title':'Kapasitas Ijin','placeholder':'masukkan kapasitas','type':'text','value':'','isOpt':false},
-      {'title':'Kapasitas Terpasang','placeholder':'masukkan kapasitas','type':'text','value':'','isOpt':false},
-      {'title':'Kapasitas Terpakai','placeholder':'masukkan kapasitas','type':'text','value':'','isOpt':false},
+      {'title':'Jumlah (unit)','placeholder':'masukkan jumlah dalam unit','type':'number','value':'','isOpt':false},
+      {'title':'Kabupaten','placeholder':'masukkan kabupaten','type':'text','value':'','isOpt':'kabupaten'},
+      {'title':'Kecamatan','placeholder':'masukkan kecamatan','type':'text','value':'','isOpt':'kecamatan'},
+      {'title':'Desa','placeholder':'pilih desa','type':'text','value':'','isOpt':'desa'},
+      {'title':'Kapasitas Ijin','placeholder':'masukkan kapasitas','type':'number','value':'','isOpt':false},
+      {'title':'Kapasitas Terpasang','placeholder':'masukkan kapasitas','type':'number','value':'','isOpt':false},
+      {'title':'Kapasitas Terpakai','placeholder':'masukkan kapasitas','type':'number','value':'','isOpt':false},
       {'title':'Instansi Pemberi Ijin','placeholder':'masukkan nama instansi','type':'text','value':'','isOpt':false},
       {'title':'No & Tanggal pemberian ijin','placeholder':'masukkan nomor dan tanggal','type':'text','value':'','isOpt':false},
       {'title':'Keterangan','placeholder':'nama pabrik & lokasi serta penjelasan asal bahan baku dari kebun lain','type':'text','value':'','isOpt':false}
@@ -77,10 +178,10 @@ const FormPengolahan = () => {
 
   const [produksiKebun, setProduksiKebun] = useState([
     [
-      {'title':'Diolahkan di pabrik lain segroup','placeholder':'Jumlah sesuai jenis','type':'text','value':'','isOpt':false},
-      {'title':'Diolahkan di pabrik lain dengan kontrak','placeholder':'jumlah sesuai jenis','type':'text','value':'','isOpt':false},
-      {'title':'Diolahkan di pabrik lain tanpa kontrak','placeholder':'jumlah sesuai jenis','type':'text','value':'','isOpt':false},
-      {'title':'Dijual','placeholder':'jumlah sesuai jenis','type':'text','value':'','isOpt':false},
+      {'title':'Diolahkan di pabrik lain segroup','placeholder':'Jumlah sesuai jenis','type':'number','value':'','isOpt':false},
+      {'title':'Diolahkan di pabrik lain dengan kontrak','placeholder':'jumlah sesuai jenis','type':'number','value':'','isOpt':false},
+      {'title':'Diolahkan di pabrik lain tanpa kontrak','placeholder':'jumlah sesuai jenis','type':'number','value':'','isOpt':false},
+      {'title':'Dijual','placeholder':'jumlah sesuai jenis','type':'number','value':'','isOpt':false},
     ]
   ])
 
@@ -97,31 +198,31 @@ const FormPengolahan = () => {
       {
         'sectionTitle': 'Volume bahan masuk (ton) Tebu',
         'sectionData': [
-          {'title':'Tahun 1','type':'text','placeholder':'masukkan sesuai satuan','value':''},{'title':'Tahun 2','type':'text','placeholder':'masukkan sesuai satuan','value':''},{'title':'Tahun 3','type':'text','placeholder':'masukkan sesuai satuan','value':''}
+          {'title':'Tahun 1','type':'number','placeholder':'masukkan sesuai satuan','value':''},{'title':'Tahun 2','type':'number','placeholder':'masukkan sesuai satuan','value':''},{'title':'Tahun 3','type':'number','placeholder':'masukkan sesuai satuan','value':''}
         ]
       },
       {
         'sectionTitle': 'Rendemen sesuai kondisi setempat/standar (%)',
         'sectionData': [
-          {'title':'Tahun 1','type':'text','placeholder':'masukkan sesuai satuan','value':''},{'title':'Tahun 2','type':'text','placeholder':'masukkan sesuai satuan','value':''},{'title':'Tahun 3','type':'text','placeholder':'masukkan sesuai satuan','value':''}
+          {'title':'Tahun 1','type':'number','placeholder':'masukkan sesuai satuan','value':''},{'title':'Tahun 2','type':'number','placeholder':'masukkan sesuai satuan','value':''},{'title':'Tahun 3','type':'number','placeholder':'masukkan sesuai satuan','value':''}
         ]
       },
       {
         'sectionTitle': 'Taksasi produksi (ton) = 1x2',
         'sectionData': [
-          {'title':'Tahun 1','type':'text','placeholder':'masukkan sesuai satuan','value':''},{'title':'Tahun 2','type':'text','placeholder':'masukkan sesuai satuan','value':''},{'title':'Tahun 3','type':'text','placeholder':'masukkan sesuai satuan','value':''}
+          {'title':'Tahun 1','type':'number','placeholder':'masukkan sesuai satuan','value':''},{'title':'Tahun 2','type':'number','placeholder':'masukkan sesuai satuan','value':''},{'title':'Tahun 3','type':'number','placeholder':'masukkan sesuai satuan','value':''}
         ]
       },
       {
         'sectionTitle': 'Realisasi produksi (ton) SHS % Tebu',
         'sectionData': [
-          {'title':'Tahun 1','type':'text','placeholder':'masukkan sesuai satuan','value':''},{'title':'Tahun 2','type':'text','placeholder':'masukkan sesuai satuan','value':''},{'title':'Tahun 3','type':'text','placeholder':'masukkan sesuai satuan','value':''}
+          {'title':'Tahun 1','type':'number','placeholder':'masukkan sesuai satuan','value':''},{'title':'Tahun 2','type':'number','placeholder':'masukkan sesuai satuan','value':''},{'title':'Tahun 3','type':'number','placeholder':'masukkan sesuai satuan','value':''}
         ]
       },
       {
         'sectionTitle': 'Rendemen yang dicapai = 4/1 (%)',
         'sectionData': [
-          {'title':'Tahun 1','type':'text','placeholder':'masukkan sesuai satuan','value':''},{'title':'Tahun 2','type':'text','placeholder':'masukkan sesuai satuan','value':''},{'title':'Tahun 3','type':'text','placeholder':'masukkan sesuai satuan','value':''}
+          {'title':'Tahun 1','type':'number','placeholder':'masukkan sesuai satuan','value':''},{'title':'Tahun 2','type':'number','placeholder':'masukkan sesuai satuan','value':''},{'title':'Tahun 3','type':'number','placeholder':'masukkan sesuai satuan','value':''}
         ]
       }
     ]
@@ -137,31 +238,31 @@ const FormPengolahan = () => {
     {
       'sectionTitle': 'Volume bahan masuk (ton) Tebu',
       'sectionData': [
-        {'title':'Tahun 1','type':'text','placeholder':'masukkan sesuai satuan','value':''},{'title':'Tahun 2','type':'text','placeholder':'masukkan sesuai satuan','value':''},{'title':'Tahun 3','type':'text','placeholder':'masukkan sesuai satuan','value':''}
+        {'title':'Tahun 1','type':'number','placeholder':'masukkan sesuai satuan','value':''},{'title':'Tahun 2','type':'number','placeholder':'masukkan sesuai satuan','value':''},{'title':'Tahun 3','type':'number','placeholder':'masukkan sesuai satuan','value':''}
       ]
     },
     {
       'sectionTitle': 'Rendemen sesuai kondisi setempat/standar (%)',
       'sectionData': [
-        {'title':'Tahun 1','type':'text','placeholder':'masukkan sesuai satuan','value':''},{'title':'Tahun 2','type':'text','placeholder':'masukkan sesuai satuan','value':''},{'title':'Tahun 3','type':'text','placeholder':'masukkan sesuai satuan','value':''}
+        {'title':'Tahun 1','type':'number','placeholder':'masukkan sesuai satuan','value':''},{'title':'Tahun 2','type':'number','placeholder':'masukkan sesuai satuan','value':''},{'title':'Tahun 3','type':'number','placeholder':'masukkan sesuai satuan','value':''}
       ]
     },
     {
       'sectionTitle': 'Taksasi produksi (ton) = 1x2',
       'sectionData': [
-        {'title':'Tahun 1','type':'text','placeholder':'masukkan sesuai satuan','value':''},{'title':'Tahun 2','type':'text','placeholder':'masukkan sesuai satuan','value':''},{'title':'Tahun 3','type':'text','placeholder':'masukkan sesuai satuan','value':''}
+        {'title':'Tahun 1','type':'number','placeholder':'masukkan sesuai satuan','value':''},{'title':'Tahun 2','type':'number','placeholder':'masukkan sesuai satuan','value':''},{'title':'Tahun 3','type':'number','placeholder':'masukkan sesuai satuan','value':''}
       ]
     },
     {
       'sectionTitle': 'Realisasi produksi (ton) SHS % Tebu',
       'sectionData': [
-        {'title':'Tahun 1','type':'text','placeholder':'masukkan sesuai satuan','value':''},{'title':'Tahun 2','type':'text','placeholder':'masukkan sesuai satuan','value':''},{'title':'Tahun 3','type':'text','placeholder':'masukkan sesuai satuan','value':''}
+        {'title':'Tahun 1','type':'number','placeholder':'masukkan sesuai satuan','value':''},{'title':'Tahun 2','type':'number','placeholder':'masukkan sesuai satuan','value':''},{'title':'Tahun 3','type':'number','placeholder':'masukkan sesuai satuan','value':''}
       ]
     },
     {
       'sectionTitle': 'Rendemen yang dicapai = 4/1 (%)',
       'sectionData': [
-        {'title':'Tahun 1','type':'text','placeholder':'masukkan sesuai satuan','value':''},{'title':'Tahun 2','type':'text','placeholder':'masukkan sesuai satuan','value':''},{'title':'Tahun 3','type':'text','placeholder':'masukkan sesuai satuan','value':''}
+        {'title':'Tahun 1','type':'number','placeholder':'masukkan sesuai satuan','value':''},{'title':'Tahun 2','type':'number','placeholder':'masukkan sesuai satuan','value':''},{'title':'Tahun 3','type':'number','placeholder':'masukkan sesuai satuan','value':''}
       ]
     } ]])
   }
@@ -179,25 +280,25 @@ const FormPengolahan = () => {
       {
         'sectionTitle': 'Kapur Tohor',
         'sectionData': [
-          {'title':'Dosis Anjuran (satuan)','type':'text','placeholder':'masukkan dosis sesuai satuan','value':''},{'title':'Dosis yang digunakan (satuan)','type':'text','placeholder':'masukkan dosis sesuai satuan','value':''}
+          {'title':'Dosis Anjuran (satuan)','type':'number','placeholder':'masukkan dosis sesuai satuan','value':''},{'title':'Dosis yang digunakan (satuan)','type':'number','placeholder':'masukkan dosis sesuai satuan','value':''}
         ]
       },
       {
         'sectionTitle': 'Flokulan',
         'sectionData': [
-          {'title':'Dosis Anjuran (satuan)','type':'text','placeholder':'masukkan dosis sesuai satuan','value':''},{'title':'Dosis yang digunakan (satuan)','type':'text','placeholder':'masukkan dosis sesuai satuan','value':''}
+          {'title':'Dosis Anjuran (satuan)','type':'number','placeholder':'masukkan dosis sesuai satuan','value':''},{'title':'Dosis yang digunakan (satuan)','type':'number','placeholder':'masukkan dosis sesuai satuan','value':''}
         ]
       },
       {
         'sectionTitle': 'Belerang',
         'sectionData': [
-          {'title':'Dosis Anjuran (satuan)','type':'text','placeholder':'masukkan dosis sesuai satuan','value':''},{'title':'Dosis yang digunakan (satuan)','type':'text','placeholder':'masukkan dosis sesuai satuan','value':''}
+          {'title':'Dosis Anjuran (satuan)','type':'number','placeholder':'masukkan dosis sesuai satuan','value':''},{'title':'Dosis yang digunakan (satuan)','type':'number','placeholder':'masukkan dosis sesuai satuan','value':''}
         ]
       },
       {
         'sectionTitle': 'Phospat',
         'sectionData': [
-          {'title':'Dosis Anjuran (satuan)','type':'text','placeholder':'masukkan dosis sesuai satuan','value':''},{'title':'Dosis yang digunakan (satuan)','type':'text','placeholder':'masukkan dosis sesuai satuan','value':''}
+          {'title':'Dosis Anjuran (satuan)','type':'number','placeholder':'masukkan dosis sesuai satuan','value':''},{'title':'Dosis yang digunakan (satuan)','type':'number','placeholder':'masukkan dosis sesuai satuan','value':''}
         ]
       }
     ]
@@ -213,25 +314,25 @@ const FormPengolahan = () => {
     {
       'sectionTitle': 'Kapur Tohor',
       'sectionData': [
-        {'title':'Dosis Anjuran (satuan)','type':'text','placeholder':'masukkan dosis sesuai satuan','value':''},{'title':'Dosis yang digunakan (satuan)','type':'text','placeholder':'masukkan dosis sesuai satuan','value':''}
+        {'title':'Dosis Anjuran (satuan)','type':'number','placeholder':'masukkan dosis sesuai satuan','value':''},{'title':'Dosis yang digunakan (satuan)','type':'number','placeholder':'masukkan dosis sesuai satuan','value':''}
       ]
     },
     {
       'sectionTitle': 'Flokulan',
       'sectionData': [
-        {'title':'Dosis Anjuran (satuan)','type':'text','placeholder':'masukkan dosis sesuai satuan','value':''},{'title':'Dosis yang digunakan (satuan)','type':'text','placeholder':'masukkan dosis sesuai satuan','value':''}
+        {'title':'Dosis Anjuran (satuan)','type':'number','placeholder':'masukkan dosis sesuai satuan','value':''},{'title':'Dosis yang digunakan (satuan)','type':'number','placeholder':'masukkan dosis sesuai satuan','value':''}
       ]
     },
     {
       'sectionTitle': 'Belerang',
       'sectionData': [
-        {'title':'Dosis Anjuran (satuan)','type':'text','placeholder':'masukkan dosis sesuai satuan','value':''},{'title':'Dosis yang digunakan (satuan)','type':'text','placeholder':'masukkan dosis sesuai satuan','value':''}
+        {'title':'Dosis Anjuran (satuan)','type':'number','placeholder':'masukkan dosis sesuai satuan','value':''},{'title':'Dosis yang digunakan (satuan)','type':'number','placeholder':'masukkan dosis sesuai satuan','value':''}
       ]
     },
     {
       'sectionTitle': 'Phospat',
       'sectionData': [
-        {'title':'Dosis Anjuran (satuan)','type':'text','placeholder':'masukkan dosis sesuai satuan','value':''},{'title':'Dosis yang digunakan (satuan)','type':'text','placeholder':'masukkan dosis sesuai satuan','value':''}
+        {'title':'Dosis Anjuran (satuan)','type':'number','placeholder':'masukkan dosis sesuai satuan','value':''},{'title':'Dosis yang digunakan (satuan)','type':'number','placeholder':'masukkan dosis sesuai satuan','value':''}
       ]
     } ]])
   }
@@ -272,14 +373,14 @@ const FormPengolahan = () => {
     [
       {'title':'Jenis Hasil Olah','placeholder':'masukkan jenis hasil olah','type':'text','value':'','isOpt':false},
       {'title':'Jenis Mutu Akhir','placeholder':'masukkan jenis mutu akhir','type':'text','value':'','isOpt':false},
-      {'title':'Volume Produksi tahun 1','placeholder':'masukkan volume','type':'text','value':'','isOpt':false},
-      {'title':'Presentase Produksi tahun 1','placeholder':'masukkan presentase','type':'text','value':'','isOpt':false},
-      {'title':'Volume Produksi tahun 2','placeholder':'masukkan volume','type':'text','value':'','isOpt':false},
-      {'title':'Presentase Produksi tahun 2','placeholder':'masukkan presentase','type':'text','value':'','isOpt':false},
-      {'title':'Volume Produksi tahun 3','placeholder':'masukkan volume','type':'text','value':'','isOpt':false},
-      {'title':'Presentase Produksi tahun 3','placeholder':'masukkan presentase','type':'text','value':'','isOpt':false},
-      {'title':'Volume rata-rata','placeholder':'masukkan volume rata-rata','type':'text','value':'','isOpt':false},
-      {'title':'Presentase rata-rata','placeholder':'masukkan presentase rata-rata','type':'text','value':'','isOpt':false},
+      {'title':'Volume Produksi tahun 1','placeholder':'masukkan volume','type':'number','value':'','isOpt':false},
+      {'title':'Presentase Produksi tahun 1','placeholder':'masukkan presentase','type':'number','value':'','isOpt':false},
+      {'title':'Volume Produksi tahun 2','placeholder':'masukkan volume','type':'number','value':'','isOpt':false},
+      {'title':'Presentase Produksi tahun 2','placeholder':'masukkan presentase','type':'number','value':'','isOpt':false},
+      {'title':'Volume Produksi tahun 3','placeholder':'masukkan volume','type':'number','value':'','isOpt':false},
+      {'title':'Presentase Produksi tahun 3','placeholder':'masukkan presentase','type':'number','value':'','isOpt':false},
+      {'title':'Volume rata-rata','placeholder':'masukkan volume rata-rata','type':'number','value':'','isOpt':false},
+      {'title':'Presentase rata-rata','placeholder':'masukkan presentase rata-rata','type':'number','value':'','isOpt':false},
     ]
   ])
 
@@ -287,14 +388,14 @@ const FormPengolahan = () => {
     setProduksiHilir([...produksiHilir,[
       {'title':'Jenis Hasil Olah','placeholder':'masukkan jenis hasil olah','type':'text','value':'','isOpt':false},
       {'title':'Jenis Mutu Akhir','placeholder':'masukkan jenis mutu akhir','type':'text','value':'','isOpt':false},
-      {'title':'Volume Produksi tahun 1','placeholder':'masukkan volume','type':'text','value':'','isOpt':false},
-      {'title':'Presentase Produksi tahun 1','placeholder':'masukkan presentase','type':'text','value':'','isOpt':false},
-      {'title':'Volume Produksi tahun 2','placeholder':'masukkan volume','type':'text','value':'','isOpt':false},
-      {'title':'Presentase Produksi tahun 2','placeholder':'masukkan presentase','type':'text','value':'','isOpt':false},
-      {'title':'Volume Produksi tahun 3','placeholder':'masukkan volume','type':'text','value':'','isOpt':false},
-      {'title':'Presentase Produksi tahun 3','placeholder':'masukkan presentase','type':'text','value':'','isOpt':false},
-      {'title':'Volume rata-rata','placeholder':'masukkan volume rata-rata','type':'text','value':'','isOpt':false},
-      {'title':'Presentase rata-rata','placeholder':'masukkan presentase rata-rata','type':'text','value':'','isOpt':false},
+      {'title':'Volume Produksi tahun 1','placeholder':'masukkan volume','type':'number','value':'','isOpt':false},
+      {'title':'Presentase Produksi tahun 1','placeholder':'masukkan presentase','type':'number','value':'','isOpt':false},
+      {'title':'Volume Produksi tahun 2','placeholder':'masukkan volume','type':'number','value':'','isOpt':false},
+      {'title':'Presentase Produksi tahun 2','placeholder':'masukkan presentase','type':'number','value':'','isOpt':false},
+      {'title':'Volume Produksi tahun 3','placeholder':'masukkan volume','type':'number','value':'','isOpt':false},
+      {'title':'Presentase Produksi tahun 3','placeholder':'masukkan presentase','type':'number','value':'','isOpt':false},
+      {'title':'Volume rata-rata','placeholder':'masukkan volume rata-rata','type':'number','value':'','isOpt':false},
+      {'title':'Presentase rata-rata','placeholder':'masukkan presentase rata-rata','type':'number','value':'','isOpt':false},
     ]])
   }
 
@@ -312,18 +413,18 @@ const FormPengolahan = () => {
         'sectionTitle': 'Diolah',
         'sectionData': [
           {'title':'Jenis','type':'text','placeholder':'masukkan jenis yang diolah','value':''},
-          {'title':'Jumlah','type':'text','placeholder':'masukkan jumlah yang diolah','value':''},
-          {'title':'Diolah Sendiri (%)','type':'text','placeholder':'masukkan presentase','value':''},
-          {'title':'Diolah Pihak Lain (%)','type':'text','placeholder':'masukkan presentase','value':''},
+          {'title':'Jumlah','type':'number','placeholder':'masukkan jumlah yang diolah','value':''},
+          {'title':'Diolah Sendiri (%)','type':'number','placeholder':'masukkan presentase','value':''},
+          {'title':'Diolah Pihak Lain (%)','type':'number','placeholder':'masukkan presentase','value':''},
           {'title':'Jenis Hasil','type':'text','placeholder':'masukan jenis hasil olahan','value':''},
         ]
       },
       {
         'sectionTitle': 'Tidak diolah',
         'sectionData': [
-          {'title':'Dimanfaatkan kebun (%)','type':'text','placeholder':'masukkan presentase','value':''},
-          {'title':'Dijual (%)','type':'text','placeholder':'masukkan presentase','value':''},
-          {'title':'Tidak Dimanfaatkan (%)','type':'text','placeholder':'masukkan presentase','value':''},
+          {'title':'Dimanfaatkan kebun (%)','type':'number','placeholder':'masukkan presentase','value':''},
+          {'title':'Dijual (%)','type':'number','placeholder':'masukkan presentase','value':''},
+          {'title':'Tidak Dimanfaatkan (%)','type':'number','placeholder':'masukkan presentase','value':''},
         ]
       },
     ]
@@ -340,18 +441,18 @@ const FormPengolahan = () => {
       'sectionTitle': 'Diolah',
       'sectionData': [
         {'title':'Jenis','type':'text','placeholder':'masukkan jenis yang diolah','value':''},
-        {'title':'Jumlah','type':'text','placeholder':'masukkan jumlah yang diolah','value':''},
-        {'title':'Diolah Sendiri (%)','type':'text','placeholder':'masukkan presentase','value':''},
-        {'title':'Diolah Pihak Lain (%)','type':'text','placeholder':'masukkan presentase','value':''},
+        {'title':'Jumlah','type':'number','placeholder':'masukkan jumlah yang diolah','value':''},
+        {'title':'Diolah Sendiri (%)','type':'number','placeholder':'masukkan presentase','value':''},
+        {'title':'Diolah Pihak Lain (%)','type':'number','placeholder':'masukkan presentase','value':''},
         {'title':'Jenis Hasil','type':'text','placeholder':'masukan jenis hasil olahan','value':''},
       ]
     },
     {
       'sectionTitle': 'Tidak diolah',
       'sectionData': [
-        {'title':'Dimanfaatkan kebun (%)','type':'text','placeholder':'masukkan presentase','value':''},
-        {'title':'Dijual (%)','type':'text','placeholder':'masukkan presentase','value':''},
-        {'title':'Tidak Dimanfaatkan (%)','type':'text','placeholder':'masukkan presentase','value':''},
+        {'title':'Dimanfaatkan kebun (%)','type':'number','placeholder':'masukkan presentase','value':''},
+        {'title':'Dijual (%)','type':'number','placeholder':'masukkan presentase','value':''},
+        {'title':'Tidak Dimanfaatkan (%)','type':'number','placeholder':'masukkan presentase','value':''},
       ]
     }]])
   }
@@ -370,18 +471,18 @@ const FormPengolahan = () => {
         'sectionTitle': 'Diolah',
         'sectionData': [
           {'title':'Jenis','type':'text','placeholder':'masukkan jenis yang diolah','value':''},
-          {'title':'Jumlah','type':'text','placeholder':'masukkan jumlah yang diolah','value':''},
-          {'title':'Diolah Sendiri (%)','type':'text','placeholder':'masukkan presentase','value':''},
-          {'title':'Diolah Pihak Lain (%)','type':'text','placeholder':'masukkan presentase','value':''},
+          {'title':'Jumlah','type':'number','placeholder':'masukkan jumlah yang diolah','value':''},
+          {'title':'Diolah Sendiri (%)','type':'number','placeholder':'masukkan presentase','value':''},
+          {'title':'Diolah Pihak Lain (%)','type':'number','placeholder':'masukkan presentase','value':''},
           {'title':'Jenis Hasil','type':'text','placeholder':'masukan jenis hasil olahan','value':''},
         ]
       },
       {
         'sectionTitle': 'Tidak diolah',
         'sectionData': [
-          {'title':'Dimanfaatkan kebun (%)','type':'text','placeholder':'masukkan presentase','value':''},
-          {'title':'Dijual (%)','type':'text','placeholder':'masukkan presentase','value':''},
-          {'title':'Tidak Dimanfaatkan (%)','type':'text','placeholder':'masukkan presentase','value':''},
+          {'title':'Dimanfaatkan kebun (%)','type':'number','placeholder':'masukkan presentase','value':''},
+          {'title':'Dijual (%)','type':'number','placeholder':'masukkan presentase','value':''},
+          {'title':'Tidak Dimanfaatkan (%)','type':'number','placeholder':'masukkan presentase','value':''},
         ]
       },
     ]
@@ -398,18 +499,18 @@ const FormPengolahan = () => {
       'sectionTitle': 'Diolah',
       'sectionData': [
         {'title':'Jenis','type':'text','placeholder':'masukkan jenis yang diolah','value':''},
-        {'title':'Jumlah','type':'text','placeholder':'masukkan jumlah yang diolah','value':''},
-        {'title':'Diolah Sendiri (%)','type':'text','placeholder':'masukkan presentase','value':''},
-        {'title':'Diolah Pihak Lain (%)','type':'text','placeholder':'masukkan presentase','value':''},
+        {'title':'Jumlah','type':'number','placeholder':'masukkan jumlah yang diolah','value':''},
+        {'title':'Diolah Sendiri (%)','type':'number','placeholder':'masukkan presentase','value':''},
+        {'title':'Diolah Pihak Lain (%)','type':'number','placeholder':'masukkan presentase','value':''},
         {'title':'Jenis Hasil','type':'text','placeholder':'masukan jenis hasil olahan','value':''},
       ]
     },
     {
       'sectionTitle': 'Tidak diolah',
       'sectionData': [
-        {'title':'Dimanfaatkan kebun (%)','type':'text','placeholder':'masukkan presentase','value':''},
-        {'title':'Dijual (%)','type':'text','placeholder':'masukkan presentase','value':''},
-        {'title':'Tidak Dimanfaatkan (%)','type':'text','placeholder':'masukkan presentase','value':''},
+        {'title':'Dimanfaatkan kebun (%)','type':'number','placeholder':'masukkan presentase','value':''},
+        {'title':'Dijual (%)','type':'number','placeholder':'masukkan presentase','value':''},
+        {'title':'Tidak Dimanfaatkan (%)','type':'number','placeholder':'masukkan presentase','value':''},
       ]
     }]])
   }
@@ -428,18 +529,18 @@ const FormPengolahan = () => {
         'sectionTitle': 'Diolah',
         'sectionData': [
           {'title':'Jenis','type':'text','placeholder':'masukkan jenis yang diolah','value':''},
-          {'title':'Jumlah','type':'text','placeholder':'masukkan jumlah yang diolah','value':''},
-          {'title':'Diolah Sendiri (%)','type':'text','placeholder':'masukkan presentase','value':''},
-          {'title':'Diolah Pihak Lain (%)','type':'text','placeholder':'masukkan presentase','value':''},
+          {'title':'Jumlah','type':'number','placeholder':'masukkan jumlah yang diolah','value':''},
+          {'title':'Diolah Sendiri (%)','type':'number','placeholder':'masukkan presentase','value':''},
+          {'title':'Diolah Pihak Lain (%)','type':'number','placeholder':'masukkan presentase','value':''},
           {'title':'Jenis Hasil','type':'text','placeholder':'masukan jenis hasil olahan','value':''},
         ]
       },
       {
         'sectionTitle': 'Tidak diolah',
         'sectionData': [
-          {'title':'Dimanfaatkan kebun (%)','type':'text','placeholder':'masukkan presentase','value':''},
-          {'title':'Dijual (%)','type':'text','placeholder':'masukkan presentase','value':''},
-          {'title':'Tidak Dimanfaatkan (%)','type':'text','placeholder':'masukkan presentase','value':''},
+          {'title':'Dimanfaatkan kebun (%)','type':'number','placeholder':'masukkan presentase','value':''},
+          {'title':'Dijual (%)','type':'number','placeholder':'masukkan presentase','value':''},
+          {'title':'Tidak Dimanfaatkan (%)','type':'number','placeholder':'masukkan presentase','value':''},
         ]
       },
     ]
@@ -456,18 +557,18 @@ const FormPengolahan = () => {
       'sectionTitle': 'Diolah',
       'sectionData': [
         {'title':'Jenis','type':'text','placeholder':'masukkan jenis yang diolah','value':''},
-        {'title':'Jumlah','type':'text','placeholder':'masukkan jumlah yang diolah','value':''},
-        {'title':'Diolah Sendiri (%)','type':'text','placeholder':'masukkan presentase','value':''},
-        {'title':'Diolah Pihak Lain (%)','type':'text','placeholder':'masukkan presentase','value':''},
+        {'title':'Jumlah','type':'number','placeholder':'masukkan jumlah yang diolah','value':''},
+        {'title':'Diolah Sendiri (%)','type':'number','placeholder':'masukkan presentase','value':''},
+        {'title':'Diolah Pihak Lain (%)','type':'number','placeholder':'masukkan presentase','value':''},
         {'title':'Jenis Hasil','type':'text','placeholder':'masukan jenis hasil olahan','value':''},
       ]
     },
     {
       'sectionTitle': 'Tidak diolah',
       'sectionData': [
-        {'title':'Dimanfaatkan kebun (%)','type':'text','placeholder':'masukkan presentase','value':''},
-        {'title':'Dijual (%)','type':'text','placeholder':'masukkan presentase','value':''},
-        {'title':'Tidak Dimanfaatkan (%)','type':'text','placeholder':'masukkan presentase','value':''},
+        {'title':'Dimanfaatkan kebun (%)','type':'number','placeholder':'masukkan presentase','value':''},
+        {'title':'Dijual (%)','type':'number','placeholder':'masukkan presentase','value':''},
+        {'title':'Tidak Dimanfaatkan (%)','type':'number','placeholder':'masukkan presentase','value':''},
       ]
     }]])
   }
@@ -477,24 +578,24 @@ const FormPengolahan = () => {
   const [mutu, setMutu] = useState([
     [
       {'title':'jenis produk','type':'text','placeholder':'masukkan jenis produk','value':'','isOpt':false},
-      {'title':'Volume tahun 1 (ton)','type':'text','placeholder':'masukkan volume','value':'','isOpt':false},
-      {'title':'Sesuai Standar Tahun 1 (%)','type':'text','placeholder':'masukkan presentase','value':'','isOpt':false},
-      {'title':'Volume tahun 2 (ton)','type':'text','placeholder':'masukkan volume','value':'','isOpt':false},
-      {'title':'Sesuai Standar Tahun 2 (%)','type':'text','placeholder':'masukkan presentase','value':'','isOpt':false},
-      {'title':'Volume tahun 3 (ton)','type':'text','placeholder':'masukkan volume','value':'','isOpt':false},
-      {'title':'Sesuai Standar Tahun 3 (%)','type':'text','placeholder':'masukkan presentase','value':'','isOpt':false},
+      {'title':'Volume tahun 1 (ton)','type':'number','placeholder':'masukkan volume','value':'','isOpt':false},
+      {'title':'Sesuai Standar Tahun 1 (%)','type':'number','placeholder':'masukkan presentase','value':'','isOpt':false},
+      {'title':'Volume tahun 2 (ton)','type':'number','placeholder':'masukkan volume','value':'','isOpt':false},
+      {'title':'Sesuai Standar Tahun 2 (%)','type':'number','placeholder':'masukkan presentase','value':'','isOpt':false},
+      {'title':'Volume tahun 3 (ton)','type':'number','placeholder':'masukkan volume','value':'','isOpt':false},
+      {'title':'Sesuai Standar Tahun 3 (%)','type':'number','placeholder':'masukkan presentase','value':'','isOpt':false},
     ]
   ])
 
   function handleBtnAddMutu() {
     setMutu([...mutu,[
       {'title':'jenis produk','type':'text','placeholder':'masukkan jenis produk','value':'','isOpt':false},
-      {'title':'Volume tahun 1 (ton)','type':'text','placeholder':'masukkan volume','value':'','isOpt':false},
-      {'title':'Sesuai Standar Tahun 1 (%)','type':'text','placeholder':'masukkan presentase','value':'','isOpt':false},
-      {'title':'Volume tahun 2 (ton)','type':'text','placeholder':'masukkan volume','value':'','isOpt':false},
-      {'title':'Sesuai Standar Tahun 2 (%)','type':'text','placeholder':'masukkan presentase','value':'','isOpt':false},
-      {'title':'Volume tahun 3 (ton)','type':'text','placeholder':'masukkan volume','value':'','isOpt':false},
-      {'title':'Sesuai Standar Tahun 3 (%)','type':'text','placeholder':'masukkan presentase','value':'','isOpt':false},
+      {'title':'Volume tahun 1 (ton)','type':'number','placeholder':'masukkan volume','value':'','isOpt':false},
+      {'title':'Sesuai Standar Tahun 1 (%)','type':'number','placeholder':'masukkan presentase','value':'','isOpt':false},
+      {'title':'Volume tahun 2 (ton)','type':'number','placeholder':'masukkan volume','value':'','isOpt':false},
+      {'title':'Sesuai Standar Tahun 2 (%)','type':'number','placeholder':'masukkan presentase','value':'','isOpt':false},
+      {'title':'Volume tahun 3 (ton)','type':'number','placeholder':'masukkan volume','value':'','isOpt':false},
+      {'title':'Sesuai Standar Tahun 3 (%)','type':'number','placeholder':'masukkan presentase','value':'','isOpt':false},
     ]])
   }
 
@@ -505,10 +606,10 @@ const FormPengolahan = () => {
       {'title':'Komoditas','placeholder':'masukkan jenis komoditas','type':'text','value':'','isOpt':false},
       {'title':'Jenis Bahan Olahan','placeholder':'masukkan jenis bahan','type':'text','value':'','isOpt':false},
       {'title':'Asal Bahan Olah','placeholder':'masukkan asal bahan','type':'text','value':'','isOpt':false},
-      {'title':'Diolah Sendiri (%)','placeholder':'masukkan presentase','type':'text','value':'','isOpt':false},
-      {'title':'Diolah Kemitraan (%)','placeholder':'masukkan presentase','type':'text','value':'','isOpt':false},
-      {'title':'Diolah Tanpa Kontrak (%)','placeholder':'masukkan presentase','type':'text','value':'','isOpt':false},
-      {'title':'Dijual tanpa diolah (%)','placeholder':'masukkan presentase','type':'text','value':'','isOpt':false},
+      {'title':'Diolah Sendiri (%)','placeholder':'masukkan presentase','type':'number','value':'','isOpt':false},
+      {'title':'Diolah Kemitraan (%)','placeholder':'masukkan presentase','type':'number','value':'','isOpt':false},
+      {'title':'Diolah Tanpa Kontrak (%)','placeholder':'masukkan presentase','type':'number','value':'','isOpt':false},
+      {'title':'Dijual tanpa diolah (%)','placeholder':'masukkan presentase','type':'number','value':'','isOpt':false},
       {'title':'Keterangan','placeholder':'masukkan keterangan','type':'text','value':'','isOpt':false}
     ]
   ])
@@ -518,10 +619,10 @@ const FormPengolahan = () => {
       {'title':'Komoditas','placeholder':'masukkan jenis komoditas','type':'text','value':'','isOpt':false},
       {'title':'Jenis Bahan Olahan','placeholder':'masukkan jenis bahan','type':'text','value':'','isOpt':false},
       {'title':'Asal Bahan Olah','placeholder':'masukkan asal bahan','type':'text','value':'','isOpt':false},
-      {'title':'Diolah Sendiri (%)','placeholder':'masukkan presentase','type':'text','value':'','isOpt':false},
-      {'title':'Diolah Kemitraan (%)','placeholder':'masukkan presentase','type':'text','value':'','isOpt':false},
-      {'title':'Diolah Tanpa Kontrak (%)','placeholder':'masukkan presentase','type':'text','value':'','isOpt':false},
-      {'title':'Dijual tanpa diolah (%)','placeholder':'masukkan presentase','type':'text','value':'','isOpt':false},
+      {'title':'Diolah Sendiri (%)','placeholder':'masukkan presentase','type':'number','value':'','isOpt':false},
+      {'title':'Diolah Kemitraan (%)','placeholder':'masukkan presentase','type':'number','value':'','isOpt':false},
+      {'title':'Diolah Tanpa Kontrak (%)','placeholder':'masukkan presentase','type':'number','value':'','isOpt':false},
+      {'title':'Dijual tanpa diolah (%)','placeholder':'masukkan presentase','type':'number','value':'','isOpt':false},
       {'title':'Keterangan','placeholder':'masukkan keterangan','type':'text','value':'','isOpt':false}
     ]])
   }
@@ -533,13 +634,12 @@ const FormPengolahan = () => {
   }
 
   function formRegularChange(e, state, setState, index, index2) {
-    const { name, value } = e.target;
     const list = [...state];
     list.forEach((item, i) => {
       if (i == index) {
         item.forEach((item2, ii) => {
           if (ii == index2) {
-            item2.value = value
+            item2.value = e
           }
         });
       }
@@ -548,7 +648,6 @@ const FormPengolahan = () => {
   }
 
   function formSectionChange(e, state, setState, index, index2, index3) {
-    const { name, value } = e.target;
     const list = [...state];
     list.forEach((item, i) => {
       if (i == index) {
@@ -556,7 +655,7 @@ const FormPengolahan = () => {
           if (ii == index2) {
             item2.sectionData.forEach((item3, iii) => {
               if (iii == index3) {
-                item3.value = value
+                item3.value = e
               }
             });
           }
@@ -564,6 +663,18 @@ const FormPengolahan = () => {
       }
     });
     setState(list);
+  }
+
+  function getBase64(file) {
+    var reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = function () {
+      console.log(reader.result);
+      setIsoImgBase(reader.result.toString().replace(/^data:(.*,)?/, ''))
+    };
+    reader.onerror = function (error) {
+      console.log('Error: ', error);
+    };
   }
 
   useEffect(() => {
@@ -587,12 +698,12 @@ const FormPengolahan = () => {
         }
 
         retrievedObject.auxilliaryMaterial.forEach((e, i, arr) => {
-          const formData = [ { 'sectionTitle': '', 'sectionData': [ {'title':'Komoditas','type':'text','placeholder':'masukkan jenis komoditas','value':e.comodity}, ] }, { 'sectionTitle': 'Kapur Tohor', 'sectionData': [ {'title':'Dosis Anjuran (satuan)','type':'text','placeholder':'masukkan dosis sesuai satuan','value':e.details[0].standardYieldPercentage}, {'title':'Dosis yang digunakan (satuan)','type':'text','placeholder':'masukkan dosis sesuai satuan','value':e.details[0].taxation} ] }, { 'sectionTitle': 'Flokulan', 'sectionData': [ {'title':'Dosis Anjuran (satuan)','type':'text','placeholder':'masukkan dosis sesuai satuan','value':e.details[1].standardYieldPercentage}, {'title':'Dosis yang digunakan (satuan)','type':'text','placeholder':'masukkan dosis sesuai satuan','value':e.details[1].taxation} ] }, { 'sectionTitle': 'Belerang', 'sectionData': [ {'title':'Dosis Anjuran (satuan)','type':'text','placeholder':'masukkan dosis sesuai satuan','value':e.details[2].standardYieldPercentage}, {'title':'Dosis yang digunakan (satuan)','type':'text','placeholder':'masukkan dosis sesuai satuan','value':e.details[2].taxation} ] }, { 'sectionTitle': 'Phospat', 'sectionData': [ {'title':'Dosis Anjuran (satuan)','type':'text','placeholder':'masukkan dosis sesuai satuan','value':e.details[3].standardYieldPercentage}, {'title':'Dosis yang digunakan (satuan)','type':'text','placeholder':'masukkan dosis sesuai satuan','value':e.details[3].taxation} ] } ]
+          const formData = [ { 'sectionTitle': '', 'sectionData': [ {'title':'Komoditas','type':'text','placeholder':'masukkan jenis komoditas','value':e.comodity}, ] }, { 'sectionTitle': 'Kapur Tohor', 'sectionData': [ {'title':'Dosis Anjuran (satuan)','type':'number','placeholder':'masukkan dosis sesuai satuan','value':e.details[0].standardYieldPercentage}, {'title':'Dosis yang digunakan (satuan)','type':'number','placeholder':'masukkan dosis sesuai satuan','value':e.details[0].taxation} ] }, { 'sectionTitle': 'Flokulan', 'sectionData': [ {'title':'Dosis Anjuran (satuan)','type':'number','placeholder':'masukkan dosis sesuai satuan','value':e.details[1].standardYieldPercentage}, {'title':'Dosis yang digunakan (satuan)','type':'number','placeholder':'masukkan dosis sesuai satuan','value':e.details[1].taxation} ] }, { 'sectionTitle': 'Belerang', 'sectionData': [ {'title':'Dosis Anjuran (satuan)','type':'number','placeholder':'masukkan dosis sesuai satuan','value':e.details[2].standardYieldPercentage}, {'title':'Dosis yang digunakan (satuan)','type':'number','placeholder':'masukkan dosis sesuai satuan','value':e.details[2].taxation} ] }, { 'sectionTitle': 'Phospat', 'sectionData': [ {'title':'Dosis Anjuran (satuan)','type':'number','placeholder':'masukkan dosis sesuai satuan','value':e.details[3].standardYieldPercentage}, {'title':'Dosis yang digunakan (satuan)','type':'number','placeholder':'masukkan dosis sesuai satuan','value':e.details[3].taxation} ] } ]
           replicateData.auxilliaryMaterial.push(formData)
         })
 
         retrievedObject.processingEfficiency.forEach((e, i, arr) => {
-          const formData = [ { 'sectionTitle': '', 'sectionData': [ {'title':'Komoditas','type':'text','placeholder':'masukkan jenis komoditas','value':e.comodity}, ] }, { 'sectionTitle': 'Volume bahan masuk (ton) Tebu', 'sectionData': [ {'title':'Tahun 1','type':'text','placeholder':'masukkan sesuai satuan','value':e.details[0].inputVolume}, {'title':'Tahun 2','type':'text','placeholder':'masukkan sesuai satuan','value':e.details[1].inputVolume}, {'title':'Tahun 3','type':'text','placeholder':'masukkan sesuai satuan','value':e.details[2].inputVolume} ] }, { 'sectionTitle': 'Rendemen sesuai kondisi setempat/standar (%)', 'sectionData': [ {'title':'Tahun 1','type':'text','placeholder':'masukkan sesuai satuan','value':e.details[0].standardYieldPercentage}, {'title':'Tahun 2','type':'text','placeholder':'masukkan sesuai satuan','value':e.details[1].standardYieldPercentage}, {'title':'Tahun 3','type':'text','placeholder':'masukkan sesuai satuan','value':e.details[2].standardYieldPercentage} ] }, { 'sectionTitle': 'Taksasi produksi (ton) = 1x2', 'sectionData': [ {'title':'Tahun 1','type':'text','placeholder':'masukkan sesuai satuan','value':e.details[0].taxation}, {'title':'Tahun 2','type':'text','placeholder':'masukkan sesuai satuan','value':e.details[1].taxation}, {'title':'Tahun 3','type':'text','placeholder':'masukkan sesuai satuan','value':e.details[2].taxation} ] }, { 'sectionTitle': 'Realisasi produksi (ton) SHS % Tebu', 'sectionData': [ {'title':'Tahun 1','type':'text','placeholder':'masukkan sesuai satuan','value':e.details[0].realProductionPercentage}, {'title':'Tahun 2','type':'text','placeholder':'masukkan sesuai satuan','value':e.details[1].realProductionPercentage}, {'title':'Tahun 3','type':'text','placeholder':'masukkan sesuai satuan','value':e.details[2].realProductionPercentage} ] }, { 'sectionTitle': 'Rendemen yang dicapai = 4/1 (%)', 'sectionData': [ {'title':'Tahun 1','type':'text','placeholder':'masukkan sesuai satuan','value':e.details[0].realYieldPercentage}, {'title':'Tahun 2','type':'text','placeholder':'masukkan sesuai satuan','value':e.details[1].realYieldPercentage}, {'title':'Tahun 3','type':'text','placeholder':'masukkan sesuai satuan','value':e.details[2].realYieldPercentage} ] } ]
+          const formData = [ { 'sectionTitle': '', 'sectionData': [ {'title':'Komoditas','type':'text','placeholder':'masukkan jenis komoditas','value':e.comodity}, ] }, { 'sectionTitle': 'Volume bahan masuk (ton) Tebu', 'sectionData': [ {'title':'Tahun 1','type':'number','placeholder':'masukkan sesuai satuan','value':e.details[0].inputVolume}, {'title':'Tahun 2','type':'number','placeholder':'masukkan sesuai satuan','value':e.details[1].inputVolume}, {'title':'Tahun 3','type':'number','placeholder':'masukkan sesuai satuan','value':e.details[2].inputVolume} ] }, { 'sectionTitle': 'Rendemen sesuai kondisi setempat/standar (%)', 'sectionData': [ {'title':'Tahun 1','type':'number','placeholder':'masukkan sesuai satuan','value':e.details[0].standardYieldPercentage}, {'title':'Tahun 2','type':'number','placeholder':'masukkan sesuai satuan','value':e.details[1].standardYieldPercentage}, {'title':'Tahun 3','type':'number','placeholder':'masukkan sesuai satuan','value':e.details[2].standardYieldPercentage} ] }, { 'sectionTitle': 'Taksasi produksi (ton) = 1x2', 'sectionData': [ {'title':'Tahun 1','type':'number','placeholder':'masukkan sesuai satuan','value':e.details[0].taxation}, {'title':'Tahun 2','type':'number','placeholder':'masukkan sesuai satuan','value':e.details[1].taxation}, {'title':'Tahun 3','type':'number','placeholder':'masukkan sesuai satuan','value':e.details[2].taxation} ] }, { 'sectionTitle': 'Realisasi produksi (ton) SHS % Tebu', 'sectionData': [ {'title':'Tahun 1','type':'number','placeholder':'masukkan sesuai satuan','value':e.details[0].realProductionPercentage}, {'title':'Tahun 2','type':'number','placeholder':'masukkan sesuai satuan','value':e.details[1].realProductionPercentage}, {'title':'Tahun 3','type':'number','placeholder':'masukkan sesuai satuan','value':e.details[2].realProductionPercentage} ] }, { 'sectionTitle': 'Rendemen yang dicapai = 4/1 (%)', 'sectionData': [ {'title':'Tahun 1','type':'number','placeholder':'masukkan sesuai satuan','value':e.details[0].realYieldPercentage}, {'title':'Tahun 2','type':'number','placeholder':'masukkan sesuai satuan','value':e.details[1].realYieldPercentage}, {'title':'Tahun 3','type':'number','placeholder':'masukkan sesuai satuan','value':e.details[2].realYieldPercentage} ] } ]
           replicateData.processingEfficiency.push(formData)
         })
 
@@ -753,10 +864,10 @@ const FormPengolahan = () => {
         setWaktuDibutuhkan(retrievedObject.productAndQuality.rspoDescription)
 
         setProdukHilirOpt('')
-        setSistemMutuOpt(retrievedObject.productAndQuality.isImplementingManagement)
-        setSistemIsoOpt(retrievedObject.productAndQuality.isImplementingIso9000)
-        setSistemIsoLainOpt(retrievedObject.productAndQuality.isImplementingOtherStandard)
-        setSertifikatOpt(retrievedObject.productAndQuality.isImplementingRspo)
+        setSistemMutuOpt(retrievedObject.productAndQuality.isImplementingManagement == true ? 'Sudah' : 'Belum')
+        setSistemIsoOpt(retrievedObject.productAndQuality.isImplementingIso9000 == true ? 'Sudah' : 'Belum')
+        setSistemIsoLainOpt(retrievedObject.productAndQuality.isImplementingOtherStandard == true ? 'Sudah' : 'Belum')
+        setSertifikatOpt(retrievedObject.productAndQuality.isImplementingRspo == true ? 'Sudah' : 'Belum')
 
         setKebunPabrik(replicateData.processingUnit)
         setProduksiKebun(replicateData.unownedGarden)
@@ -779,10 +890,10 @@ const FormPengolahan = () => {
     let data = {
       "processingUnit": [],
       "unownedGarden": {
-        "sameGroupUnit": produksiKebun[0][0].value,
-        "otherFactoryWithContractUnit": produksiKebun[0][1].value,
-        "otherFactoryWithoutContractUnit": produksiKebun[0][2].value,
-        "soldUnit": produksiKebun[0][3].value
+        "sameGroupUnit": Number(produksiKebun[0][0].value),
+        "otherFactoryWithContractUnit": Number(produksiKebun[0][1].value),
+        "otherFactoryWithoutContractUnit": Number(produksiKebun[0][2].value),
+        "soldUnit": Number(produksiKebun[0][3].value)
       },
       "processingEfficiency": [],
       "auxilliaryMaterial": [],
@@ -794,13 +905,13 @@ const FormPengolahan = () => {
       "productAndQuality": {
           "certificateType": izinProduk,
           "product": hasilProduk,
-          "isImplementingManagement": sistemMutuOpt,
+          "isImplementingManagement": sistemMutuOpt == 'Sudah' ? true : false,
           "qualityManagement": sistemMutu,
-          "isImplementingIso9000": sistemIsoOpt,
+          "isImplementingIso9000": sistemIsoOpt == 'Sudah' ? true : false,
           "file": {},
-          "isImplementingOtherStandard": sistemIsoLainOpt,
+          "isImplementingOtherStandard": sistemIsoLainOpt == 'Sudah' ? true : false,
           "otherStandard": sistemMutuLain,
-          "isImplementingRspo": sertifikatOpt,
+          "isImplementingRspo": sertifikatOpt == 'Sudah' ? true : false,
           "rspoDescription": waktuDibutuhkan
       },
       "qualityAchievement": [],
@@ -815,13 +926,13 @@ const FormPengolahan = () => {
       item.forEach((e, i, arr) => {
         dataTemp.comodity = arr[0].sectionData[0].value
         dataTemp.processingType = arr[1].sectionData[0].value
-        dataTemp.processedTotal = arr[1].sectionData[1].value
-        dataTemp.selfProcessedPercentage = arr[1].sectionData[2].value
-        dataTemp.otherPartyPercentage = arr[1].sectionData[3].value
+        dataTemp.processedTotal = Number(arr[1].sectionData[1].value)
+        dataTemp.selfProcessedPercentage = Number(arr[1].sectionData[2].value)
+        dataTemp.otherPartyPercentage = Number(arr[1].sectionData[3].value)
         dataTemp.resultType = arr[1].sectionData[4].value
-        dataTemp.unprocessedUsedPercentage = arr[2].sectionData[0].value
-        dataTemp.unprocessedSoldPercentage = arr[2].sectionData[1].value
-        dataTemp.unprocessedUnusedPercentage = arr[2].sectionData[2].value
+        dataTemp.unprocessedUsedPercentage = Number(arr[2].sectionData[0].value)
+        dataTemp.unprocessedSoldPercentage = Number(arr[2].sectionData[1].value)
+        dataTemp.unprocessedUnusedPercentage = Number(arr[2].sectionData[2].value)
       });
       data.liquidWaste.push(dataTemp)
     });
@@ -831,13 +942,13 @@ const FormPengolahan = () => {
       item.forEach((e, i, arr) => {
         dataTemp.comodity = arr[0].sectionData[0].value
         dataTemp.processingType = arr[1].sectionData[0].value
-        dataTemp.processedTotal = arr[1].sectionData[1].value
-        dataTemp.selfProcessedPercentage = arr[1].sectionData[2].value
-        dataTemp.otherPartyPercentage = arr[1].sectionData[3].value
+        dataTemp.processedTotal = Number(arr[1].sectionData[1].value)
+        dataTemp.selfProcessedPercentage = Number(arr[1].sectionData[2].value)
+        dataTemp.otherPartyPercentage = Number(arr[1].sectionData[3].value)
         dataTemp.resultType = arr[1].sectionData[4].value
-        dataTemp.unprocessedUsedPercentage = arr[2].sectionData[0].value
-        dataTemp.unprocessedSoldPercentage = arr[2].sectionData[1].value
-        dataTemp.unprocessedUnusedPercentage = arr[2].sectionData[2].value
+        dataTemp.unprocessedUsedPercentage = Number(arr[2].sectionData[0].value)
+        dataTemp.unprocessedSoldPercentage = Number(arr[2].sectionData[1].value)
+        dataTemp.unprocessedUnusedPercentage = Number(arr[2].sectionData[2].value)
       });
       data.solidWaste.push(dataTemp)
     });
@@ -847,13 +958,13 @@ const FormPengolahan = () => {
       item.forEach((e, i, arr) => {
         dataTemp.comodity = arr[0].sectionData[0].value
         dataTemp.processingType = arr[1].sectionData[0].value
-        dataTemp.processedTotal = arr[1].sectionData[1].value
-        dataTemp.selfProcessedPercentage = arr[1].sectionData[2].value
-        dataTemp.otherPartyPercentage = arr[1].sectionData[3].value
+        dataTemp.processedTotal = Number(arr[1].sectionData[1].value)
+        dataTemp.selfProcessedPercentage = Number(arr[1].sectionData[2].value)
+        dataTemp.otherPartyPercentage = Number(arr[1].sectionData[3].value)
         dataTemp.resultType = arr[1].sectionData[4].value
-        dataTemp.unprocessedUsedPercentage = arr[2].sectionData[0].value
-        dataTemp.unprocessedSoldPercentage = arr[2].sectionData[1].value
-        dataTemp.unprocessedUnusedPercentage = arr[2].sectionData[2].value
+        dataTemp.unprocessedUsedPercentage = Number(arr[2].sectionData[0].value)
+        dataTemp.unprocessedSoldPercentage = Number(arr[2].sectionData[1].value)
+        dataTemp.unprocessedUnusedPercentage = Number(arr[2].sectionData[2].value)
       });
       data.sideResult.push(dataTemp)
     });
@@ -868,20 +979,20 @@ const FormPengolahan = () => {
       item.forEach((e, i, arr) => {
         dataTemp.comodity = arr[0].sectionData[0].value
         details1.material = arr[1].sectionTitle
-        details1.standardYieldPercentage = arr[1].sectionData[0].value
-        details1.taxation = arr[1].sectionData[1].value
+        details1.recommendedDose = Number(arr[1].sectionData[0].value)
+        details1.realDose = Number(arr[1].sectionData[1].value)
 
         details2.material = arr[2].sectionTitle
-        details2.standardYieldPercentage = arr[2].sectionData[0].value
-        details2.taxation = arr[2].sectionData[1].value
+        details2.recommendedDose = Number(arr[2].sectionData[0].value)
+        details2.realDose = Number(arr[2].sectionData[1].value)
 
         details3.material = arr[3].sectionTitle
-        details3.standardYieldPercentage = arr[3].sectionData[0].value
-        details3.taxation = arr[3].sectionData[1].value
+        details3.recommendedDose = Number(arr[3].sectionData[0].value)
+        details3.realDose = Number(arr[3].sectionData[1].value)
 
         details4.material = arr[4].sectionTitle
-        details4.standardYieldPercentage = arr[4].sectionData[0].value
-        details4.taxation = arr[4].sectionData[1].value
+        details4.recommendedDose = Number(arr[4].sectionData[0].value)
+        details4.realDose = Number(arr[4].sectionData[1].value)
       });
       details.push(details1, details2, details3, details4)
       dataTemp.details = details
@@ -897,23 +1008,23 @@ const FormPengolahan = () => {
       item.forEach((e, i, arr) => {
         dataTemp.comodity = arr[0].sectionData[0].value
         details1.year = 1
-        details1.inputVolume = arr[1].sectionData[0].value
-        details1.standardYieldPercentage = arr[2].sectionData[0].value
-        details1.taxation = arr[3].sectionData[0].value
-        details1.realProductionPercentage = arr[4].sectionData[0].value
-        details1.realYieldPercentage = arr[5].sectionData[0].value
+        details1.inputVolume = Number(arr[1].sectionData[0].value)
+        details1.standardYieldPercentage = Number(arr[2].sectionData[0].value)
+        details1.taxation = Number(arr[3].sectionData[0].value)
+        details1.realProductionPercentage = Number(arr[4].sectionData[0].value)
+        details1.realYieldPercentage = Number(arr[5].sectionData[0].value)
         details2.year = 2
-        details2.inputVolume = arr[1].sectionData[1].value
-        details2.standardYieldPercentage = arr[2].sectionData[1].value
-        details2.taxation = arr[3].sectionData[1].value
-        details2.realProductionPercentage = arr[4].sectionData[1].value
-        details2.realYieldPercentage = arr[5].sectionData[1].value
+        details2.inputVolume = Number(arr[1].sectionData[1].value)
+        details2.standardYieldPercentage = Number(arr[2].sectionData[1].value)
+        details2.taxation = Number(arr[3].sectionData[1].value)
+        details2.realProductionPercentage = Number(arr[4].sectionData[1].value)
+        details2.realYieldPercentage = Number(arr[5].sectionData[1].value)
         details3.year = 3
-        details3.inputVolume = arr[1].sectionData[2].value
-        details3.standardYieldPercentage = arr[2].sectionData[2].value
-        details3.taxation = arr[3].sectionData[2].value
-        details3.realProductionPercentage = arr[4].sectionData[2].value
-        details3.realYieldPercentage = arr[5].sectionData[2].value
+        details3.inputVolume = Number(arr[1].sectionData[2].value)
+        details3.standardYieldPercentage = Number(arr[2].sectionData[2].value)
+        details3.taxation = Number(arr[3].sectionData[2].value)
+        details3.realProductionPercentage = Number(arr[4].sectionData[2].value)
+        details3.realYieldPercentage = Number(arr[5].sectionData[2].value)
       });
       details.push(details1, details2, details3)
       dataTemp.details = details
@@ -926,10 +1037,10 @@ const FormPengolahan = () => {
         inv.comodity = item[0].value
         inv.materialType = item[1].value
         inv.rawMaterialType = item[2].value
-        inv.selfProcessedPercentage = item[3].value
-        inv.partnerProcessedPercentage = item[4].value
-        inv.processedWithContractPercentage = item[5].value
-        inv.processedWithoutContractPercentage = item[6].value
+        inv.selfProcessedPercentage = Number(item[3].value)
+        inv.partnerProcessedPercentage = Number(item[4].value)
+        inv.processedWithContractPercentage = Number(item[5].value)
+        inv.processedWithoutContractPercentage = Number(item[6].value)
         inv.description = item[7].value
       });
       data.processingPartnership.push(inv)
@@ -939,12 +1050,12 @@ const FormPengolahan = () => {
       let inv = {}
       item.forEach(() => {
         inv.productType = item[0].value
-        inv.firstYearVolume = item[1].value
-        inv.firstYearPercentage = item[2].value
-        inv.secondYearVolume = item[3].value
-        inv.secondYearPercentage = item[4].value
-        inv.thirdYearVolume = item[5].value
-        inv.thirdYearPercentage = item[6].value
+        inv.firstYearVolume = Number(item[1].value)
+        inv.firstYearPercentage = Number(item[2].value)
+        inv.secondYearVolume = Number(item[3].value)
+        inv.secondYearPercentage = Number(item[4].value)
+        inv.thirdYearVolume = Number(item[5].value)
+        inv.thirdYearPercentage = Number(item[6].value)
       });
       data.qualityAchievement.push(inv)
     });
@@ -954,14 +1065,14 @@ const FormPengolahan = () => {
       item.forEach(() => {
         inv.processingType = item[0].value
         inv.qualityType = item[1].value
-        inv.firstYearVolume = item[2].value
-        inv.firstYearPercentage = item[3].value
-        inv.secondYearVolume = item[4].value
-        inv.secondYearPercentage = item[5].value
-        inv.thirdYearVolume = item[6].value
-        inv.thirdYearPercentage = item[7].value
-        inv.avgVolume = item[8].value
-        inv.avgPercentage = item[9].value
+        inv.firstYearVolume = Number(item[2].value)
+        inv.firstYearPercentage = Number(item[3].value)
+        inv.secondYearVolume = Number(item[4].value)
+        inv.secondYearPercentage = Number(item[5].value)
+        inv.thirdYearVolume = Number(item[6].value)
+        inv.thirdYearPercentage = Number(item[7].value)
+        inv.avgVolume = Number(item[8].value)
+        inv.avgPercentage = Number(item[9].value)
       });
       data.downstreamProduct.push(inv)
     });
@@ -971,12 +1082,12 @@ const FormPengolahan = () => {
       item.forEach(() => {
         inv.processingType = item[0].value
         inv.qualityType = item[1].value
-        inv.firstYearVolume = item[2].value
-        inv.firstYearPercentage = item[3].value
-        inv.secondYearVolume = item[4].value
-        inv.secondYearPercentage = item[5].value
-        inv.thirdYearVolume = item[6].value
-        inv.thirdYearPercentage = item[7].value
+        inv.firstYearVolume = Number(item[2].value)
+        inv.firstYearPercentage = Number(item[3].value)
+        inv.secondYearVolume = Number(item[4].value)
+        inv.secondYearPercentage = Number(item[5].value)
+        inv.thirdYearVolume = Number(item[6].value)
+        inv.thirdYearPercentage = Number(item[7].value)
         inv.description = item[8].value
       });
       data.lastThreeYearsProcessing.push(inv)
@@ -986,13 +1097,13 @@ const FormPengolahan = () => {
       let inv = {}
       item.forEach(() => {
         inv.comodity = item[0].value
-        inv.unit = item[1].value
+        inv.unit = Number(item[1].value)
         inv.cityId = item[2].value
         inv.disctrictId = item[3].value
         inv.villageId = item[4].value
-        inv.certifiedArea = item[5].value
-        inv.installedArea = item[6].value
-        inv.usedArea = item[7].value
+        inv.certifiedArea = Number(item[5].value)
+        inv.installedArea = Number(item[6].value)
+        inv.usedArea = Number(item[7].value)
         inv.certifier = item[8].value
         inv.certifNo = item[9].value
         inv.description = item[10].value
@@ -1014,6 +1125,58 @@ const FormPengolahan = () => {
 
   const storeData = preventDefault(() => {
     localStorage.setItem("olahNilai", JSON.stringify(dataSubmit));
+
+    let file = {
+      fileName: isoImg[0].name,
+      data: isoImgBase
+    }
+
+    let data = _.cloneDeep(dataSubmit);
+
+    data[0].productAndQuality.file = file
+    data[0].energySource.villageId = data[0].energySource.villageId.id
+
+    data[0].processingUnit.forEach((item, i) => {
+      item.cityId = item.cityId.id
+      item.disctrictId = item.disctrictId.id
+      item.villageId = item.villageId.id
+    });
+
+    const postReport = axios.post(
+      `${appConfig.baseUrl}/evaluations/${localStorage.getItem('evaluationId')}/result-processings`,
+      data[0]
+    );
+
+    postReport.then(
+      function(dt) {
+
+        if (dt.data.status == 'success') {
+          router.push({
+            pathname: "/user/penilaian-perkebunan/sosial"
+          })
+        }
+
+      },
+      function(err) {
+
+        enqueueSnackbar('', {
+          anchorOrigin: {
+            vertical: 'top',
+            horizontal: 'right',
+          },
+          content: (key, message) => (
+            <CustomComponent
+              id={key}
+              message="Mohon pastikan form yang anda isi telah lengkap."
+              variant="error"
+              title="Gagal Submit!"
+            />
+          ),
+        });
+
+      }
+    )
+
   })
 
   function clearData() {
@@ -1023,7 +1186,7 @@ const FormPengolahan = () => {
   return (
     <>
       <Head>
-        
+
       </Head>
 
       <form>
@@ -1057,15 +1220,65 @@ const FormPengolahan = () => {
                     items.map((item,ii) => (
                       <>
                         {
-                          item.type == 'textArea' ? (
+                          item.isOpt == 'kabupaten' ? (
                             <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
-                              <span className={mng.base__inputtitle}>{item.title}</span>
-                              <textarea className={mng.base__inputbase} type={item.type} rows="20" placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, kebunPabrik, setKebunPabrik, i, ii)}></textarea>
+                              <InputForm
+                                titleForm={item.title}
+                                titleName={item.title}
+                                onChange={(e) => formRegularChange(e, kebunPabrik, setKebunPabrik, i, ii)}
+                                type="text"
+                                values={item.value}
+                                placeholder={item.placeholder}
+                                className={`${
+                                  isError && 'border-primary-red-1 bg-primary-red-2'
+                                }`}
+                                selectArea={true}
+                                options={kota}
+                              />
                             </label>
-                          ):(
+                          ) : item.isOpt == 'kecamatan' ? (
+                            <label onClick={e => setCamat(items, i)} className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
+                              <InputForm
+                                titleForm={item.title}
+                                titleName={item.title}
+                                onChange={(e) => formRegularChange(e, kebunPabrik, setKebunPabrik, i, ii)}
+                                ref={selectCamat}
+                                type="text"
+                                values={item.value}
+                                placeholder={item.placeholder}
+                                className={`${
+                                  isError && 'border-primary-red-1 bg-primary-red-2'
+                                }`}
+                                selectArea={true}
+                                options={kecamatan}
+                              />
+                            </label>
+                          ) : item.isOpt == 'desa' ? (
+                            <label onClick={e => setPedesaan(items, i)} className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
+                              <InputForm
+                                titleForm={item.title}
+                                titleName={item.title}
+                                onChange={(e) => formRegularChange(e, kebunPabrik, setKebunPabrik, i, ii)}
+                                ref={selectCamat}
+                                type="text"
+                                values={item.value}
+                                placeholder={item.placeholder}
+                                className={`${
+                                  isError && 'border-primary-red-1 bg-primary-red-2'
+                                }`}
+                                selectArea={true}
+                                options={desa}
+                              />
+                            </label>
+                          ) : item.type == 'textArea' ? (
                             <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
                               <span className={mng.base__inputtitle}>{item.title}</span>
-                              <input className={mng.base__inputbase} type={item.type} placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, kebunPabrik, setKebunPabrik, i, ii)}/>
+                              <textarea className={mng.base__inputbase} type={item.type} rows="20" placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e.target.value, kebunPabrik, setKebunPabrik, i, ii)}></textarea>
+                            </label>
+                          ) : (
+                            <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
+                              <span className={mng.base__inputtitle}>{item.title}</span>
+                              <input className={mng.base__inputbase} type={item.type} placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e.target.value, kebunPabrik, setKebunPabrik, i, ii)}/>
                             </label>
                           )
                         }
@@ -1104,7 +1317,7 @@ const FormPengolahan = () => {
                   items.map((item,ii) => (
                     <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
                       <span className={mng.base__inputtitle}>{item.title}</span>
-                      <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, produksiKebun, setProduksiKebun, i, ii)}/>
+                      <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e.target.value, produksiKebun, setProduksiKebun, i, ii)}/>
                     </label>
                   ))
                 }
@@ -1152,7 +1365,7 @@ const FormPengolahan = () => {
                           item.sectionData.map((child,iii) => (
                             <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={iii}>
                               <span className={mng.base__inputtitle}>{child.title}</span>
-                              <input className={mng.base__inputbase} type={child.type} min='0' placeholder={child.placeholder} value={child.value} onChange={(e) => formSectionChange(e, efisiensi, setEfisiensi, i, ii, iii)}/>
+                              <input className={mng.base__inputbase} type={child.type} min='0' placeholder={child.placeholder} value={child.value} onChange={(e) => formRegularChange(e.target.value, efisiensi, setEfisiensi, i, ii, iii)}/>
                             </label>
                           ))
                         }
@@ -1197,7 +1410,7 @@ const FormPengolahan = () => {
                           item.sectionData.map((child,iii) => (
                             <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={iii}>
                               <span className={mng.base__inputtitle}>{child.title}</span>
-                              <input className={mng.base__inputbase} type={child.type} min='0' placeholder={child.placeholder} value={child.value} onChange={(e) => formSectionChange(e, bhnPenolong, setBhnPenolong, i, ii, iii)}/>
+                              <input className={mng.base__inputbase} type={child.type} min='0' placeholder={child.placeholder} value={child.value} onChange={(e) => formRegularChange(e.target.value, bhnPenolong, setBhnPenolong, i, ii, iii)}/>
                             </label>
                           ))
                         }
@@ -1235,7 +1448,7 @@ const FormPengolahan = () => {
                 items.map((item,ii) => (
                   <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
                     <span className={mng.base__inputtitle}>{item.title}</span>
-                    <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, produksiPrimer, setProduksiPrimer, i, ii)}/>
+                    <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e.target.value, produksiPrimer, setProduksiPrimer, i, ii)}/>
                   </label>
                 ))
               }
@@ -1278,7 +1491,7 @@ const FormPengolahan = () => {
                 items.map((item,ii) => (
                   <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
                     <span className={mng.base__inputtitle}>{item.title}</span>
-                    <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, produksiHilir, setProduksiHilir, i, ii)}/>
+                    <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e.target.value, produksiHilir, setProduksiHilir, i, ii)}/>
                   </label>
                 ))
               }
@@ -1340,7 +1553,7 @@ const FormPengolahan = () => {
                           item.sectionData.map((child,iii) => (
                             <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={iii}>
                               <span className={mng.base__inputtitle}>{child.title}</span>
-                              <input className={mng.base__inputbase} type={child.type} min='0' placeholder={child.placeholder} value={child.value} onChange={(e) => formSectionChange(e, hasilSamping, setHasilSamping, i, ii, iii)}/>
+                              <input className={mng.base__inputbase} type={child.type} min='0' placeholder={child.placeholder} value={child.value} onChange={(e) => formRegularChange(e.target.value, hasilSamping, setHasilSamping, i, ii, iii)}/>
                             </label>
                           ))
                         }
@@ -1382,7 +1595,7 @@ const FormPengolahan = () => {
                           item.sectionData.map((child,iii) => (
                             <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={iii}>
                               <span className={mng.base__inputtitle}>{child.title}</span>
-                              <input className={mng.base__inputbase} type={child.type} min='0' placeholder={child.placeholder} value={child.value} onChange={(e) => formSectionChange(e, limbahCair, setLimbahCair, i, ii, iii)}/>
+                              <input className={mng.base__inputbase} type={child.type} min='0' placeholder={child.placeholder} value={child.value} onChange={(e) => formRegularChange(e.target.value, limbahCair, setLimbahCair, i, ii, iii)}/>
                             </label>
                           ))
                         }
@@ -1424,7 +1637,7 @@ const FormPengolahan = () => {
                           item.sectionData.map((child,iii) => (
                             <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={iii}>
                               <span className={mng.base__inputtitle}>{child.title}</span>
-                              <input className={mng.base__inputbase} type={child.type} min='0' placeholder={child.placeholder} value={child.value} onChange={(e) => formSectionChange(e, limbahPadat, setLimbahPadat, i, ii, iii)}/>
+                              <input className={mng.base__inputbase} type={child.type} min='0' placeholder={child.placeholder} value={child.value} onChange={(e) => formRegularChange(e.target.value, limbahPadat, setLimbahPadat, i, ii, iii)}/>
                             </label>
                           ))
                         }
@@ -1525,8 +1738,28 @@ const FormPengolahan = () => {
                     Format dokumen: .jpg .jpeg .png
                   </div>
                 </div>
-                <InputFileButton />
+                <InputFileButton
+                  handleImage={(img) => {
+                    setIsoImg(img);
+                    getBase64(img[0])
+                  }}
+                />
               </div>
+              {
+                isoImg ? (
+                  <div className="flex items-center mt-6 mb-3 pb-4 border-b border-[#EDEDED]">
+                    <img src="/images/auth/gallery.svg" className="w-[24px] mr-3" />
+                    <div>
+                      <p className="text-sm">{isoImg[0].path}</p>
+                      <p className="text-xs	text-[#27AE60]">Uploaded</p>
+                    </div>
+                    <div className="ml-auto flex">
+                      <div className="border border-[#CDD3D8] text-[11px] px-2 py-1 font-semibold">{((isoImg[0].size) / 1048576).toFixed(2)}MB</div>
+                      <img onClick={() => setIsoImg()} src="/images/auth/close-circle.svg" className="w-[16px] cursor-pointer ml-3" />
+                    </div>
+                  </div>
+                ) : <></>
+              }
             </div>
           ) : (
             <></>
@@ -1614,7 +1847,7 @@ const FormPengolahan = () => {
                 items.map((item,ii) => (
                   <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
                     <span className={mng.base__inputtitle}>{item.title}</span>
-                    <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, mutu, setMutu, i, ii)}/>
+                    <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e.target.value, mutu, setMutu, i, ii)}/>
                   </label>
                 ))
               }
@@ -1633,15 +1866,16 @@ const FormPengolahan = () => {
 
           <InputForm
             titleForm="Sumber energi yang digunakan berasal dari (pilih yang sesuai)"
-            onChange={(e) => setSumberEnergi(e.target.value)}
+            onChange={(e) => setSumberEnergi(e)}
             type="text"
             values={sumberEnergi}
-            placeholder="pilih desa"
+            placeholder="Pilih sumber energi"
             values={sumberEnergi}
             className={`${
               isError && 'border-primary-red-1 bg-primary-red-2'
-            } w-full rounded border bg-white-2 py-3 px-4 placeholder:text-sm`}
-            selectionArea={true}
+            }`}
+            selectArea={true}
+            options={iup}
           />
         </div>
 
@@ -1664,7 +1898,7 @@ const FormPengolahan = () => {
                 items.map((item,ii) => (
                   <label className={`${mng["base__formlabel"]} ${mng["base__formlabel_twin-label"]}`} key={ii}>
                     <span className={mng.base__inputtitle}>{item.title}</span>
-                    <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e, mitraOlah, setMitraOlah, i, ii)}/>
+                    <input className={mng.base__inputbase} type={item.type} min='0' placeholder={item.placeholder} value={item.value} onChange={(e) => formRegularChange(e.target.value, mitraOlah, setMitraOlah, i, ii)}/>
                   </label>
                 ))
               }

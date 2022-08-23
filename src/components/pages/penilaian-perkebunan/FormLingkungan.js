@@ -1,7 +1,12 @@
 import Head from 'next/head'
 import React, { useState, useEffect } from 'react'
 import {useRouter} from 'next/router'
+import { useSession } from "next-auth/react";
 import _ from 'lodash';
+import axios from 'axios';
+import { appConfig } from 'src/config';
+import { useSnackbar } from 'notistack';
+import CustomComponent from 'src/components/snackbar/CustomComponent';
 import InputFileButton from 'src/components/customInput/InputFileButton';
 import InputForm from '../admin/infografis/InputForm';
 import mng from 'src/styles/Managemen.module.scss'
@@ -12,6 +17,8 @@ const preventDefault = f => e => {
 }
 
 const FormLingkungan = () => {
+  const { data: session } = useSession();
+  const { enqueueSnackbar } = useSnackbar();
   const [isError, setIsError] = useState(false);
 
   const router = useRouter()
@@ -21,6 +28,47 @@ const FormLingkungan = () => {
   const [data, setData] = useState(null)
   const [dataPass, setDataPass] = useState({})
   const [dataSubmit, setDataSubmit] = useState({})
+  const [isoImg, setIsoImg] = useState();
+  const [isoImgBase, setIsoImgBase] = useState();
+
+  let [solidMng, setSolidMng] = useState([]);
+  let [liquidMng, setLiquidMng] = useState([]);
+  useEffect(() => {
+    if (session) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${session.user.accessToken}`
+
+      let solidArr = []
+      let liquidArr = []
+
+      const getIup = axios.get(`${appConfig.baseUrl}/criterias/environments`);
+      getIup.then(
+        function(dt) {
+          dt.data.data.solidWasteManagement.criterias.forEach((item, i) => {
+            const val = {
+              id: item.id,
+              value: item.criteria,
+              label: item.criteria
+            }
+            solidArr.push(val)
+          });
+          setSolidMng(solidArr)
+
+          dt.data.data.liquidWasteManagement.criterias.forEach((item, i) => {
+            const val = {
+              id: item.id,
+              value: item.criteria,
+              label: item.criteria
+            }
+            liquidArr.push(val)
+          });
+          setLiquidMng(liquidArr)
+        },
+        function(err) {
+          console.log(err)
+        }
+      )
+    }
+  }, [session])
 
   ////////////////////////// INPUT FORM STATE ////////////////////////////////
 
@@ -42,15 +90,15 @@ const FormLingkungan = () => {
       {
         'sectionTitle': '',
         'sectionData': [
-          {'title':'Tahun','type':'text','placeholder':'.YYY','value':''},
+          {'title':'Tahun','type':'number','placeholder':'YYY','value':''},
         ]
       },
       {
         'sectionTitle': 'Tindakan Konservasi',
         'sectionData': [
           {'title':'Kegiatan yang dilaksanakan','type':'text','placeholder':'.masukkan jenis kegiatan','value':''},
-          {'title':'Rencana (unit)','type':'text','placeholder':'masukkan dalam satuan unit','value':''},
-          {'title':'Realisasi (unit)','type':'text','placeholder':'.masukkan dalam satuan unit','value':''},
+          {'title':'Rencana (unit)','type':'number','placeholder':'masukkan dalam satuan unit','value':''},
+          {'title':'Realisasi (unit)','type':'number','placeholder':'.masukkan dalam satuan unit','value':''},
         ]
       },
     ]
@@ -60,15 +108,15 @@ const FormLingkungan = () => {
     setKelolaLingkungan([...kelolaLingkungan,[ {
       'sectionTitle': '',
       'sectionData': [
-        {'title':'Tahun','type':'text','placeholder':'.YYY','value':''},
+        {'title':'Tahun','type':'number','placeholder':'YYY','value':''},
       ]
     },
     {
       'sectionTitle': 'Tindakan Konservasi',
       'sectionData': [
         {'title':'Kegiatan yang dilaksanakan','type':'text','placeholder':'.masukkan jenis kegiatan','value':''},
-        {'title':'Rencana (unit)','type':'text','placeholder':'masukkan dalam satuan unit','value':''},
-        {'title':'Realisasi (unit)','type':'text','placeholder':'.masukkan dalam satuan unit','value':''},
+        {'title':'Rencana (unit)','type':'number','placeholder':'masukkan dalam satuan unit','value':''},
+        {'title':'Realisasi (unit)','type':'number','placeholder':'.masukkan dalam satuan unit','value':''},
       ]
     }, ]])
   }
@@ -78,14 +126,14 @@ const FormLingkungan = () => {
   const [jenisKegiatan, setJenisKegiatan] = useState([
     [
       {'title':'Jenis Kegiatan','placeholder':'.masukkan jenis kegiatan','type':'text','value':'','isOpt':false},
-      {'title':'Frekuensi (Tetap/Insidentil)','placeholder':'masukkan keterangan frekuensi','type':'text','value':'','isOpt':false},
+      {'title':'Frekuensi (Tetap/Insidentil)','placeholder':'masukkan keterangan frekuensi','type':'number','value':'','isOpt':false},
     ]
   ])
 
   function handleBtnAddJenisKegiatan() {
     setJenisKegiatan([...jenisKegiatan,[
       {'title':'Jenis Kegiatan','placeholder':'.masukkan jenis kegiatan','type':'text','value':'','isOpt':false},
-      {'title':'Frekuensi (Tetap/Insidentil)','placeholder':'masukkan keterangan frekuensi','type':'text','value':'','isOpt':false},
+      {'title':'Frekuensi (Tetap/Insidentil)','placeholder':'masukkan keterangan frekuensi','type':'number','value':'','isOpt':false},
     ]])
   }
 
@@ -94,7 +142,7 @@ const FormLingkungan = () => {
   const [pantauLingkungan, setPantauLingkungan] = useState([
     [
       {'title':'Uraian','placeholder':'.masukkan uraian','type':'text','value':'','isOpt':false},
-      {'title':'Frekuensi dalam 1 tahun','placeholder':'.masukkan frekuensi','type':'text','value':'','isOpt':false},
+      {'title':'Frekuensi dalam 1 tahun','placeholder':'.masukkan frekuensi','number':'text','value':'','isOpt':false},
       {'title':'Cara Pemantauan (periodik/insidentil)','placeholder':'.masukkan keterangan','type':'text','value':'','isOpt':false},
     ]
   ])
@@ -102,7 +150,7 @@ const FormLingkungan = () => {
   function handleBtnAddPantauLingkungan() {
     setPantauLingkungan([...pantauLingkungan,[
       {'title':'Uraian','placeholder':'.masukkan uraian','type':'text','value':'','isOpt':false},
-      {'title':'Frekuensi dalam 1 tahun','placeholder':'.masukkan frekuensi','type':'text','value':'','isOpt':false},
+      {'title':'Frekuensi dalam 1 tahun','placeholder':'.masukkan frekuensi','type':'number','value':'','isOpt':false},
       {'title':'Cara Pemantauan (periodik/insidentil)','placeholder':'.masukkan keterangan','type':'text','value':'','isOpt':false},
     ]])
   }
@@ -113,19 +161,19 @@ const FormLingkungan = () => {
     [
       {
         'sectionTitle': 'Areal (ha)',
-        'sectionData': [{'title':'Tahun 1','type':'text','placeholder':'.luas dalam ha','value':''},{'title':'Tahun 2','type':'text','placeholder':'..luas dalam ha','value':''},{'title':'Tahun 3','type':'text','placeholder':'..luas dalam ha','value':''},{'title':'Total','type':'text','placeholder':'.total dalam ha','value':''}]
+        'sectionData': [{'title':'Tahun 1','type':'number','placeholder':'.luas dalam ha','value':''},{'title':'Tahun 2','type':'number','placeholder':'..luas dalam ha','value':''},{'title':'Tahun 3','type':'number','placeholder':'..luas dalam ha','value':''},{'title':'Total','type':'number','placeholder':'.total dalam ha','value':''}]
       },
       {
         'sectionTitle': 'Mekanis (ha)',
-        'sectionData': [{'title':'Tahun 1','type':'text','placeholder':'.luas dalam ha','value':''},{'title':'Tahun 2','type':'text','placeholder':'..luas dalam ha','value':''},{'title':'Tahun 3','type':'text','placeholder':'..luas dalam ha','value':''},{'title':'Total','type':'text','placeholder':'.total dalam ha','value':''}]
+        'sectionData': [{'title':'Tahun 1','type':'number','placeholder':'.luas dalam ha','value':''},{'title':'Tahun 2','type':'number','placeholder':'..luas dalam ha','value':''},{'title':'Tahun 3','type':'number','placeholder':'..luas dalam ha','value':''},{'title':'Total','type':'number','placeholder':'.total dalam ha','value':''}]
       },
       {
         'sectionTitle': 'Kimiawi (ha)',
-        'sectionData': [{'title':'Tahun 1','type':'text','placeholder':'.luas dalam ha','value':''},{'title':'Tahun 2','type':'text','placeholder':'..luas dalam ha','value':''},{'title':'Tahun 3','type':'text','placeholder':'..luas dalam ha','value':''},{'title':'Total','type':'text','placeholder':'.total dalam ha','value':''}]
+        'sectionData': [{'title':'Tahun 1','type':'number','placeholder':'.luas dalam ha','value':''},{'title':'Tahun 2','type':'number','placeholder':'..luas dalam ha','value':''},{'title':'Tahun 3','type':'number','placeholder':'..luas dalam ha','value':''},{'title':'Total','type':'number','placeholder':'.total dalam ha','value':''}]
       },
       {
         'sectionTitle': 'Pembakaran (ha)',
-        'sectionData': [{'title':'Tahun 1','type':'text','placeholder':'.luas dalam ha','value':''},{'title':'Tahun 2','type':'text','placeholder':'..luas dalam ha','value':''},{'title':'Tahun 3','type':'text','placeholder':'..luas dalam ha','value':''},{'title':'Total','type':'text','placeholder':'.total dalam ha','value':''}]
+        'sectionData': [{'title':'Tahun 1','type':'number','placeholder':'.luas dalam ha','value':''},{'title':'Tahun 2','type':'number','placeholder':'..luas dalam ha','value':''},{'title':'Tahun 3','type':'number','placeholder':'..luas dalam ha','value':''},{'title':'Total','type':'number','placeholder':'.total dalam ha','value':''}]
       },
     ]
   ])
@@ -134,19 +182,19 @@ const FormLingkungan = () => {
     setKegiatanLahan([...kegiatanLahan,[
       {
         'sectionTitle': 'Areal (ha)',
-        'sectionData': [{'title':'Tahun 1','type':'text','placeholder':'.luas dalam ha','value':''},{'title':'Tahun 2','type':'text','placeholder':'..luas dalam ha','value':''},{'title':'Tahun 3','type':'text','placeholder':'..luas dalam ha','value':''},{'title':'Total','type':'text','placeholder':'.total dalam ha','value':''}]
+        'sectionData': [{'title':'Tahun 1','type':'number','placeholder':'.luas dalam ha','value':''},{'title':'Tahun 2','type':'number','placeholder':'..luas dalam ha','value':''},{'title':'Tahun 3','type':'number','placeholder':'..luas dalam ha','value':''},{'title':'Total','type':'number','placeholder':'.total dalam ha','value':''}]
       },
       {
         'sectionTitle': 'Mekanis (ha)',
-        'sectionData': [{'title':'Tahun 1','type':'text','placeholder':'.luas dalam ha','value':''},{'title':'Tahun 2','type':'text','placeholder':'..luas dalam ha','value':''},{'title':'Tahun 3','type':'text','placeholder':'..luas dalam ha','value':''},{'title':'Total','type':'text','placeholder':'.total dalam ha','value':''}]
+        'sectionData': [{'title':'Tahun 1','type':'number','placeholder':'.luas dalam ha','value':''},{'title':'Tahun 2','type':'number','placeholder':'..luas dalam ha','value':''},{'title':'Tahun 3','type':'number','placeholder':'..luas dalam ha','value':''},{'title':'Total','type':'number','placeholder':'.total dalam ha','value':''}]
       },
       {
         'sectionTitle': 'Kimiawi (ha)',
-        'sectionData': [{'title':'Tahun 1','type':'text','placeholder':'.luas dalam ha','value':''},{'title':'Tahun 2','type':'text','placeholder':'..luas dalam ha','value':''},{'title':'Tahun 3','type':'text','placeholder':'..luas dalam ha','value':''},{'title':'Total','type':'text','placeholder':'.total dalam ha','value':''}]
+        'sectionData': [{'title':'Tahun 1','type':'number','placeholder':'.luas dalam ha','value':''},{'title':'Tahun 2','type':'number','placeholder':'..luas dalam ha','value':''},{'title':'Tahun 3','type':'number','placeholder':'..luas dalam ha','value':''},{'title':'Total','type':'number','placeholder':'.total dalam ha','value':''}]
       },
       {
         'sectionTitle': 'Pembakaran (ha)',
-        'sectionData': [{'title':'Tahun 1','type':'text','placeholder':'.luas dalam ha','value':''},{'title':'Tahun 2','type':'text','placeholder':'..luas dalam ha','value':''},{'title':'Tahun 3','type':'text','placeholder':'..luas dalam ha','value':''},{'title':'Total','type':'text','placeholder':'.total dalam ha','value':''}]
+        'sectionData': [{'title':'Tahun 1','type':'number','placeholder':'.luas dalam ha','value':''},{'title':'Tahun 2','type':'number','placeholder':'..luas dalam ha','value':''},{'title':'Tahun 3','type':'number','placeholder':'..luas dalam ha','value':''},{'title':'Total','type':'number','placeholder':'.total dalam ha','value':''}]
       },
     ]])
   }
@@ -211,6 +259,18 @@ const FormLingkungan = () => {
     setState(list);
   }
 
+  function getBase64(file) {
+    var reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = function () {
+      console.log(reader.result);
+      setIsoImgBase(reader.result.toString().replace(/^data:(.*,)?/, ''))
+    };
+    reader.onerror = function (error) {
+      console.log('Error: ', error);
+    };
+  }
+
   useEffect(() => {
     if (initialLoad) {
       let retrievedObject = JSON.parse(localStorage.getItem('lingkunganNilai'));
@@ -235,29 +295,31 @@ const FormLingkungan = () => {
         })
 
         retrievedObject[0].environmentMonitoring.details.forEach((e, i) => {
-          const formData = _.cloneDeep(pantauLingkungan)
-          formData.forEach((form,ii) => {
-            form.forEach((ee, iii) => {
-              ee.value = e[Object.keys(e)[iii]]
-            })
-            replicateData.pantauLingkungan.push(form)
-          })
+          const formData = [
+            {'title':'Uraian','placeholder':'.masukkan uraian','type':'text','value':e.description,'isOpt':false},
+            {'title':'Frekuensi dalam 1 tahun','placeholder':'.masukkan frekuensi','number':'text','value':e.frequency,'isOpt':false},
+            {'title':'Cara Pemantauan (periodik/insidentil)','placeholder':'.masukkan keterangan','type':'text','value':e.method,'isOpt':false},
+          ]
+          replicateData.pantauLingkungan.push(formData)
         })
 
         retrievedObject[0].amdal.details.forEach((e, i) => {
-          const formData = _.cloneDeep(kelolaLingkungan)
-          let moveArr = []
-          Object.keys(e).forEach(key => {
-            moveArr.push(e[key])
-          });
-          formData.forEach((form,i2) => {
-            form.forEach((formData, i3) => {
-              formData.sectionData.forEach((secData, i4) => {
-                secData.value = moveArr[i4]
-              })
-            })
-            replicateData.kelolaLingkungan.push(form)
-          })
+          console.log(e)
+          const formData = [ {
+            'sectionTitle': '',
+            'sectionData': [
+              {'title':'Tahun','type':'number','placeholder':'YYY','value':e.year},
+            ]
+          },
+          {
+            'sectionTitle': 'Tindakan Konservasi',
+            'sectionData': [
+              {'title':'Kegiatan yang dilaksanakan','type':'text','placeholder':'.masukkan jenis kegiatan','value':e.activity},
+              {'title':'Rencana (unit)','type':'number','placeholder':'masukkan dalam satuan unit','value':e.plannedUnit},
+              {'title':'Realisasi (unit)','type':'number','placeholder':'.masukkan dalam satuan unit','value':e.realUnit},
+            ]
+          }, ]
+          replicateData.kelolaLingkungan.push(formData)
         })
 
         const formData = _.cloneDeep(kegiatanLahan)
@@ -271,41 +333,42 @@ const FormLingkungan = () => {
         })
 
 
-        setPetugasLingkungan(retrievedObject[0].amdal.hasAmdalPersonel)
-        setUnitPetugas(retrievedObject[0].amdal.isOrganized)
+        setPetugasLingkungan(retrievedObject[0].amdal.hasAmdalPersonel == true ? 'Ada' : 'Tidak')
+        setUnitPetugas(retrievedObject[0].amdal.isOrganized == true ? 'Iya' : 'Tidak')
         setSarana(retrievedObject[0].amdal.isEnvironmentalInfrastructureSuficient)
-        setKonservasi(retrievedObject[0].amdal.needConservation)
+        setKonservasi(retrievedObject[0].amdal.needConservation == true ? 'Iya' : 'Tidak')
         setKelolaLingkungan(replicateData.kelolaLingkungan)
 
-        setBerbatasan(retrievedObject[0].criticalArea.isNearCriticalArea)
-        setUpayaRehab(retrievedObject[0].criticalArea.joinReforestation)
+        setBerbatasan(retrievedObject[0].criticalArea.isNearCriticalArea == true ? 'Iya' : 'Tidak')
+        setUpayaRehab(retrievedObject[0].criticalArea.joinReforestation == true ? 'Iya' : 'Tidak')
         setTidakPantau(retrievedObject[0].criticalArea.reason)
         setJenisKegiatan(replicateData.jenisKegiatan)
 
-        setBukaLahan(retrievedObject[0].landClearing.didLandClearing)
+        setBukaLahan(retrievedObject[0].landClearing.didLandClearing == true ? 'Ada' : 'Tidak')
         setKegiatanLahan(replicateData.kegiatanLahan)
 
-        setPenangananKebakaran(retrievedObject[0].fireManagement.hasFireManagement)
+        setPenangananKebakaran(retrievedObject[0].fireManagement.hasFireManagement == true ? 'Iya' : 'Tidak')
         setOrgPengangan(retrievedObject[0].fireManagement.organizationType)
-        setPetugasPenangananKebakaran(retrievedObject[0].fireManagement.hasFireManagementPersonel)
+        setPetugasPenangananKebakaran(retrievedObject[0].fireManagement.hasFireManagementPersonel == true ? 'Iya' : 'Tidak')
         setJmlPengangan(retrievedObject[0].fireManagement.fireManagementCount)
-        setSistemPengamanan(retrievedObject[0].fireManagement.hasWarning)
-        setSistemBerfungsi(retrievedObject[0].fireManagement.isWarningUsable)
+        setSistemPengamanan(retrievedObject[0].fireManagement.hasWarning == true ? 'Iya' : 'Tidak')
+        setSistemBerfungsi(retrievedObject[0].fireManagement.isWarningUsable == true ? 'Iya' : 'Tidak')
 
         setJenisLahan(retrievedObject[0].landProcessing.landType)
         setTeknikPengolahan(retrievedObject[0].landProcessing.technique)
 
-        setPantauLingkunganOpt(retrievedObject[0].environmentMonitoring.didEnvironmentMonitoring)
+        setPantauLingkunganOpt(retrievedObject[0].environmentMonitoring.didEnvironmentMonitoring == true ? 'Iya' : 'Tidak')
         setTidakPantauAlasan(retrievedObject[0].environmentMonitoring.reason)
-        setPantauInstansi(retrievedObject[0].environmentMonitoring.isReported)
+        setPantauInstansi(retrievedObject[0].environmentMonitoring.isReported == true ? 'Iya' : 'Tidak')
         setLaporInstansi(retrievedObject[0].environmentMonitoring.reportDescription)
         setPantauLingkungan(replicateData.pantauLingkungan)
 
-        setSertifikat(retrievedObject[0].iso14000Certification.isCertified)
+        setMnjLingkungan(retrievedObject[0].iso14000Certification.description)
+        setSertifikat(retrievedObject[0].iso14000Certification.isCertified == true ? 'Iya' : 'Tidak')
 
-        setLimbahPadat(retrievedObject[0].wasteManagement.produceSolidWaste)
+        setLimbahPadat(retrievedObject[0].wasteManagement.produceSolidWaste == true ? 'Iya' : 'Tidak')
         setPengangananLmbahPdt(retrievedObject[0].wasteManagement.solidWasteManagement)
-        setLimbahCair(retrievedObject[0].wasteManagement.produceLiquidWaste)
+        setLimbahCair(retrievedObject[0].wasteManagement.produceLiquidWaste == true ? 'Iya' : 'Tidak')
         setPengangananLmbahCair(retrievedObject[0].wasteManagement.liquidWasteManagement)
       }
     }
@@ -317,50 +380,50 @@ const FormLingkungan = () => {
 
     let data = [{
       "amdal": {
-          "hasAmdalPersonel": petugasLingkungan,
-          "isOrganized": unitPetugas,
+          "hasAmdalPersonel": (petugasLingkungan == 'Ada' ? true : false),
+          "isOrganized": (unitPetugas == 'Iya' ? true : false),
           "isEnvironmentalInfrastructureSuficient": sarana,
-          "needConservation": konservasi,
+          "needConservation": (konservasi == 'Iya' ? true : false),
           "details": []
       },
       "criticalArea": {
-          "isNearCriticalArea": berbatasan,
-          "joinReforestation": upayaRehab,
+          "isNearCriticalArea": (berbatasan == 'Iya' ? true : false),
+          "joinReforestation": (upayaRehab == 'Iya' ? true : false),
           "reason": tidakPantau,
           "details": []
       },
       "landClearing": {
-          "didLandClearing": bukaLahan,
+          "didLandClearing": (bukaLahan == 'Ada' ? true : false),
           "details": []
       },
       "fireManagement": {
-          "hasFireManagement": penangananKebakaran,
+          "hasFireManagement": (penangananKebakaran == 'Iya' ? true : false),
           "organizationType": orgPengangan,
-          "hasFireManagementPersonel": petugasPenangananKebakaran,
+          "hasFireManagementPersonel": (petugasPenangananKebakaran == 'Iya' ? true : false),
           "fireManagementCount": jmlPengangan,
-          "hasWarning": sistemPengamanan,
-          "isWarningUsable": sistemBerfungsi
+          "hasWarning": (sistemPengamanan == 'Iya' ? true : false),
+          "isWarningUsable": (sistemBerfungsi == 'Iya' ? true : false)
       },
       "landProcessing": {
           "landType": jenisLahan,
           "technique": teknikPengolahan
       },
       "environmentMonitoring": {
-          "didEnvironmentMonitoring": pantauLingkunganOpt,
+          "didEnvironmentMonitoring": (pantauLingkunganOpt == 'Iya' ? true : false),
           "reason": tidakPantauAlasan,
-          "isReported": pantauInstansi,
+          "isReported": (pantauInstansi == 'Iya' ? true : false),
           "reportDescription": laporInstansi,
           "details": []
       },
       "iso14000Certification": {
-        "description": "Melaksanakan Standar lain selain ISO",
-        "isCertified": sertifikat,
+        "description": mnjLingkungan,
+        "isCertified": (sertifikat == 'Iya' ? true : false),
         "file": {}
       },
       "wasteManagement": {
-        "produceSolidWaste": limbahPadat,
+        "produceSolidWaste": (limbahPadat == 'Iya' ? true : false),
         "solidWasteManagement": pengangananLmbahPdt,
-        "produceLiquidWaste": limbahCair,
+        "produceLiquidWaste": (limbahCair == 'Iya' ? true : false),
         "liquidWasteManagement": pengangananLmbahCair
       }
     }]
@@ -369,7 +432,7 @@ const FormLingkungan = () => {
       let inv = {}
       item.forEach(() => {
         inv.activity = item[0].value
-        inv.frequency = item[1].value
+        inv.frequency = Number(item[1].value)
       });
       data[0].criticalArea.details.push(inv)
     });
@@ -378,7 +441,7 @@ const FormLingkungan = () => {
       let inv = {}
       item.forEach(() => {
         inv.description = item[0].value
-        inv.frequency = item[1].value
+        inv.frequency = Number(item[1].value)
         inv.method = item[2].value
       });
       data[0].environmentMonitoring.details.push(inv)
@@ -387,10 +450,10 @@ const FormLingkungan = () => {
     kelolaLingkungan.forEach((item, i) => {
       let dataTemp = {}
       item.forEach((e, i, arr) => {
-        dataTemp.year = arr[0].sectionData[0].value
+        dataTemp.year = Number(arr[0].sectionData[0].value)
         dataTemp.activity = arr[1].sectionData[0].value
-        dataTemp.plannedUnit = arr[1].sectionData[1].value
-        dataTemp.realUnit = arr[1].sectionData[2].value
+        dataTemp.plannedUnit = Number(arr[1].sectionData[1].value)
+        dataTemp.realUnit = Number(arr[1].sectionData[2].value)
       });
       data[0].amdal.details.push(dataTemp)
     });
@@ -401,7 +464,7 @@ const FormLingkungan = () => {
           let dataTemp = {}
           dataTemp.clearingType = e.sectionTitle
           dataTemp.year = dt.title
-          dataTemp.area = dt.value
+          dataTemp.area = Number(dt.value)
           data[0].landClearing.details.push(dataTemp)
         })
       });
@@ -424,18 +487,62 @@ const FormLingkungan = () => {
   const storeData = preventDefault(() => {
     localStorage.setItem("lingkunganNilai", JSON.stringify(dataSubmit));
 
+    let wasteManagement = {
+      produceSolidWaste: dataSubmit[0].wasteManagement.produceSolidWaste,
+      solidWasteManagement: dataSubmit[0].wasteManagement.solidWasteManagement.value,
+      produceLiquidWaste: dataSubmit[0].wasteManagement.produceLiquidWaste,
+      liquidWasteManagement: dataSubmit[0].wasteManagement.liquidWasteManagement.value,
+    }
+
+    let file = {
+      fileName: isoImg[0].name,
+      data: isoImgBase
+    }
+
+    let data = _.cloneDeep(dataSubmit);
+
+    data[0].wasteManagement = wasteManagement
+    data[0].iso14000Certification.file = file
+
+    const res = axios.post(
+      `${appConfig.baseUrl}/evaluations/${localStorage.getItem('evaluationId')}/environments`,
+      data[0]
+    );
+
+    res.then(
+      function(dt) {
+
+        if (dt.data.status == 'success') {
+          router.push({
+            pathname: "/user/penilaian-perkebunan/pelaporan"
+          })
+        }
+
+      },
+      function(err) {
+
+        enqueueSnackbar('', {
+          anchorOrigin: {
+            vertical: 'top',
+            horizontal: 'right',
+          },
+          content: (key, message) => (
+            <CustomComponent
+              id={key}
+              message="Mohon pastikan form yang anda isi telah lengkap."
+              variant="error"
+              title="Gagal Submit!"
+            />
+          ),
+        });
+
+      }
+    )
+
   })
-
-  function clearData() {
-
-  }
 
   return (
     <>
-      <Head>
-        
-      </Head>
-
       <form>
         <div className={`${mng["base__formsection"]}`}>
           <span className={mng.base__subtitle}>AMDAL</span>
@@ -807,7 +914,7 @@ const FormLingkungan = () => {
             <div className="mt-6">
               <label className={mng.base__formlabel}>
                 <span className={mng.base__inputtitle}>Berapa jumlah petugas khusus penanganan kebakaran?</span>
-                <input type="text" placeholder="masukkan jumlah dalam satuan orang" value={jmlPengangan} className={mng.base__inputbase} onChange={(e) => setJmlPengangan(e.target.value)}/>
+                <input type="number" placeholder="masukkan jumlah dalam satuan orang" value={jmlPengangan} className={mng.base__inputbase} onChange={(e) => setJmlPengangan(e.target.value)}/>
               </label>
             </div>
           ) : (
@@ -1067,8 +1174,28 @@ const FormLingkungan = () => {
                     Format dokumen: .jpg .jpeg .png
                   </div>
                 </div>
-                <InputFileButton />
+                <InputFileButton
+                  handleImage={(img) => {
+                    setIsoImg(img);
+                    getBase64(img[0])
+                  }}
+                />
               </div>
+              {
+                isoImg ? (
+                  <div className="flex items-center mt-6 mb-3 pb-4 border-b border-[#EDEDED]">
+                    <img src="/images/auth/gallery.svg" className="w-[24px] mr-3" />
+                    <div>
+                      <p className="text-sm">{isoImg[0].path}</p>
+                      <p className="text-xs	text-[#27AE60]">Uploaded</p>
+                    </div>
+                    <div className="ml-auto flex">
+                      <div className="border border-[#CDD3D8] text-[11px] px-2 py-1 font-semibold">{((isoImg[0].size) / 1048576).toFixed(2)}MB</div>
+                      <img onClick={() => setIsoImg()} src="/images/auth/close-circle.svg" className="w-[16px] cursor-pointer ml-3" />
+                    </div>
+                  </div>
+                ) : <></>
+              }
               <label className={mng.base__formlabel}>
                 <span className={mng.base__inputtitle}>Apakah melaksanakan manajemen lingkungan selain ISO 14000?</span>
                 <input type="text" placeholder="jelaskan" value={mnjLingkungan} className={mng.base__inputbase} onChange={(e) => setMnjLingkungan(e.target.value)}/>
@@ -1113,14 +1240,12 @@ const FormLingkungan = () => {
                 <InputForm
                   titleForm="Bagaimana Penanganan Limbah padat tersebut? (pilih yang sesuai)"
                   titleName="Bagaimana Penanganan Limbah padat tersebut? (pilih yang sesuai)"
-                  onChange={(e) => setPengangananLmbahPdt(e.target.value)}
+                  onChange={(e) => setPengangananLmbahPdt(e)}
                   values={pengangananLmbahPdt}
                   type="text"
                   placeholder="pilih opsi yang sesuai"
-                  className={`${
-                    isError && 'border-primary-red-1 bg-primary-red-2'
-                  }`}
-                  selectionArea={true}
+                  selectArea={true}
+                  options={solidMng}
                 />
               </label>
             </div>
@@ -1158,14 +1283,12 @@ const FormLingkungan = () => {
                 <InputForm
                   titleForm="Bagaimana Penanganan Limbah Cair tersebut? (pilih yang sesuai)"
                   titleName="Bagaimana Penanganan Limbah Cair tersebut? (pilih yang sesuai)"
-                  onChange={(e) => setPengangananLmbahCair(e.target.value)}
+                  onChange={(e) => setPengangananLmbahCair(e)}
                   values={pengangananLmbahCair}
                   type="text"
                   placeholder="pilih opsi yang sesuai"
-                  className={`${
-                    isError && 'border-primary-red-1 bg-primary-red-2'
-                  }`}
-                  selectionArea={true}
+                  selectArea={true}
+                  options={liquidMng}
                 />
               </label>
             </div>
@@ -1177,15 +1300,11 @@ const FormLingkungan = () => {
 
 
         <div className='flex justify-end items-center mt-9 pt-0.5'>
-          {/*
-            <div className={`${mng["base__btnclear"]} ${"mt-1"}`} onClick={clearData}>
-              <span className="ml-1.5">Clear data</span>
-            </div>
-          */}
 
           <button className={`${mng["base__btnsimpan"]} ${"float-right mt-1"}`} onClick={storeData} >
             Simpan dan Lanjutkan
           </button>
+
         </div>
 
       </form>

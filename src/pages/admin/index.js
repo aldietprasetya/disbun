@@ -61,6 +61,8 @@ const options = {
 };
 export default function Admin() {
   const { data: session } = useSession();
+
+  console.log("session", session);
   return (
     <Page sidebar={false} backdrop>
       <div className="mx-10 lg:mx-10  ">

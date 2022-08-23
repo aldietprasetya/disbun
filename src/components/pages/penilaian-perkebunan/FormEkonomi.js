@@ -33,39 +33,39 @@ const FormEkonomi = () => {
     [
       {
         'sectionTitle': 'Jenis Pajak atau Retribusi : Pajak Pertambahan Nilai (PPN)',
-        'sectionData': [{'title':'Tahun 1','type':'text','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 2','type':'text','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 3','type':'text','placeholder':'masukkan nominal.','value':''}]
+        'sectionData': [{'title':'Tahun 1','type':'number','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 2','type':'number','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 3','type':'number','placeholder':'masukkan nominal.','value':''}]
       },
       {
         'sectionTitle': 'Jenis Pajak atau Retribusi : Pajak Penghasilan (PPh)',
-        'sectionData': [{'title':'Tahun 1','type':'text','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 2','type':'text','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 3','type':'text','placeholder':'masukkan nominal.','value':''}]
+        'sectionData': [{'title':'Tahun 1','type':'number','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 2','type':'number','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 3','type':'number','placeholder':'masukkan nominal.','value':''}]
       },
       {
         'sectionTitle': 'Jenis Pajak atau Retribusi : Pajak Bumi dan Bangunan (PBB)',
-        'sectionData': [{'title':'Tahun 1','type':'text','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 2','type':'text','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 3','type':'text','placeholder':'masukkan nominal.','value':''}]
+        'sectionData': [{'title':'Tahun 1','type':'number','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 2','type':'number','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 3','type':'number','placeholder':'masukkan nominal.','value':''}]
       },
       {
         'sectionTitle': 'Jenis Pajak atau Retribusi : Pajak Ekspor (PE)',
-        'sectionData': [{'title':'Tahun 1','type':'text','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 2','type':'text','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 3','type':'text','placeholder':'masukkan nominal.','value':''}]
+        'sectionData': [{'title':'Tahun 1','type':'number','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 2','type':'number','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 3','type':'number','placeholder':'masukkan nominal.','value':''}]
       },
       {
         'sectionTitle': 'Jenis Pajak atau Retribusi : Retribusi Wajib Tenaga Kerja',
-        'sectionData': [{'title':'Tahun 1','type':'text','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 2','type':'text','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 3','type':'text','placeholder':'masukkan nominal.','value':''}]
+        'sectionData': [{'title':'Tahun 1','type':'number','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 2','type':'number','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 3','type':'number','placeholder':'masukkan nominal.','value':''}]
       },
       {
         'sectionTitle': 'Jenis Pajak atau Retribusi : Retribusi Kesejahteraan Buruh',
-        'sectionData': [{'title':'Tahun 1','type':'text','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 2','type':'text','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 3','type':'text','placeholder':'masukkan nominal.','value':''}]
+        'sectionData': [{'title':'Tahun 1','type':'number','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 2','type':'number','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 3','type':'number','placeholder':'masukkan nominal.','value':''}]
       },
       {
         'sectionTitle': 'Jenis Pajak atau Retribusi : Retribusi Air',
-        'sectionData': [{'title':'Tahun 1','type':'text','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 2','type':'text','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 3','type':'text','placeholder':'masukkan nominal.','value':''}]
+        'sectionData': [{'title':'Tahun 1','type':'number','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 2','type':'number','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 3','type':'number','placeholder':'masukkan nominal.','value':''}]
       },
       {
         'sectionTitle': 'Jenis Pajak atau Retribusi : Retribusi Jalan',
-        'sectionData': [{'title':'Tahun 1','type':'text','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 2','type':'text','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 3','type':'text','placeholder':'masukkan nominal.','value':''}]
+        'sectionData': [{'title':'Tahun 1','type':'number','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 2','type':'number','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 3','type':'number','placeholder':'masukkan nominal.','value':''}]
       },
       {
         'sectionTitle': 'Jenis Pajak atau Retribusi : Lainnya',
-        'sectionData': [{'title':'Tahun 1','type':'text','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 2','type':'text','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 3','type':'text','placeholder':'masukkan nominal.','value':''}]
+        'sectionData': [{'title':'Tahun 1','type':'number','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 2','type':'number','placeholder':'masukkan nominal.','value':''},{'title':'Tahun 3','type':'number','placeholder':'masukkan nominal.','value':''}]
       },
     ]
   ])
@@ -74,31 +74,31 @@ const FormEkonomi = () => {
 
   const [tahun1, setTahun1] = useState([
     [
-      {'title':'Tahun 1','placeholder':'YYY','type':'text','value':'','isOpt':false},
-      {'title':'Jumlah Tenaga Kerja Lokal Staf','placeholder':'masukkan jumlah dalam satuan orang','type':'text','value':'','isOpt':false},
-      {'title':'Jumlah Tenaga Kerja Lokal Non Staf','placeholder':'masukkan jumlah dalam satuan orang','type':'text','value':'','isOpt':false},
-      {'title':'Jumlah Pegawai Staf','placeholder':'masukkan jumlah dalam satuan orang','type':'text','value':'','isOpt':false},
-      {'title':'Jumlah Pegawai Non Staf','placeholder':'masukkan jumlah dalam satuan orang','type':'text','value':'','isOpt':false},
+      {'title':'Tahun 1','placeholder':'YYY','type':'number','value':'','isOpt':false},
+      {'title':'Jumlah Tenaga Kerja Lokal Staf','placeholder':'masukkan jumlah dalam satuan orang','type':'number','value':'','isOpt':false},
+      {'title':'Jumlah Tenaga Kerja Lokal Non Staf','placeholder':'masukkan jumlah dalam satuan orang','type':'number','value':'','isOpt':false},
+      {'title':'Jumlah Pegawai Staf','placeholder':'masukkan jumlah dalam satuan orang','type':'number','value':'','isOpt':false},
+      {'title':'Jumlah Pegawai Non Staf','placeholder':'masukkan jumlah dalam satuan orang','type':'number','value':'','isOpt':false},
     ]
   ])
 
   const [tahun2, setTahun2] = useState([
     [
-      {'title':'Tahun 2','placeholder':'YYY','type':'text','value':'','isOpt':false},
-      {'title':'Jumlah Tenaga Kerja Lokal Staf','placeholder':'masukkan jumlah dalam satuan orang','type':'text','value':'','isOpt':false},
-      {'title':'Jumlah Tenaga Kerja Lokal Non Staf','placeholder':'masukkan jumlah dalam satuan orang','type':'text','value':'','isOpt':false},
-      {'title':'Jumlah Pegawai Staf','placeholder':'masukkan jumlah dalam satuan orang','type':'text','value':'','isOpt':false},
-      {'title':'Jumlah Pegawai Non Staf','placeholder':'masukkan jumlah dalam satuan orang','type':'text','value':'','isOpt':false},
+      {'title':'Tahun 2','placeholder':'YYY','type':'number','value':'','isOpt':false},
+      {'title':'Jumlah Tenaga Kerja Lokal Staf','placeholder':'masukkan jumlah dalam satuan orang','type':'number','value':'','isOpt':false},
+      {'title':'Jumlah Tenaga Kerja Lokal Non Staf','placeholder':'masukkan jumlah dalam satuan orang','type':'number','value':'','isOpt':false},
+      {'title':'Jumlah Pegawai Staf','placeholder':'masukkan jumlah dalam satuan orang','type':'number','value':'','isOpt':false},
+      {'title':'Jumlah Pegawai Non Staf','placeholder':'masukkan jumlah dalam satuan orang','type':'number','value':'','isOpt':false},
     ]
   ])
 
   const [tahun3, setTahun3] = useState([
     [
-      {'title':'Tahun 3','placeholder':'YYY','type':'text','value':'','isOpt':false},
-      {'title':'Jumlah Tenaga Kerja Lokal Staf','placeholder':'masukkan jumlah dalam satuan orang','type':'text','value':'','isOpt':false},
-      {'title':'Jumlah Tenaga Kerja Lokal Non Staf','placeholder':'masukkan jumlah dalam satuan orang','type':'text','value':'','isOpt':false},
-      {'title':'Jumlah Pegawai Staf','placeholder':'masukkan jumlah dalam satuan orang','type':'text','value':'','isOpt':false},
-      {'title':'Jumlah Pegawai Non Staf','placeholder':'masukkan jumlah dalam satuan orang','type':'text','value':'','isOpt':false},
+      {'title':'Tahun 3','placeholder':'YYY','type':'number','value':'','isOpt':false},
+      {'title':'Jumlah Tenaga Kerja Lokal Staf','placeholder':'masukkan jumlah dalam satuan orang','type':'number','value':'','isOpt':false},
+      {'title':'Jumlah Tenaga Kerja Lokal Non Staf','placeholder':'masukkan jumlah dalam satuan orang','type':'number','value':'','isOpt':false},
+      {'title':'Jumlah Pegawai Staf','placeholder':'masukkan jumlah dalam satuan orang','type':'number','value':'','isOpt':false},
+      {'title':'Jumlah Pegawai Non Staf','placeholder':'masukkan jumlah dalam satuan orang','type':'number','value':'','isOpt':false},
     ]
   ])
 
@@ -203,8 +203,8 @@ const FormEkonomi = () => {
 
         setJenisRetribusiPajak(retrievedObject.tax.taxDescription)
         setAlasan(retrievedObject.tax.reason)
-        setKontribusi(retrievedObject.tax.hasTaxConstribution)
-        setBayarPajak(retrievedObject.tax.isTaxOntime)
+        setKontribusi(retrievedObject.tax.hasTaxConstribution == true ? 'Iya' : 'Tidak')
+        setBayarPajak(retrievedObject.tax.isTaxOntime == true ? 'Iya' : 'Tidak')
         setJenisPajak(replicateData.jenisPajak)
         setTahun1(replicateData.tahun1)
         setTahun2(replicateData.tahun2)
@@ -218,9 +218,9 @@ const FormEkonomi = () => {
 
     let data = {
       "tax": {
-          "hasTaxConstribution": kontribusi,
+          "hasTaxConstribution": kontribusi == 'Iya' ? true : false,
           "taxDescription": jenisRetribusiPajak,
-          "isTaxOntime": bayarPajak,
+          "isTaxOntime": bayarPajak == 'Iya' ? true : false,
           "reason": alasan,
           "details": []
       },
@@ -231,9 +231,9 @@ const FormEkonomi = () => {
       item.forEach((e, i, arr) => {
         let dataTemp = {
           "taxType": arr[i].sectionTitle.split(' : ')[1],
-          "firstYear": arr[i].sectionData[0].value,
-          "secondYear": arr[i].sectionData[1].value,
-          "thirdYear": arr[i].sectionData[2].value
+          "firstYear": Number(arr[i].sectionData[0].value),
+          "secondYear": Number(arr[i].sectionData[1].value),
+          "thirdYear": Number(arr[i].sectionData[2].value)
         }
         data.tax.details.push(dataTemp)
       });
@@ -241,31 +241,31 @@ const FormEkonomi = () => {
 
     tahun1.forEach((item, i) => {
       let dataTemp = {
-        "year": item[0].value,
-        "localStaff": item[1].value,
-        "localNonStaff": item[2].value,
-        "staffTotal": item[3].value,
-        "nonStaffTotal": item[4].value,
+        "year": Number(item[0].value),
+        "localStaff": Number(item[1].value),
+        "localNonStaff": Number(item[2].value),
+        "staffTotal": Number(item[3].value),
+        "nonStaffTotal": Number(item[4].value),
       }
       data.localEmployment.push(dataTemp)
     });
     tahun2.forEach((item, i) => {
       let dataTemp = {
-        "year": item[0].value,
-        "localStaff": item[1].value,
-        "localNonStaff": item[2].value,
-        "staffTotal": item[3].value,
-        "nonStaffTotal": item[4].value,
+        "year": Number(item[0].value),
+        "localStaff": Number(item[1].value),
+        "localNonStaff": Number(item[2].value),
+        "staffTotal": Number(item[3].value),
+        "nonStaffTotal": Number(item[4].value),
       }
       data.localEmployment.push(dataTemp)
     });
     tahun3.forEach((item, i) => {
       let dataTemp = {
-        "year": item[0].value,
-        "localStaff": item[1].value,
-        "localNonStaff": item[2].value,
-        "staffTotal": item[3].value,
-        "nonStaffTotal": item[4].value,
+        "year": Number(item[0].value),
+        "localStaff": Number(item[1].value),
+        "localNonStaff": Number(item[2].value),
+        "staffTotal": Number(item[3].value),
+        "nonStaffTotal": Number(item[4].value),
       }
       data.localEmployment.push(dataTemp)
     });
@@ -282,6 +282,42 @@ const FormEkonomi = () => {
 
   const storeData = preventDefault(() => {
     localStorage.setItem("ekonomiNilai", JSON.stringify(dataSubmit));
+
+    const res = axios.post(
+      `${appConfig.baseUrl}/evaluations/${localStorage.getItem('evaluationId')}/economics`,
+      dataSubmit[0]
+    );
+
+    res.then(
+      function(dt) {
+
+        if (dt.data.status == 'success') {
+          router.push({
+            pathname: "/user/penilaian-perkebunan/lingkungan"
+          })
+        }
+
+      },
+      function(err) {
+
+        enqueueSnackbar('', {
+          anchorOrigin: {
+            vertical: 'top',
+            horizontal: 'right',
+          },
+          content: (key, message) => (
+            <CustomComponent
+              id={key}
+              message="Mohon pastikan form yang anda isi telah lengkap."
+              variant="error"
+              title="Gagal Submit!"
+            />
+          ),
+        });
+
+      }
+    )
+
   })
 
   function clearData() {
@@ -291,7 +327,7 @@ const FormEkonomi = () => {
   return (
     <>
       <Head>
-        
+
       </Head>
 
       <form>

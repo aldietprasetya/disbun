@@ -46,6 +46,31 @@ export default NextAuth({
               }
             }
           };
+        } else if(
+          credentials.username === "admin" &&
+          credentials.password === "admin"
+        ) {
+          return {
+            "status": "success",
+            "data": {
+              "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIiLCJpZCI6InVzZXItUmxCSW9aUUNaMmZEWjJSWjdxQ0F6IiwiaWF0IjoxNjUyNzAzNDczfQ.fjmIN0BPFF0YteiyInPlY4Nxf6JyQ1nJaEPx3hISMMA",
+              "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIiLCJpZCI6InVzZXItUmxCSW9aUUNaMmZEWjJSWjdxQ0F6IiwiaWF0IjoxNjUyNzAzNDczfQ.G4ZjEG3H8niMeqNP12LGq3v9CShA7BxR9RxN-qG11hQ",
+              "acquiredUser" : {
+                companyname: "Pt Sejahtera Indonesia",
+                created_at: "2022-05-22T15:22:10.634Z",
+                deleted_at: null,
+                email: "dhandoyo14@gmail.com",
+                id: "user-YlqIAXes7IahWEAJygCvZ",
+                is_verified: false,
+                last_login: "2022-08-06T06:34:15.877Z",
+                managername: "Dwi Handoyo",
+                phonenumber: "089507955201",
+                role: 3,
+                updated_at: "2022-06-12T03:08:03.505Z",
+                username: "user2"
+              }
+            }
+          };
         } else {
           const res = await axios.post(
             `${appConfig.baseUrl}/authentications`,

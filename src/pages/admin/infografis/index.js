@@ -3,9 +3,9 @@ import Link from 'next/link';
 import Page from 'src/components/Page';
 import { Icon } from '@iconify/react';
 import BreadCrumbs from 'src/components/BreadCrumbs';
-import RekapitulasiPeriodik from 'src/components/pages/user/infografis/RekapitulasiPeriodik';
-import GrafikProduksiUsaha from 'src/components/pages/user/infografis/GrafikProduksiUsaha';
-import GrafikHargaJual from 'src/components/pages/user/infografis/GrafikHargaJual';
+import RekapitulasiPeriodik from 'src/components/pages/admin/infografis/RekapitulasiPeriodik';
+import GrafikProduksiUsaha from 'src/components/pages/admin/infografis/GrafikProduksiUsaha';
+import GrafikHargaJual from 'src/components/pages/admin/infografis/GrafikHargaJual';
 
 const cards = [
   {
@@ -73,12 +73,12 @@ export default function InfografisPage() {
             variant="0"
             links={[
               {
-                path: '/user/infografis',
+                path: '/admin/infografis',
                 title: 'Infografis',
               },
             ]}
           />
-          <div className="text-[32px] font-normal text-white leading-9 mt-4">PT. Perkebunan Nusantara VIII</div>
+          <div className="text-[32px] font-normal text-white leading-9 mt-4">Admin PPUP Disbun Jabar</div>
         </div>
 
         <div className="mt-6 flex justify-between">
