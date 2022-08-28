@@ -14,6 +14,7 @@ const TableMasterBasisData = ({
   handleChangeLimit,
   handleNextPage,
   handlePrevPage,
+  selectedTab,
 }) => {
   const [menuIsOpen, setMenuIsOpen] = useState(null);
   const handleMenuOpen = (id) => {
@@ -26,6 +27,7 @@ const TableMasterBasisData = ({
 
   const [detailIsOpen, setDetailIsOpen] = useState(false);
   const handleDetailOpen = (item) => {
+    item.type = selectedTab
     eventBus.dispatch("detilApply", item);
     setDetailIsOpen(true);
     setTimeout(() => {

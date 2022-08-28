@@ -47,7 +47,7 @@
   &__formsection {
     @apply block border-b border-primary-gray-2 pb-6 mb-3;
     &:last-of-type {
-      @apply border-b-0;
+      @apply border-0;
     }
   }
   &__formlabel {
@@ -62,6 +62,23 @@
       @apply transition absolute text-primary-black-2 float-right text-base cursor-pointer hover:text-red-700;
       right: 0;
       top: -6px;
+    }
+    &_report {
+      @apply relative flex flex-row flex-wrap mb-4 border-b border-gray-50;
+      label {
+        &:nth-of-type(1) {
+          @apply w-[88%];
+          @apply pr-2 pl-0;
+        }
+        &:nth-of-type(2) {
+          @apply w-[12%];
+          @apply pl-2 pr-2;
+        }
+      }
+      &:last-of-type {
+        @apply border-b-0 mb-0;
+        border-bottom: 0 !important;
+      }
     }
     &_unique1 {
       @apply relative flex flex-col flex-wrap pb-4 mb-4 border-b border-gray-50;

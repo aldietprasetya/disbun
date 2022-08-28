@@ -6,7 +6,7 @@
       @apply bg-[#EEEEEE];
     }
     &_col {
-      @apply first:pl-[30px] last:pr-[30px] text-center px-2 py-3 text-left text-xs font-medium uppercase text-gray-900;
+      @apply first:pl-[15px] last:pr-[15px] text-center px-2 py-3 text-left text-xs font-medium uppercase text-gray-900;
       &:nth-of-type(1),
       &:nth-of-type(2),
       &:nth-of-type(3) {
@@ -30,7 +30,7 @@
 
     }
     &_col {
-      @apply whitespace-nowrap first:pl-[30px] last:pr-[30px] px-2 py-3 text-center text-xs font-light text-gray-900;
+      @apply whitespace-nowrap first:pl-[15px] last:pr-[15px] px-2 py-3 text-center text-xs font-light text-gray-900;
       &:nth-of-type(1),
       &:nth-of-type(2),
       &:nth-of-type(3) {

@@ -206,6 +206,7 @@ const MasterBasisData = () => {
         <TableMasterData
           headerTable={selectedTab == 'PERUSAHAAN PERKEBUNAN' ? columns : columns2}
           data={selectedTab == 'PERUSAHAAN PERKEBUNAN' ? data : data2}
+          selectedTab={selectedTab}
           dataMeta={dataMeta}
           currentPage={page}
           handleChangeLimit={handleChangeLimit}
