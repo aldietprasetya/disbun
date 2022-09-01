@@ -195,6 +195,7 @@ const MasterBasisData = () => {
                   ${selectedTab == tabs.title ? 'bg-primary-dark-green-1 text-white' : 'bg-primary-green-1 text-primary-black-2'}
                   cursor-pointer h-[42px] px-[51px] flex justify-center items-center rounded-t-lg
                 `}
+                key={i}
                 onClick={(e) => setSelectedTab(tabs.title)}
               >
                 {tabs.title}

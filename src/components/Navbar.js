@@ -5,7 +5,7 @@ import { signOut, useSession } from "next-auth/react";
 import { useRouter } from 'next/router';
 import CustomLink from './CustomLink';
 import { Icon } from '@iconify/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const links = [
   {
@@ -103,11 +103,27 @@ const Navbar = ({ backdrop }) => {
   const router = useRouter();
   const [dropDownOpen, setDropDownOpen] = useState(false);
   const [dummyUser, setDummyUser] = useState(true);
+  const [bgColor, setBgColor] = useState(false);
+
+  const changeBackground = () => {
+    if (window.scrollY > 40) {
+      setBgColor(true)
+    } else {
+      setBgColor(false)
+    }
+  }
+
+  useEffect(() => {
+    changeBackground()
+    window.addEventListener("scroll", changeBackground())
+  }, [])
 
   return (
     <div
       className={`${
         backdrop ? 'bg-transparent text-white' : 'bg-white shadow-sm'
+      } ${
+        bgColor ? 'bg-[#9f9f9f94]' : ''
       } fixed z-10 w-full`}
     >
       <div className="container mx-auto flex h-20 justify-between px-10">

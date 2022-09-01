@@ -64,17 +64,17 @@ const Detail = ({ item }) => {
           <div className="flex mt-3">
             <span className="text-xs text-[#9E9E9E] min-w-[122px] mr-2">Nama Perusahaan</span>
             <span className="text-xs text-[#9E9E9E]">:</span>
-            <span className="text-xs font-semibold ml-2">{item.perusahaan}</span>
+            <span className="text-xs font-semibold ml-2">{item.corporate_name}</span>
           </div>
           <div className="flex mt-[15px]">
             <span className="text-xs text-[#9E9E9E] min-w-[122px] mr-2">Nama Kebun</span>
             <span className="text-xs text-[#9E9E9E]">:</span>
-            <span className="text-xs font-semibold ml-2">{item.kebun}</span>
+            <span className="text-xs font-semibold ml-2">{item.garden_name}</span>
           </div>
           <div className="flex mt-[15px]">
             <span className="text-xs text-[#9E9E9E] min-w-[122px] mr-2">Kota/Kab</span>
             <span className="text-xs text-[#9E9E9E]">:</span>
-            <span className="text-xs font-semibold ml-2">{item.kabKota}</span>
+            <span className="text-xs font-semibold ml-2">{item.city}</span>
           </div>
           <div className="flex mt-[15px]">
             <span className="text-xs text-[#9E9E9E] min-w-[122px] mr-2">Jenis Pengajuan</span>
@@ -85,13 +85,13 @@ const Detail = ({ item }) => {
             <span className="text-xs text-[#9E9E9E] min-w-[122px] mr-2">Waktu Pengajuan</span>
             <span className="text-xs text-[#9E9E9E]">:</span>
             <span className="text-xs ml-2 bg-[#E9EDF5] rounded px-[10px] h-[20px] flex items-center">
-              {item.date}
+              {item.created_at}
             </span>
           </div>
           <div className="flex mt-[15px]">
             <span className="text-xs text-[#9E9E9E] min-w-[122px] mr-2">Status Pengajuan</span>
             <span className="text-xs text-[#9E9E9E]">:</span>
-            <span className="text-xs font-semibold ml-2">{changeState(item.status)}</span>
+            <span className="text-xs font-semibold ml-2">{changeState(item.state)}</span>
           </div>
         </div>
         <div className="py-4">

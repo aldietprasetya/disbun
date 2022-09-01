@@ -182,6 +182,7 @@ const TableRekapPeriod = () => {
                   ${selectedTab == tabs.title ? 'bg-primary-dark-green-1 text-white' : 'bg-primary-green-1 text-primary-black-2'}
                   cursor-pointer w-[151px] h-[42px] flex justify-center items-center rounded-t-lg font-bold
                 `}
+                key={i}
                 onClick={(e) => setSelectedTab(tabs.title)}
               >
                 {tabs.title}

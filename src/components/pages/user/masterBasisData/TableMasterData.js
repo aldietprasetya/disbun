@@ -78,22 +78,22 @@ const TableMasterBasisData = ({
                   className={`${index % 2 === 0 ? 'bg-white' : 'bg-[#FAFAFA]'}` }
                 >
                   <td className={`${table.table__body_col}`}>
-                    {item.perusahaan}
+                    {item.corporate_name}
                   </td>
                   <td className={`${table.table__body_col}`}>
-                    {item.kebun}
+                    {item.garden_name}
                   </td>
                   <td className={`${table.table__body_col}`}>
-                    {item.kabKota}
+                    {item.city}
                   </td>
                   <td className={`${table.table__body_col} text-left`}>
                     {item.jenis}
                   </td>
                   <td className={`${table.table__body_col} text-left`}>
-                    <span className="bg-[#E9EDF5] rounded px-[10px] py-[2px]">{item.date}</span>
+                    <span className="bg-[#E9EDF5] rounded px-[10px] py-[2px]">{item.created_at}</span>
                   </td>
                   <td className={`${table.table__body_col}`}>
-                    {changeState(item.status)}
+                    {changeState(item.state)}
                   </td>
                   <td className={`${table.table__body_col} text-left`}>
                     {item.skor}

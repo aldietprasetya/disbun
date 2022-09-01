@@ -1,10 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import {useRouter} from 'next/router'
+import { useSession } from "next-auth/react";
+import axios from 'axios';
+import _ from 'lodash';
+import { appConfig } from 'src/config';
+import { useSnackbar } from 'notistack';
+import CustomComponent from 'src/components/snackbar/CustomComponent';
 import { Icon } from '@iconify/react';
 import InputForm from 'src/components/pages/admin/infografis/InputForm';
 import mng from 'src/styles/Managemen.module.scss';
 import TableInfografis from './TableInfografis';
 
 const TableRekapPeriod = () => {
+  const { enqueueSnackbar } = useSnackbar();
+  const { data: session } = useSession();
+
+  const router = useRouter()
+
   const [filterKeyTabel, setFilterKeyTabel] = useState(false);
   const [selectedTab, setSelectedTab] = useState('PELAPORAN');
   const [perusahaanRekap, setPerusahaanRekap] = useState('')
@@ -12,6 +24,61 @@ const TableRekapPeriod = () => {
   const [periodLaporRekap, setPeriodLaporRekap] = useState('')
   const [periodNilaiRekap, setPeriodNilaiRekap] = useState('')
   const [searchField, setSearchField] = useState('')
+
+  const columns = ['NAMA PERUSAHAAN','NAMA KEBUN','KAB/KOTA','Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+  const columns2 = ['NAMA PERUSAHAAN','NAMA KEBUN','KAB/KOTA','2008','2011','2014','2017','2020','2023','2026','2029','2032','2035','2038','2041'];
+
+  const [data, setData] = useState([
+   { perusahaan: "PTPN VIII", kebun: "Nama Kebun A", kabKota: "KAB BANDUNG", data1: 'Diterima', data2: 'Diterima', data3: 'Belum Ada Data', data4: 'Diterima', data5: 'Ditunda', data6: 'Diterima', data7: 'Diterima', data8: 'Diterima', data9: 'Ditunda', data10: 'Diterima', data11: 'Belum Ada Data', data12: 'Belum Ada Data' },
+   { perusahaan: "PTPN VIII", kebun: "Nama Kebun A", kabKota: "KAB TASIKMALAYA", data1: 'Diterima', data2: 'Diterima', data3: 'Ditunda', data4: 'Diterima', data5: 'Ditunda', data6: 'Diterima', data7: 'Diterima', data8: 'Diterima', data9: 'Ditunda', data10: 'Diterima', data11: 'Belum Ada Data', data12: 'Belum Ada Data' },
+   { perusahaan: "PTPN VIII", kebun: "Nama Kebun A", kabKota: "KAB INDRAMAYU", data1: 'Diterima', data2: 'Diterima', data3: 'Ditunda', data4: 'Diterima', data5: 'Ditunda', data6: 'Diterima', data7: 'Diterima', data8: 'Diterima', data9: 'Ditunda', data10: 'Diterima', data11: 'Belum Ada Data', data12: 'Belum Ada Data' },
+   { perusahaan: "PTPN VIII", kebun: "Nama Kebun A", kabKota: "KOTA GARUT", data1: 'Diterima', data2: 'Diterima', data3: 'Ditunda', data4: 'Diterima', data5: 'Ditunda', data6: 'Diterima', data7: 'Diterima', data8: 'Diterima', data9: 'Ditunda', data10: 'Diterima', data11: 'Belum Ada Data', data12: 'Belum Ada Data' },
+   { perusahaan: "PTPN VIII", kebun: "Nama Kebun A", kabKota: "KOTA GARUT", data1: 'Diterima', data2: 'Diterima', data3: 'Ditunda', data4: 'Diterima', data5: 'Ditunda', data6: 'Diterima', data7: 'Diterima', data8: 'Diterima', data9: 'Ditunda', data10: 'Diterima', data11: 'Belum Ada Data', data12: 'Belum Ada Data' },
+   { perusahaan: "PTPN VIII", kebun: "Nama Kebun A", kabKota: "KOTA GARUT", data1: 'Diterima', data2: 'Diterima', data3: 'Ditunda', data4: 'Diterima', data5: 'Ditunda', data6: 'Diterima', data7: 'Diterima', data8: 'Diterima', data9: 'Ditunda', data10: 'Diterima', data11: 'Belum Ada Data', data12: 'Belum Ada Data' },
+   { perusahaan: "PTPN VIII", kebun: "Nama Kebun A", kabKota: "KOTA GARUT", data1: 'Diterima', data2: 'Diterima', data3: 'Ditunda', data4: 'Diterima', data5: 'Ditunda', data6: 'Diterima', data7: 'Diterima', data8: 'Diterima', data9: 'Ditunda', data10: 'Diterima', data11: 'Belum Ada Data', data12: 'Belum Ada Data' },
+   { perusahaan: "PTPN VIII", kebun: "Nama Kebun A", kabKota: "KOTA GARUT", data1: 'Diterima', data2: 'Diterima', data3: 'Ditunda', data4: 'Diterima', data5: 'Ditunda', data6: 'Diterima', data7: 'Diterima', data8: 'Diterima', data9: 'Ditunda', data10: 'Diterima', data11: 'Belum Ada Data', data12: 'Belum Ada Data' },
+   { perusahaan: "PTPN VIII", kebun: "Nama Kebun A", kabKota: "KOTA TASIKMALAYA", data1: 'Diterima', data2: 'Diterima', data3: 'Ditunda', data4: 'Diterima', data5: 'Ditunda', data6: 'Diterima', data7: 'Diterima', data8: 'Diterima', data9: 'Ditunda', data10: 'Diterima', data11: 'Belum Ada Data', data12: 'Belum Ada Data' },
+  ])
+
+  useEffect(() => {
+    if (session) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${session.user.accessToken}`
+
+      if (selectedTab == 'PELAPORAN') {
+        const getData = axios.get(`${appConfig.baseUrl}/reports`);
+        getData.then(
+          function(dt) {
+            var storeData = []
+            dt.data.data.reports.forEach((item, i) => {
+              const data = { perusahaan: item.corporate_name, kebun: item.garden_name, kabKota: item.city, data1: 'Belum Ada Data', data2: 'Belum Ada Data', data3: 'Belum Ada Data', data4: 'Belum Ada Data', data5: 'Belum Ada Data', data6: 'Belum Ada Data', data7: 'Belum Ada Data', data8: 'Belum Ada Data', data9: 'Belum Ada Data', data10: 'Belum Ada Data', data11: 'Belum Ada Data', data12: 'Belum Ada Data' }
+              storeData.push(data)
+            });
+            setData(storeData)
+          },
+          function(err) {
+            console.log(err)
+          }
+        )
+      } else {
+        const getData = axios.get(`${appConfig.baseUrl}/evaluations`);
+        getData.then(
+          function(dt) {
+            var storeData = []
+            dt.data.data.evaluations.forEach((item, i) => {
+              const data = { perusahaan: item.corporate_name, kebun: item.garden_name, kabKota: item.city, data1: 'Belum Ada Data', data2: 'Belum Ada Data', data3: 'Belum Ada Data', data4: 'Belum Ada Data', data5: 'Belum Ada Data', data6: 'Belum Ada Data', data7: 'Belum Ada Data', data8: 'Belum Ada Data', data9: 'Belum Ada Data', data10: 'Belum Ada Data', data11: 'Belum Ada Data', data12: 'Belum Ada Data' }
+              storeData.push(data)
+            });
+            setData(storeData)
+          },
+          function(err) {
+            console.log(err)
+          }
+        )
+      }
+
+
+    }
+  }, [session, selectedTab])
 
 
   ///// table /////
@@ -41,21 +108,6 @@ const TableRekapPeriod = () => {
     {title: 'PELAPORAN'},
     {title: 'PENILAIAN'}
   ]
-
-  const columns = ['NAMA PERUSAHAAN','NAMA KEBUN','KAB/KOTA','Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
-  const columns2 = ['NAMA PERUSAHAAN','NAMA KEBUN','KAB/KOTA','2008','2011','2014','2017','2020','2023','2026','2029','2032','2035','2038','2041'];
-
-  const data = [
-   { perusahaan: "PTPN VIII", kebun: "Nama Kebun A", kabKota: "KAB BANDUNG", data1: 'Diterima', data2: 'Diterima', data3: 'Ditunda', data4: 'Diterima', data5: 'Ditunda', data6: 'Diterima', data7: 'Diterima', data8: 'Diterima', data9: 'Ditunda', data10: 'Diterima', data11: 'Belum Ada Data', data12: 'Belum Ada Data' },
-   { perusahaan: "PTPN VIII", kebun: "Nama Kebun A", kabKota: "KAB TASIKMALAYA", data1: 'Diterima', data2: 'Diterima', data3: 'Ditunda', data4: 'Diterima', data5: 'Ditunda', data6: 'Diterima', data7: 'Diterima', data8: 'Diterima', data9: 'Ditunda', data10: 'Diterima', data11: 'Belum Ada Data', data12: 'Belum Ada Data' },
-   { perusahaan: "PTPN VIII", kebun: "Nama Kebun A", kabKota: "KAB INDRAMAYU", data1: 'Diterima', data2: 'Diterima', data3: 'Ditunda', data4: 'Diterima', data5: 'Ditunda', data6: 'Diterima', data7: 'Diterima', data8: 'Diterima', data9: 'Ditunda', data10: 'Diterima', data11: 'Belum Ada Data', data12: 'Belum Ada Data' },
-   { perusahaan: "PTPN VIII", kebun: "Nama Kebun A", kabKota: "KOTA GARUT", data1: 'Diterima', data2: 'Diterima', data3: 'Ditunda', data4: 'Diterima', data5: 'Ditunda', data6: 'Diterima', data7: 'Diterima', data8: 'Diterima', data9: 'Ditunda', data10: 'Diterima', data11: 'Belum Ada Data', data12: 'Belum Ada Data' },
-   { perusahaan: "PTPN VIII", kebun: "Nama Kebun A", kabKota: "KOTA GARUT", data1: 'Diterima', data2: 'Diterima', data3: 'Ditunda', data4: 'Diterima', data5: 'Ditunda', data6: 'Diterima', data7: 'Diterima', data8: 'Diterima', data9: 'Ditunda', data10: 'Diterima', data11: 'Belum Ada Data', data12: 'Belum Ada Data' },
-   { perusahaan: "PTPN VIII", kebun: "Nama Kebun A", kabKota: "KOTA GARUT", data1: 'Diterima', data2: 'Diterima', data3: 'Ditunda', data4: 'Diterima', data5: 'Ditunda', data6: 'Diterima', data7: 'Diterima', data8: 'Diterima', data9: 'Ditunda', data10: 'Diterima', data11: 'Belum Ada Data', data12: 'Belum Ada Data' },
-   { perusahaan: "PTPN VIII", kebun: "Nama Kebun A", kabKota: "KOTA GARUT", data1: 'Diterima', data2: 'Diterima', data3: 'Ditunda', data4: 'Diterima', data5: 'Ditunda', data6: 'Diterima', data7: 'Diterima', data8: 'Diterima', data9: 'Ditunda', data10: 'Diterima', data11: 'Belum Ada Data', data12: 'Belum Ada Data' },
-   { perusahaan: "PTPN VIII", kebun: "Nama Kebun A", kabKota: "KOTA GARUT", data1: 'Diterima', data2: 'Diterima', data3: 'Ditunda', data4: 'Diterima', data5: 'Ditunda', data6: 'Diterima', data7: 'Diterima', data8: 'Diterima', data9: 'Ditunda', data10: 'Diterima', data11: 'Belum Ada Data', data12: 'Belum Ada Data' },
-   { perusahaan: "PTPN VIII", kebun: "Nama Kebun A", kabKota: "KOTA TASIKMALAYA", data1: 'Diterima', data2: 'Diterima', data3: 'Ditunda', data4: 'Diterima', data5: 'Ditunda', data6: 'Diterima', data7: 'Diterima', data8: 'Diterima', data9: 'Ditunda', data10: 'Diterima', data11: 'Belum Ada Data', data12: 'Belum Ada Data' },
-  ];
 
   const handleFilter = () => {
     setFilterKeyTabel(!filterKeyTabel)
@@ -182,6 +234,7 @@ const TableRekapPeriod = () => {
                   ${selectedTab == tabs.title ? 'bg-primary-dark-green-1 text-white' : 'bg-primary-green-1 text-primary-black-2'}
                   cursor-pointer w-[151px] h-[42px] flex justify-center items-center rounded-t-lg font-bold
                 `}
+                key={i}
                 onClick={(e) => setSelectedTab(tabs.title)}
               >
                 {tabs.title}

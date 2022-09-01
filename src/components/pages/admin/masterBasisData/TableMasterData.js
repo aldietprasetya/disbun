@@ -57,10 +57,10 @@ const TableMasterBasisData = ({
         <table className={table.table}>
           <thead className={table.table__head}>
             <tr className={table.table__head_row}>
-              {headerTable?.map((header) => {
+              {headerTable?.map((header, index) => {
                 return (
                   <th
-                    key={header}
+                    key={index}
                     scope="col"
                     className={`${table.table__head_col} ${table.table__head_col_action} ${table.table__head_col_statcenter}`}
                   >
