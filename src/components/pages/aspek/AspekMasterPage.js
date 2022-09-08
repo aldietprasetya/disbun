@@ -68,15 +68,9 @@ const PelaporanPerkebunanPageComponent = () => {
           })
 
           dt.data.data.reports.forEach((item, i) => {
-            let data = {
-              kebun: item.garden_name,
-              kota: item.city,
-              admin: item.corporate_name,
-              jenis: 'Pelaporan Perkebunan',
-              date: item.updated_at,
-              status: (item.state == "Diterima" ? "Approve" : "Draft")
-            }
-            dataStore.push(data)
+            item.jenis = 'Pelaporan Perkebunan'
+            item.status = (item.state == "Diterima" ? "Approve" : "Draft")
+            dataStore.push(item)
           });
           setData(dataStore)
         },

@@ -68,15 +68,10 @@ const PenilaianPerkebunanPageComponent = () => {
           })
 
           dt.data.data.evaluations.forEach((item, i) => {
-            let data = {
-              kebun: item.garden_name,
-              kota: item.city,
-              admin: item.corporate_name,
-              jenis: 'Penilaian Perkebunan',
-              date: item.updated_at,
-              status: (item.state == "Diterima" ? "Approve" : "Draft")
-            }
-            dataStore.push(data)
+            item.jenis = 'Penilaian Perkebunan'
+            item.status = (item.state == "Diterima" ? "Approve" : "Draft")
+            console.log(item)
+            dataStore.push(item)
           });
           setData(dataStore)
         },
