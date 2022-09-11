@@ -145,7 +145,7 @@ const FormEkonomi = () => {
 
     setDataSubmit(data)
 
-  }, [bayarPajak])
+  }, [bayarPajak,serapStaf,serapNoStaf])
 
   useEffect(() => {
     if (!_.isEmpty(dataSubmit)) {
@@ -155,6 +155,50 @@ const FormEkonomi = () => {
 
   const storeData = preventDefault(async () => {
     localStorage.setItem("skoringEkonomi", JSON.stringify(dataSubmit));
+
+    let data = _.cloneDeep(dataSubmit);
+
+    data.forEach((item, i) => {
+      item.criteriaId = item.criteriaId.id
+    });
+
+    const res = axios.post(
+      `${appConfig.baseUrl}/evaluations/${localStorage.getItem('evaluationId')}/scorings/${localStorage.getItem('scoringId')}/economics`,
+      {
+        score: data
+      }
+    );
+
+    res.then(
+      function(dt) {
+
+        if (dt.data.status == 'success') {
+          router.push({
+            pathname: "/admin/master-basis-data/lingkungan"
+          })
+        }
+
+      },
+      function(err) {
+
+        enqueueSnackbar('', {
+          anchorOrigin: {
+            vertical: 'top',
+            horizontal: 'right',
+          },
+          content: (key, message) => (
+            <CustomComponent
+              id={key}
+              message="Mohon pastikan form yang anda isi telah lengkap."
+              variant="error"
+              title="Gagal Submit!"
+            />
+          ),
+        });
+
+      }
+    )
+
   })
 
   return (

@@ -411,9 +411,49 @@ const FormSosial = () => {
   const storeData = preventDefault(async () => {
     localStorage.setItem("skoringSosial", JSON.stringify(dataSubmit));
 
-    router.push({
-      pathname: "/admin/master-basis-data/ekonomi"
-    })
+    let data = _.cloneDeep(dataSubmit);
+
+    data.forEach((item, i) => {
+      item.criteriaId = item.criteriaId.id
+    });
+
+    const res = axios.post(
+      `${appConfig.baseUrl}/evaluations/${localStorage.getItem('evaluationId')}/scorings/${localStorage.getItem('scoringId')}/socials`,
+      {
+        score: data
+      }
+    );
+
+    res.then(
+      function(dt) {
+
+        if (dt.data.status == 'success') {
+          router.push({
+            pathname: "/admin/master-basis-data/ekonomi"
+          })
+        }
+
+      },
+      function(err) {
+
+        enqueueSnackbar('', {
+          anchorOrigin: {
+            vertical: 'top',
+            horizontal: 'right',
+          },
+          content: (key, message) => (
+            <CustomComponent
+              id={key}
+              message="Mohon pastikan form yang anda isi telah lengkap."
+              variant="error"
+              title="Gagal Submit!"
+            />
+          ),
+        });
+
+      }
+    )
+
   })
 
   return (
