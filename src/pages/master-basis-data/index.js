@@ -1,10 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { useSession } from "next-auth/react";
 import BreadCrumbs from 'src/components/BreadCrumbs';
 import Page from 'src/components/Page';
 import { Icon } from '@iconify/react';
 import { useRouter } from 'next/router';
 import axiosInstance from 'src/lib/axios';
-import MasterBasisData from 'src/components/pages/admin/masterBasisData/MasterBasisData';
+import MasterBasisData from 'src/components/pages/user/masterBasisData/MasterBasisData';
+import MasterBasisDataAdm from 'src/components/pages/admin/masterBasisData/MasterBasisData';
 import { useSnackbar } from 'notistack';
 import CustomComponent from 'src/components/snackbar/CustomComponent';
 import table from 'src/styles/Table.module.scss';
@@ -12,6 +14,7 @@ import eventBus from "src/state";
 
 const Detail = ({ item }) => {
   const router = useRouter()
+  const { data: session } = useSession();
 
   function changeState(e) {
     if (e == 'Diajukan') {
@@ -37,7 +40,7 @@ const Detail = ({ item }) => {
 
   const setCreateSkoring = (item) => {
     router.push({
-      pathname: "/admin/master-basis-data/legalitas"
+      pathname: "/master-basis-data/legalitas"
     })
   };
 
@@ -72,17 +75,23 @@ const Detail = ({ item }) => {
           <div className="flex mt-3">
             <span className="text-xs text-[#9E9E9E] min-w-[122px] mr-2">Nama Perusahaan</span>
             <span className="text-xs text-[#9E9E9E]">:</span>
-            <span className="text-xs font-semibold ml-2">{item.perusahaan}</span>
+            <span className="text-xs font-semibold ml-2">
+              {session ? (session.user.acquiredUser.role == 1 ? item.corporate_name : item.perusahaan) : null}
+            </span>
           </div>
           <div className="flex mt-[15px]">
             <span className="text-xs text-[#9E9E9E] min-w-[122px] mr-2">Nama Kebun</span>
             <span className="text-xs text-[#9E9E9E]">:</span>
-            <span className="text-xs font-semibold ml-2">{item.kebun}</span>
+            <span className="text-xs font-semibold ml-2">
+              {session ? (session.user.acquiredUser.role == 1 ? item.garden_name : item.kebun) : null}
+            </span>
           </div>
           <div className="flex mt-[15px]">
             <span className="text-xs text-[#9E9E9E] min-w-[122px] mr-2">Kota/Kab</span>
             <span className="text-xs text-[#9E9E9E]">:</span>
-            <span className="text-xs font-semibold ml-2">{item.kabKota}</span>
+            <span className="text-xs font-semibold ml-2">
+              {session ? (session.user.acquiredUser.role == 1 ? item.city : item.kabKota) : null}
+            </span>
           </div>
           <div className="flex mt-[15px]">
             <span className="text-xs text-[#9E9E9E] min-w-[122px] mr-2">Jenis Pengajuan</span>
@@ -93,13 +102,15 @@ const Detail = ({ item }) => {
             <span className="text-xs text-[#9E9E9E] min-w-[122px] mr-2">Waktu Pengajuan</span>
             <span className="text-xs text-[#9E9E9E]">:</span>
             <span className="text-xs ml-2 bg-[#E9EDF5] rounded px-[10px] h-[20px] flex items-center">
-              {item.date}
+              {session ? (session.user.acquiredUser.role == 1 ? item.created_at : item.date) : null}
             </span>
           </div>
           <div className="flex mt-[15px]">
             <span className="text-xs text-[#9E9E9E] min-w-[122px] mr-2">Status Pengajuan</span>
             <span className="text-xs text-[#9E9E9E]">:</span>
-            <span className="text-xs font-semibold ml-2">{changeState(item.status)}</span>
+            <span className="text-xs font-semibold ml-2">
+              {session ? (session.user.acquiredUser.role == 1 ? changeState(item.state) : changeState(item.status)) : null}
+            </span>
           </div>
         </div>
         <div className="py-4">
@@ -173,26 +184,40 @@ const Detail = ({ item }) => {
             </tbody>
           </table>
         </div>
-        <div className="flex justify-between">
-        {
-          item.jenis == 'Laporan Perkebunan' ? (
+
+        <>
+          {session ? (
             <>
-              <button className={`${"w-[96px] h-[48px] text-xs	text-white font-bold bg-gradient-to-b from-[#F66E6E] to-[#EB5757] mt-1 inline-flex items-center justify-center rounded"}`}>
-                Tunda
-              </button>
-              <button className={`${"w-[308px] h-[48px] text-xs	text-white font-bold bg-gradient-to-b from-[#119F90] to-[#048577] bg-gradient-to-b mt-1 inline-flex items-center justify-center rounded ml-3"}`}>
-                Terima
-              </button>
+              {
+                session.user.acquiredUser.role == 1 ? (
+                  <></>
+                ) : (
+                  <div className="flex justify-between">
+                  {
+                    item.jenis == 'Laporan Perkebunan' ? (
+                      <>
+                        <button className={`${"w-[96px] h-[48px] text-xs	text-white font-bold bg-gradient-to-b from-[#F66E6E] to-[#EB5757] mt-1 inline-flex items-center justify-center rounded"}`}>
+                          Tunda
+                        </button>
+                        <button className={`${"w-[308px] h-[48px] text-xs	text-white font-bold bg-gradient-to-b from-[#119F90] to-[#048577] bg-gradient-to-b mt-1 inline-flex items-center justify-center rounded ml-3"}`}>
+                          Terima
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button onClick={() => setCreateSkoring()} className={`${"w-full h-[48px] text-xs	text-white font-bold bg-gradient-to-b from-[#119F90] to-[#048577] bg-gradient-to-b mt-1 inline-flex items-center justify-center rounded ml-3"}`}>
+                          Buat Penilaian Skoring (Lapangan)
+                        </button>
+                      </>
+                    )
+                  }
+                  </div>
+                )
+              }
             </>
-          ) : (
-            <>
-              <button onClick={() => setCreateSkoring()} className={`${"w-full h-[48px] text-xs	text-white font-bold bg-gradient-to-b from-[#119F90] to-[#048577] bg-gradient-to-b mt-1 inline-flex items-center justify-center rounded ml-3"}`}>
-                Buat Penilaian Skoring (Lapangan)
-              </button>
-            </>
-          )
-        }
-        </div>
+          ) : null}
+        </>
+
       </div>
     </div>
   );
@@ -200,6 +225,7 @@ const Detail = ({ item }) => {
 
 const MasterBasisDataPage = () => {
   const { enqueueSnackbar } = useSnackbar();
+  const { data: session } = useSession();
   const router = useRouter();
   const [page, setPage] = useState(1);
   const [dataDtwControl, setDataDtwControl] = useState(null);
@@ -221,30 +247,6 @@ const MasterBasisDataPage = () => {
   const handlePrevPage = () => {
     if (dataMeta.page !== 1) {
       setPage(page - 1);
-    }
-  };
-
-  const handleDownloadData = async () => {
-    try {
-      const res = await axiosInstance.get('/dtw-control/v1/generate-excel');
-      if (res.data.status == 'success') {
-        window.open(res.data.data.excel, '_blank');
-      }
-    } catch (error) {
-      enqueueSnackbar(error.message, {
-        anchorOrigin: {
-          vertical: 'top',
-          horizontal: 'right',
-        },
-        content: (key, message) => (
-          <CustomComponent
-            id={key}
-            message={message}
-            variant="error"
-            title="Download Gagal"
-          />
-        ),
-      });
     }
   };
 
@@ -270,7 +272,7 @@ const MasterBasisDataPage = () => {
               <BreadCrumbs
                 links={[
                   {
-                    path: '/admin/master-basis-data',
+                    path: '/master-basis-data',
                     title: 'Master Basis Data',
                   },
                 ]}
@@ -279,7 +281,19 @@ const MasterBasisDataPage = () => {
             </div>
           </div>
           <div className="items-center gap-3">
-            <MasterBasisData/>
+            <>
+              {session ? (
+                <>
+                  {
+                    session.user.acquiredUser.role == 1 ? (
+                      <MasterBasisData/>
+                    ) : (
+                      <MasterBasisDataAdm/>
+                    )
+                  }
+                </>
+              ) : null}
+            </>
           </div>
         </div>
       </Page>

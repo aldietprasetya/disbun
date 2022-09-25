@@ -1,4 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import {useRouter} from 'next/router'
+import { useSession } from "next-auth/react";
+import axios from 'axios';
+import _ from 'lodash';
+import { appConfig } from 'src/config';
+import { useSnackbar } from 'notistack';
 import { Icon } from '@iconify/react';
 import InputForm from 'src/components/pages/admin/infografis/InputForm';
 import dynamic from 'next/dynamic'
@@ -9,11 +15,15 @@ const ReactApexChart = dynamic(
 )
 
 const GrafikProduksiUsaha = () => {
+  const { enqueueSnackbar } = useSnackbar();
+  const { data: session } = useSession();
   const [filterKeyTabel, setFilterKeyTabel] = useState(false);
   const [perusahaanRekap, setPerusahaanRekap] = useState('')
   const [kabKotaRekap, setKapKotaRekap] = useState('')
   const [periodLaporRekap, setPeriodLaporRekap] = useState('')
   const [periodNilaiRekap, setPeriodNilaiRekap] = useState('')
+  const [yearsSelected, setYearsSelected] = useState('2022')
+  const [storeProduction, setStoreProduction] = useState([])
 
   let barChart = {
     series: [{
@@ -63,6 +73,65 @@ const GrafikProduksiUsaha = () => {
   }
 
   const [dataTable, setDataTable] = useState(barChart)
+
+  useEffect(() => {
+    if (session) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${session.user.accessToken}`
+
+      const getDataReports = axios.get(`${appConfig.baseUrl}/reports/productions`);
+      getDataReports.then(
+        function(dt) {
+          let dataStore = []
+          Object.values(dt.data.data)[0].forEach((item, i) => {
+            let a = {
+              report_period_year: item.report_period_year,
+              report_period_month: item.report_period_month,
+              raw_production: item.raw_production,
+              plant_type: item.plant_type,
+              user_id: item.user_id,
+            }
+            dataStore.push(a)
+          });
+          setStoreProduction(dataStore)
+        },
+        function(err) {
+          console.log(err)
+        }
+      )
+
+    }
+  }, [session])
+
+  useEffect(() => {
+    let rawProduction = []
+    let monthProduction = []
+
+    storeProduction.forEach((item, i) => {
+      if (yearsSelected == item.report_period_year) {
+        rawProduction.push(item.raw_production)
+        monthProduction.push(item.report_period_month)
+      }
+    });
+
+    console.log(rawProduction)
+    console.log(monthProduction)
+    console.log(barChart)
+
+    const newBarChart = {
+      series: [{
+        data : rawProduction
+      }],
+      options: {
+        ...barChart.options,
+        xaxis: {
+          categories: monthProduction
+        }
+      },
+    }
+
+    setDataTable(newBarChart)
+
+  }, [storeProduction])
 
   const handleFilter = () => {
     setFilterKeyTabel(!filterKeyTabel)
@@ -170,7 +239,7 @@ const GrafikProduksiUsaha = () => {
       <div className="bg-white rounded-md px-[22px] py-[19px]">
         <div className="mb-[41px]">
           <div className="text-lg	font-semibold text-primary-blue-3">Produksi Perkebunan (Kg)</div>
-          <div className="text-[15px] text-primary-light-gray-1">Tahun 2021</div>
+          <div className="text-[15px] text-primary-light-gray-1">Tahun {yearsSelected}</div>
         </div>
         <div>
           <ReactApexChart options={dataTable.options} series={dataTable.series} type="bar" height={377} />

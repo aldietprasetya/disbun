@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { useSession } from "next-auth/react";
 import BreadCrumbs from 'src/components/BreadCrumbs';
 import Page from 'src/components/Page';
 import { Icon } from '@iconify/react';
@@ -436,6 +437,7 @@ const Card = ({ title, value, icon, bannerImage, infosImg }) => {
 };
 
 const ManajemenAkunPerusahaan = () => {
+  const { data: session } = useSession();
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
   const [page, setPage] = useState(1);
@@ -446,6 +448,14 @@ const ManajemenAkunPerusahaan = () => {
   const [limit, setLimit] = useState(10);
   const [dataItem, setDataItem] = useState(null);
   const [modalItem, setModalItem] = useState(null);
+
+  if (session) {
+    if (session.user.acquiredUser.role !== 3) {
+      router.push({
+        pathname: "/beranda"
+      })
+    }
+  }
 
   const handleChangeLimit = (e) => {
     setLimit(e.target.value);
@@ -499,7 +509,7 @@ const ManajemenAkunPerusahaan = () => {
               variant="0"
               links={[
                 {
-                  path: '/admin/mnj-akun-perusahaan',
+                  path: '/mnj-akun-perusahaan',
                   title: 'Manajemen Akun Perusahaan',
                 },
               ]}

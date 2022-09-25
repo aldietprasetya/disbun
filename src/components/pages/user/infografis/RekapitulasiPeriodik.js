@@ -40,45 +40,71 @@ const TableRekapPeriod = () => {
    { perusahaan: "PTPN VIII", kebun: "Nama Kebun A", kabKota: "KOTA TASIKMALAYA", data1: 'Diterima', data2: 'Diterima', data3: 'Ditunda', data4: 'Diterima', data5: 'Ditunda', data6: 'Diterima', data7: 'Diterima', data8: 'Diterima', data9: 'Ditunda', data10: 'Diterima', data11: 'Belum Ada Data', data12: 'Belum Ada Data' },
   ])
 
+  const [dataReports, setDataReports] = useState([])
+  const [dataEvaluations, setDataEvaluations] = useState([])
+
+  const [totalData, setTotalData] = useState(0)
+
   useEffect(() => {
     if (session) {
       axios.defaults.headers.common['Authorization'] = `Bearer ${session.user.accessToken}`
+      setTotalData(0)
 
-      if (selectedTab == 'PELAPORAN') {
-        const getData = axios.get(`${appConfig.baseUrl}/reports`);
-        getData.then(
-          function(dt) {
-            var storeData = []
-            dt.data.data.reports.forEach((item, i) => {
-              const data = { perusahaan: item.corporate_name, kebun: item.garden_name, kabKota: item.city, data1: 'Belum Ada Data', data2: 'Belum Ada Data', data3: 'Belum Ada Data', data4: 'Belum Ada Data', data5: 'Belum Ada Data', data6: 'Belum Ada Data', data7: 'Belum Ada Data', data8: 'Belum Ada Data', data9: 'Belum Ada Data', data10: 'Belum Ada Data', data11: 'Belum Ada Data', data12: 'Belum Ada Data' }
-              storeData.push(data)
-            });
-            setData(storeData)
-          },
-          function(err) {
-            console.log(err)
-          }
-        )
-      } else {
-        const getData = axios.get(`${appConfig.baseUrl}/evaluations`);
-        getData.then(
-          function(dt) {
-            var storeData = []
-            dt.data.data.evaluations.forEach((item, i) => {
-              const data = { perusahaan: item.corporate_name, kebun: item.garden_name, kabKota: item.city, data1: 'Belum Ada Data', data2: 'Belum Ada Data', data3: 'Belum Ada Data', data4: 'Belum Ada Data', data5: 'Belum Ada Data', data6: 'Belum Ada Data', data7: 'Belum Ada Data', data8: 'Belum Ada Data', data9: 'Belum Ada Data', data10: 'Belum Ada Data', data11: 'Belum Ada Data', data12: 'Belum Ada Data' }
-              storeData.push(data)
-            });
-            setData(storeData)
-          },
-          function(err) {
-            console.log(err)
-          }
-        )
-      }
+      const getDataReports = axios.get(`${appConfig.baseUrl}/reports`);
+      getDataReports.then(
+        function(dt) {
+          setTotalData(totalData => totalData + dt.data.data.reports.length)
+          var storeData = []
+          dt.data.data.reports.forEach((item, i) => {
+            const data = { perusahaan: item.corporate_name, kebun: item.garden_name, kabKota: item.city, data1: 'Belum Ada Data', data2: 'Belum Ada Data', data3: 'Belum Ada Data', data4: 'Belum Ada Data', data5: 'Belum Ada Data', data6: 'Belum Ada Data', data7: 'Belum Ada Data', data8: 'Belum Ada Data', data9: 'Belum Ada Data', data10: 'Belum Ada Data', data11: 'Belum Ada Data', data12: 'Belum Ada Data' }
+            storeData.push(data)
+          });
+          setDataReports(storeData)
+        },
+        function(err) {
+          console.log(err)
+        }
+      )
 
+      const getDataEvaluations = axios.get(`${appConfig.baseUrl}/evaluations`);
+      getDataEvaluations.then(
+        function(dt) {
+          setTotalData(totalData => totalData + dt.data.data.evaluations.length)
+          var storeData = []
+          dt.data.data.evaluations.forEach((item, i) => {
+            const data = { perusahaan: item.corporate_name, kebun: item.garden_name, kabKota: item.city, data1: 'Belum Ada Data', data2: 'Belum Ada Data', data3: 'Belum Ada Data', data4: 'Belum Ada Data', data5: 'Belum Ada Data', data6: 'Belum Ada Data', data7: 'Belum Ada Data', data8: 'Belum Ada Data', data9: 'Belum Ada Data', data10: 'Belum Ada Data', data11: 'Belum Ada Data', data12: 'Belum Ada Data' }
+            storeData.push(data)
+          });
+          setDataEvaluations(storeData)
+        },
+        function(err) {
+          console.log(err)
+        }
+      )
+
+      const getKeb = axios.get(`${appConfig.baseUrl}/gardens`);
+      getKeb.then(
+        function(dt) {
+          localStorage.setItem("totalJumlahKebun", dt.data.data.acquiredGardens.length);
+        },
+        function(err) {
+          console.log(err)
+        }
+      )
 
     }
-  }, [session, selectedTab])
+  }, [session])
+
+  useEffect(() => {
+    if (selectedTab == 'PELAPORAN') {
+      setData(dataReports)
+    } else {
+      setData(dataEvaluations)
+    }
+
+    localStorage.setItem("totalJumlahPerusahaan", totalData);
+
+  }, [selectedTab, dataReports, dataEvaluations, totalData])
 
 
   ///// table /////

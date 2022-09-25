@@ -10,19 +10,19 @@ import { useState, useEffect } from 'react';
 const links = [
   {
     title: 'Beranda',
-    path: '/user',
+    path: '/beranda',
     icon: '/icon/home-icon-white.svg',
     isAdmin: true,
   },
   {
     title: 'Infografis',
-    path: '/user/infografis',
+    path: '/infografis',
     icon: '/icon/infografis-icon.svg',
     isAdmin: true,
   },
   {
     title: 'Master Basis Data',
-    path: '/user/master-basis-data',
+    path: '/master-basis-data',
     icon: '/icon/web-icon.svg',
     isAdmin: true,
   },
@@ -31,19 +31,19 @@ const links = [
 const linksAdmin = [
   {
     title: 'Infografis',
-    path: '/admin/infografis',
+    path: '/infografis',
     icon: '/icon/infografis-icon.svg',
     isAdmin: true,
   },
   {
     title: 'Master Basis Data',
-    path: '/admin/master-basis-data',
+    path: '/master-basis-data',
     icon: '/icon/web-icon.svg',
     isAdmin: true,
   },
   {
     title: 'Manajemen Akun Perusahaan',
-    path: '/admin/mnj-akun-perusahaan',
+    path: '/mnj-akun-perusahaan',
     icon: '/icon/user-icon.svg',
     isAdmin: true,
   },
@@ -236,7 +236,7 @@ const Navbar = ({ backdrop }) => {
           </div>
           <ProfileDropDown
             open={dropDownOpen}
-            handleLogout={() => signOut()}
+            handleLogout={() => signOut({ callbackUrl: '/login' })}
           />
         </div>
       </div>

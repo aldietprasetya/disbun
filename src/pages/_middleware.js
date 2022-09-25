@@ -6,10 +6,10 @@ export default function middleware(req) {
     const url = req.url
 
     // if (url != '/login' && !cookie) {
-
-      // const url3 = req.nextUrl.clone()
-      // url3.pathname = '/login'
-      // return NextResponse.redirect(url3)
+    //
+    //   const url3 = req.nextUrl.clone()
+    //   url3.pathname = '/login'
+    //   return NextResponse.redirect(url3)
     // }
 
     var reqProtected = (

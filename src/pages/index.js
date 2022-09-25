@@ -13,13 +13,17 @@ export default function Home() {
     localStorage.setItem('dXNyUm9sZVY',session.user.acquiredUser.role)
     if (session.user.acquiredUser.role === 1) {
       router.push({
-        pathname: "/user"
+        pathname: "/beranda"
       })
     } else {
       router.push({
-        pathname: "/admin"
+        pathname: "/infografis"
       })
     }
+  } else {
+    router.push({
+      pathname: "/login"
+    })
   }
 
 

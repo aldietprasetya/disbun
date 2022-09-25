@@ -18,7 +18,7 @@ const Sosial = () => {
       <div className="relative mt-5 w-full">
         <BreadCrumbs
           links={[
-            { path: '/admin/master-basis-data', title: 'Manajemen Data' },
+            { path: '/master-basis-data', title: 'Manajemen Data' },
             {
               path: '/admin/master-basis-data/sosial',
               title: 'Skoring Sosial',

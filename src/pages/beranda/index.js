@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useSession } from "next-auth/react";
+import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { unstable_renderSubtreeIntoContainer } from 'react-dom';
 import CustomLink from 'src/components/CustomLink';
@@ -61,6 +62,16 @@ const options = {
 };
 export default function Admin() {
   const { data: session } = useSession();
+  const router = useRouter();
+
+  if (session) {
+    if (session.user.acquiredUser.role !== 1) {
+      router.push({
+        pathname: "/infografis"
+      })
+    }
+  }
+
   return (
     <Page sidebar={false} backdrop>
       <div className="mx-10 lg:mx-10  ">
