@@ -20,10 +20,6 @@ export default function Home() {
         pathname: "/infografis"
       })
     }
-  } else {
-    router.push({
-      pathname: "/login"
-    })
   }
 
 

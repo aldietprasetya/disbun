@@ -5,13 +5,6 @@ export default function middleware(req) {
     let sec_cookie = req.cookies["__Secure-next-auth.session-token"];
     const url = req.url
 
-    // if (url != '/login' && !cookie) {
-    //
-    //   const url3 = req.nextUrl.clone()
-    //   url3.pathname = '/login'
-    //   return NextResponse.redirect(url3)
-    // }
-
     var reqProtected = (
       req.nextUrl.pathname == '/' ||
       url.includes("/profile") ||
